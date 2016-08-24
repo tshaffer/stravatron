@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>StravaStatsByTed</title>
+
+    <style>
+
+      html { height: 100% } 
+      body { height: 100%; margin: 0; padding: 0; background-color: #f2f2f2 }
+
+
+    </style>
+
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="config.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+// GLOBAL VARIABLES
+            var currentStravaState;
+
+            var athleteId;
+            var athleteName;
+
+            var self;
+
+            function getParameterByName(name, stringToSearch) {
+                console.log("stringToSearch: " + stringToSearch);
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    //results = regex.exec(location.search);
+                    results = regex.exec(stringToSearch);
+                return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
+
+            function startup(pushState) {
+
+                console.log("startup() invoked");
+                console.log("athleteId is ");
+                console.log(athleteId);
+                athleteName = $('body').data('athletename');
+                console.log("athleteName is ");
+                console.log(athleteName);
+
+                currentStravaState = "summaryActivities";
+            }
+
+            window.onpopstate = function (event) {
+
+                console.log("onpopstate, history.length: ", history.length);
+
+                //console.log("state: " + JSON.stringify(event.state));
+                console.log("document.URL: " + document.URL);
+
+                var newState = event.state.stravaState;
+
+                console.log("navigate to state: " + newState);
+
+                // if the new state is the same as the existing state, don't do anything
+                if (currentStravaState == newState) {
+                    console.log("currentStravaState == newState == " + newState + ", ignore popstate event");
+                    return;
+                }
+
+                if (newState == "summaryActivities") {
+                    if (currentActivities == undefined) {
+                        currentActivities = event.state.currentActivities;
+                    }
+                    sortActivitiesByDate(currentActivities);
+                    buildActivitiesTable(currentActivities);
+                    showActivitiesTable();
+                }
+
+                currentStravaState = newState;
+            };
+
+            window.onload = function (event) {
+                console.log("window.onload invoked");
+            };
+
+// ENTRY POINT, determine what to do by fetching athleteId / stravaState, etc.
+
+            console.log("startup, history.state: ");
+            console.log(history.state);
+            console.log("startup history.length: ", history.length);
+
+            if (history.state == null) {
+                console.log("retrieve athleteId from body");
+                athleteId = $('body').data('athleteid');
+                console.log("athleteId: " + athleteId);
+
+                // note the intended use of 'thleteIdPlaceholder'
+                if (athleteId == null || athleteId == undefined || athleteId == "" || athleteId.toString().substr(1) == "thleteIdPlaceholder") {
+
+                    console.log("athleteId from body invalid, retrieve from document.URL");
+                    athleteId = getParameterByName("athleteId", document.URL);
+                    console.log("athleteId from URL: " + athleteId);
+
+                    if (athleteId == null || athleteId == undefined || athleteId == "" || athleteId.toString().substr(1) == "thleteIdPlaceholder") {
+                        console.log("scenario: user navigated directly to site");
+                        console.log("athleteId completely unavailable, interpret as direct connect.");
+                        // scenario: user navigated directly to StravaStatsHome.html
+                        // redirect to Strava
+                        window.location.replace("https://www.strava.com/oauth/authorize?client_id=2055&response_type=code&redirect_uri=http://" + hostName + ":8080/StravaStatsHome.html");
+                    }
+                    else {
+                        console.log("scenario: user clicked on bookmark or perhaps used the browser's forward / back button");
+                        // scenario: user clicked on bookmark
+                        // get initial state
+                        // for now, assume summary activities
+                        //debugger
+                        var targetState = getParameterByName("stravaState", document.URL);
+                        console.log("targetState = " + targetState);
+
+                        if (targetState == "summaryActivities") {
+                            startup(false);
+                        }
+
+                        return;
+                    }
+                }
+                else {
+                    console.log("scenario: user connected to Strava from separate page; security token retrieved");
+                    startup(true);
+                    return;
+                }
+            }
+            else {
+                console.log("history.state exists");
+                athleteId = history.state.athleteId;
+                console.log("athleteId from history.state: " + athleteId);
+
+                // get intended state
+                var targetState = history.state.stravaState;
+                console.log("targetState = " + targetState);
+
+                if (targetState == "summaryActivities") {
+                    startup(false);
+                }
+
+                return;
+            }
+
+        });
+    </script>
+
+</head>
+<body data-athleteId="athleteIdPlaceholder", data-athleteName="athleteNamePlaceholder">
+    <div class="background" style="position: relative; width:1900px;">
+
+    </div>
+</body>
+</html>

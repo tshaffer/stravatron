@@ -1,0 +1,1009 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>StravaStatsByTed</title>
+
+    <style>
+
+      html { height: 100% } 
+      body { height: 100%; margin: 0; padding: 0; background-color: #f2f2f2 }
+
+
+    </style>
+
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="config.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing,geometry&key=AIzaSyAQMkpxb9BOWSzHYvNhJz9LZuZqGp0toF4"></script>
+
+    <script>
+
+        // load visualization package for later use
+        google.load("visualization", "1", { packages: ["corechart"] });
+
+        $(document).ready(function () {
+
+// GLOBAL VARIABLES
+            var currentStravaState;
+
+            var athleteId;
+            var athleteName;
+
+            var currentActivities;
+            var selectedDetailedEfforts;
+
+            var selectedActivity;
+
+            var athletes = [];
+            var segmentEffortsByAthlete = [];
+
+            var activitiesTableColumnOrders = {};
+            var effortsTableColumnOrders = {};
+            var currentSortColumn;
+
+            var segmentEffortsData = [];
+
+            var effortsNameHidden;
+
+            var activitiesToCompare = [];
+
+            var activityMap;
+            var activityPath;
+            var ridePathDecoded;
+            var elevations;
+            var mapMarker;
+
+            var segmentEffortOccurrenceCount = {}
+// ACTIVITIES
+
+            function buildActivityRow(activity) {
+
+                //console.log("buildActivityRow invoked, activity is ");
+                //console.log(activity);
+
+                // activityName
+                var activityName = activity.name;
+
+                // athleteId
+                var athleteId = activity.athleteId;
+
+                // id
+                var activityId = activity.activityId;
+
+                // ride date
+                //d = new Date(activity.start_date_local);
+                var d = new Date(activity.startDateTime);
+                var date = d.toLocaleString();
+
+                // distance
+                var miles = activity.distance;
+
+                // riding time
+                var movingTime = getMovingTime(activity.movingTime);
+
+                // elevation gain
+                var elevationGain = activity.totalElevationGain;
+
+                // average speed (meters per second)
+                var mph = activity.averageSpeed;
+
+                var calories = activity.calories;
+
+                //rowToAdd = '<tr><td>' + date + '</td><td>' + activity.name + '</td><td>' + movingTime + '</td><td>' + miles.toFixed(0) + ' miles</td><td>' + elevationGain + ' ft</td><td>' + mph.toFixed(1) + ' mph</td><td>' + calories + '</td><td>' + "<input id='" + activityId + "' type='submit' value='Show details'/>" + '</td></tr>';
+                var rowToAdd = "<tr id='tr" + activityId + "'><td><input type='checkbox'/></td><td>" + date + '</td><td>' + activity.name + '</td><td>' + movingTime + '</td><td>' + miles.toFixed(0) + ' miles</td><td>' + elevationGain + ' ft</td><td>' + mph.toFixed(1) + ' mph</td><td>' + calories + '</td><td>' + "<input id='" + activityId + "' type='submit' value='Show details'/>" + '</td><td>' + "<input id='" + activityId + "-mapBuilder' type='submit' value='Map builder'/>" + '</td></tr>';
+                $('#activitiesTable').append(rowToAdd);
+
+                // add button handlers for this particular activity
+                var btnId = "#" + activityId;
+                $(btnId).click({ activityId: activityId, athleteId: athleteId, activityName: activityName, activity: activity }, showDetailsEventHandler);
+
+                btnId = "#" + activityId + "-mapBuilder";
+                $(btnId).click({ activityId: activityId, athleteId: athleteId, activityName: activityName, activity: activity }, mapBuilderInvokedEventHandler);
+            }
+
+            var self;
+
+            function getParameterByName(name, stringToSearch) {
+                console.log("stringToSearch: " + stringToSearch);
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    //results = regex.exec(location.search);
+                    results = regex.exec(stringToSearch);
+                return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
+
+            function startup(pushState) {
+
+                //console.log("document.URL: " + document.URL);
+                //console.log("window.location");
+                //console.log(window.location);
+                ////console.log("location.search");
+                ////console.log(document.location.search);
+                //console.log("document.location");
+                //var href = document.location.href;
+                //console.log(document.location);
+                //console.log("retrieving information from document.location, query parameters:");
+                ////console.log("athleteId: " + getParameterByName("athleteId", document.location.search));
+                ////console.log("stravaState: " + getParameterByName("stravaState", document.location.search));
+                ////console.log("athleteId: " + getParameterByName("athleteId", document.location.href));
+                ////console.log("stravaState: " + getParameterByName("stravaState", document.location.href));
+                //console.log("href");
+                //console.log(href);
+                //console.log("athleteId: " + getParameterByName("athleteId", href));
+                //console.log("stravaState: " + getParameterByName("stravaState", href));
+                //console.log("href");
+                //console.log(href);
+
+                //athleteId = $('body').data('athleteid');
+
+                console.log("startup() invoked");
+                console.log("athleteId is ");
+                console.log(athleteId);
+                athleteName = $('body').data('athletename');
+                console.log("athleteName is ");
+                console.log(athleteName);
+
+                currentStravaState = "summaryActivities";
+
+                // get summary activities for the current athlete
+                $.ajax({
+                    url: 'http://' + hostName + ':8080/athleteActivities',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { "athleteId": athleteId.toString() },
+                    error: function () { alert('Failed!'); },
+                })
+                .success(function (data, textStatus, jqXHR) {
+                    //console.log("success");
+                    //console.log(textStatus);
+                    //console.log(data);
+
+                    currentActivities = data;
+
+                    sortActivitiesByDate(currentActivities);
+                    buildActivitiesTable(currentActivities);
+                    showActivitiesTable();
+
+                    // is this the appropriate point in the code to invoke pushState?
+                    //debugger
+                    //currentStravaState = "summaryActivities";
+
+                    if (pushState) {
+                        console.log("pushState summaryActivities");
+                        var stateObj = { athleteId: athleteId, stravaState: "summaryActivities", currentActivities: currentActivities };
+                        history.pushState(stateObj, null, "StravaStatsHome.html?athleteId=" + athleteId + "&stravaState=summaryActivities");
+                    }
+                });
+
+            }
+
+            window.onpopstate = function (event) {
+
+                //debugger
+
+                //var newState = JSON.stringify(event.state);
+
+                console.log("onpopstate, history.length: ", history.length);
+
+                //console.log("state: " + JSON.stringify(event.state));
+                console.log("document.URL: " + document.URL);
+
+                var newState = event.state.stravaState;
+
+                console.log("navigate to state: " + newState);
+
+                // if the new state is the same as the existing state, don't do anything
+                if (currentStravaState == newState) {
+                    console.log("currentStravaState == newState == " + newState + ", ignore popstate event");
+                    return;
+                }
+
+                if (newState == "summaryActivities") {
+                    if (currentActivities == undefined) {
+                        currentActivities = event.state.currentActivities;
+                    }
+                    sortActivitiesByDate(currentActivities);
+                    buildActivitiesTable(currentActivities);
+                    showActivitiesTable();
+                }
+                else if (newState == "activityDetails") {
+                    athleteId = event.state.athleteId;
+                    var activity = event.state.activity;
+                    var activityId = event.state.activityId;
+                    var activityName = event.state.activityName;
+                    console.log("activityId=" + activityId);
+                    showDetails(athleteId, activity, activityId, activityName);
+                }
+                else if (newState == "compareActivities") {
+                    athleteId = event.state.athleteId;
+                    var selectedActivityIds = event.state.activityIds;
+                    compareActivities(selectedActivityIds);
+                }
+                else if (newState == "myEfforts") {
+                    console.log("state: " + JSON.stringify(event.state));
+
+                    athleteId = event.state.athleteId;
+                    athleteName = event.state.athleteName;
+                    var segment = event.state.segment;
+
+                    athletes = {};
+                    athletes[athleteId] = athleteName;
+
+                    segmentEffortsByAthlete = [];
+
+                    getSummarySegmentEfforts(segment, true);
+                }
+                else if (newState == "friendsResults") {
+                    console.log("state: " + JSON.stringify(event.state));
+
+                    athleteId = event.state.athleteId;
+                    var segment = event.state.segment;
+                    var friends = JSON.parse(event.state.athletes);
+                    console.log("friends:");
+                    console.log(friends);
+
+                    athletes = friends;
+
+                    segmentEffortsByAthlete = [];
+
+                    getSummarySegmentEfforts(segment, false);
+                }
+
+                currentStravaState = newState;
+            };
+
+            window.onload = function (event) {
+                //alert("onload, state: " + history.state);
+                console.log("window.onload invoked");
+            };
+
+// MAP BUILDER
+            var buildingTrailSegment = false;
+
+            var trailIntersections = [];
+            var segmentStartTrailIntersection = null;
+            var segmentStartIndex = -1;
+
+            function mapBuilderInvokedEventHandler(event) {
+
+                selectedActivity = event.data.activity;
+
+                currentStravaState = "mapBuilder";
+
+                var stateObj = { athleteId: event.data.athleteId, stravaState: "activityDetails", activityId: event.data.activityId, activity: selectedActivity, activityName: event.data.activityName };
+                console.log("pushState mapBuilder, stateObj: ");
+                console.log(stateObj);
+                history.pushState(stateObj, null, "StravaStatsHome.html?athleteId=" + event.data.athleteId + "&stravaState=mapBuilder&activityId=" + event.data.activityId);
+
+                initializeMap(selectedActivity, "mapBuilder-canvas");
+
+                showMapBuilder();
+
+                google.maps.event.addListener(activityMap, 'click', failedSegmentBuilderEvent);
+                google.maps.event.addListener(activityPath, 'click', segmentBuilderEventHandler);
+
+                // retrieve data from the database if it exists
+                trailIntersections = []; // may not be necessary - might already be guaranteed to be empty
+                readTrailDataFromDB();
+
+                //debugger;
+
+                // draw graphics for intersections
+                // add event listeners for intersections
+                // draw graphics for trails
+            }
+
+            function readTrailDataFromDB() {
+
+                var trailIntersectionsFromDB;
+                var trails;
+                var trailsAtTrailIntersections;
+
+                var trailIntersectionsRetrieved = false;
+                var trailsRetrieved = false;
+                var trailsAtTrailIntersectionsRetrieved = false;
+
+                // trailIntersections
+                $.ajax({
+                    url: 'http://' + hostName + ':8080/trailIntersections',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {},
+                    error: function () { alert('Failed!'); },
+                })
+                .success(function (data, textStatus, jqXHR) {
+                    trailIntersectionsFromDB = data;
+                    trailIntersectionsRetrieved = true;
+
+                    if (trailIntersectionsRetrieved && trailsRetrieved && trailsAtTrailIntersectionsRetrieved) {
+                        resolveTrailData(trailIntersectionsFromDB, trails, trailsAtTrailIntersections);
+                        return;
+                    }
+                });
+
+                // trails
+                $.ajax({
+                    url: 'http://' + hostName + ':8080/trails',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {},
+                    error: function () { alert('Failed!'); },
+                })
+                .success(function (data, textStatus, jqXHR) {
+                    trails = data;
+                    trailsRetrieved = true;
+
+                    if (trailIntersectionsRetrieved && trailsRetrieved && trailsAtTrailIntersectionsRetrieved) {
+                        resolveTrailData(trailIntersectionsFromDB, trails, trailsAtTrailIntersections);
+                        return;
+                    }
+                });
+
+                // trailsAtTrailIntersections
+                $.ajax({
+                    url: 'http://' + hostName + ':8080/trailsAtTrailIntersections',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {},
+                    error: function () { alert('Failed!'); },
+                })
+                .success(function (data, textStatus, jqXHR) {
+                    trailsAtTrailIntersections = data;
+                    trailsAtTrailIntersectionsRetrieved = true;
+
+                    if (trailIntersectionsRetrieved && trailsRetrieved && trailsAtTrailIntersectionsRetrieved) {
+                        resolveTrailData(trailIntersectionsFromDB, trails, trailsAtTrailIntersections);
+                        return;
+                    }
+                });
+            }
+
+            function resolveTrailData(trailIntersectionsFromDB, trails, trailsAtTrailIntersections) {
+
+                $.each(trailIntersectionsFromDB, function (index, trailIntersectionFromDB) {
+                    var origin = new google.maps.LatLng(trailIntersectionFromDB.latitude, trailIntersectionFromDB.longitude);
+
+                    var trailIntersection = new TrailIntersectionMin(
+                        trailIntersectionFromDB.name,
+                        origin,
+                        trailIntersectionFromDB.elevation,
+                        trailIntersectionFromDB.activityId,
+                        trailIntersectionFromDB.id
+                        );
+
+                    trailIntersections.push(trailIntersection);
+                    //google.maps.event.addListener(trailIntersectionMarker, 'click', trailIntersectionSelectedEventHandler);
+                });
+
+                var trailMins = [];
+
+                $.each(trails, function (index, trailFromDB) {
+
+                    var trail = new TrailMin(
+                        trailFromDB.length,
+                        trailFromDB.path,
+                        trailFromDB.elevationGain,
+                        trailFromDB.elevationGainReverseDirection,
+                        trailFromDB.id,
+                        trailFromDB.destinationTrailIntersectionId
+                        );
+
+                    trailMins.push(trail);
+                });
+
+                addDestinationTrailIntersectionsToTrails(trailMins);
+
+                addTrailsFromTrailIntersections(trailsAtTrailIntersections, trailMins);
+
+                completeRestore();
+
+                //debugger;
+            }
+
+            function completeRestore() {
+                addTrailIntersectionMarkers();
+                drawTrails();
+            }
+
+            function addTrailIntersectionMarkers() {
+                $.each(trailIntersections, function (index, trailIntersection) {
+                    addTrailIntersectionMarker(trailIntersection)
+                });
+            }
+
+            function addTrailIntersectionMarker(trailIntersection) {
+                var trailIntersectionMarkerOptions = {
+                    strokeColor: '#FFFFFF',
+                    strokeOpacity: 1,
+                    strokeWeight: 2,
+                    fillColor: '#000000',
+                    fillOpacity: 1,
+                    map: activityMap,
+                    center: trailIntersection.origin,
+                    radius: 25,
+                    editable: false,
+                    draggable: false
+                };
+
+                trailIntersectionMarker = new google.maps.Circle(trailIntersectionMarkerOptions);
+
+                google.maps.event.addListener(trailIntersectionMarker, 'click', trailIntersectionSelectedEventHandler);
+            }
+
+            function drawTrails() {
+            }
+
+            // Iterate through trail objects
+            // Using destinationTrailIntersectionId (from trail objects), find the matching destinationTrailIntersection and set destinationTrailIntersection member
+            function addDestinationTrailIntersectionsToTrails(trailMins) {
+
+                $.each(trailMins, function (trailIndex, trailMin) {
+                    //minTrail = trailMins[trailIndex];
+                    $.each(trailIntersections, function (trailIntersectionIndex, minTrailIntersection) {
+                        if (trailMin.destinationTrailIntersectionId == minTrailIntersection.id) {
+                            trailMin.destinationTrailIntersection = minTrailIntersection;
+                        }
+                    });
+                });
+            }
+
+            // Iterate through data returned from trailAtTrailIntersection
+            // Find trailIntersection object associated with trailIntersectionId
+            // Find trail object associated with trailId
+            // Push trail object onto trailIntersection.trailList
+            function addTrailsFromTrailIntersections(trailsAtTrailIntersections, trailMins) {
+                $.each(trailsAtTrailIntersections, function (index, trailAtTrailIntersection) {
+                    var trailIntersection = getTrailIntersection(trailAtTrailIntersection.trailIntersectionId);
+                    if (trailIntersection == null) debugger;
+
+                    var trail = getTrail(trailMins, trailAtTrailIntersection.trailId);
+                    if (trail == null) debugger;
+
+                    trailIntersection.trailList.push(trail);
+                });
+            }
+
+            function getTrailIntersection(trailIntersectionId) {
+                var matchingTrailIntersection = null;
+                $.each(trailIntersections, function (index, trailIntersection) {
+                    if (trailIntersection.id == trailIntersectionId) {
+                        matchingTrailIntersection = trailIntersection;
+                        return;
+                    }
+                });
+                return matchingTrailIntersection;
+            }
+
+            function getTrail(minTrails, trailId) {
+                var matchingTrail = null;
+                $.each(minTrails, function (index, minTrail) {
+                    if (minTrail.id == trailId) {
+                        matchingTrail = minTrail;
+                    }
+                });
+                return matchingTrail;
+            }
+
+            // segmentBuilderEventHandler is invoked when user clicks on the path (however, not on a previously created trail intersection)
+            function segmentBuilderEventHandler(event) {
+
+                // event.latLng
+                console.log("lat=" + event.latLng.lat() + ",longitude=" + event.latLng.lng());
+
+                // get the point along the path that is closest to where the user clicked
+                var pointOnPath = getClosestPoint(event.latLng.lat(), event.latLng.lng());
+                console.log("locationInfo=");
+                console.log(pointOnPath);
+
+                // get distance from start of activity and index
+                var addTrailSegment = confirm("Do you want to create a new trail intersection " + pointOnPath.distanceFromStart.toFixed(2) + " miles from the start of the ride (at point " + pointOnPath.index.toString() + " of " + pointOnPath.numberOfPoints.toString() + ")?");
+                if (addTrailSegment == true) {
+                    var trailIntersectionName = prompt("Enter trail intersection name");
+                    if (trailIntersectionName != null && trailIntersectionName != "") {
+
+                        // put a marker down at the TrailIntersection point
+                        var trailIntersectionMarkerOptions = {
+                            strokeColor: '#FFFFFF',
+                            strokeOpacity: 1,
+                            strokeWeight: 2,
+                            fillColor: '#000000',
+                            fillOpacity: 1,
+                            map: activityMap,
+                            center: pointOnPath.latLng,
+                            radius: 25,
+                            editable: false,
+                            draggable: false
+                        };
+
+                        trailIntersectionMarker = new google.maps.Circle(trailIntersectionMarkerOptions);
+
+                        // add a TrailIntersection object at the point on the activity closest to the selected point
+                        addTrailIntersectionThenTrail(trailIntersectionName, pointOnPath);
+                        //var trailIntersection = new TrailIntersection(trailIntersectionName, pointOnPath.latLng, pointOnPath.elevation, pointOnPath.index, selectedActivity.activityId, pointOnPath);
+                        //trailIntersections.push(trailIntersection);
+                        //google.maps.event.addListener(trailIntersectionMarker, 'click', trailIntersectionSelectedEventHandler);
+
+                        //if (buildingTrailSegment) {
+                        //    // end of trail; add trail to segmentStartTrailIntersection.trailList
+                        //    addTrail(trailIntersection, pointOnPath);
+                        //}
+                        //else {
+                        //    segmentStartTrailIntersection = trailIntersection;
+                        //}
+
+                        buildingTrailSegment = !buildingTrailSegment;
+
+                        console.log("segmentBuilderEventHandler, buildingTrailSegment = " + buildingTrailSegment.toString());
+                    }
+                }
+            }
+
+            function trailIntersectionSelectedEventHandler(event) {
+
+                // user clicked on a trail intersection - find out which one
+                var selectedTrailIntersection = null;
+                var selectedLat = this.center.lat();
+                var selectedLng = this.center.lng();
+
+                var useTrailIntersection;
+
+                $.each(trailIntersections, function (index, trailIntersection) {
+                    var originLat = trailIntersection.origin.lat();
+                    var originLng = trailIntersection.origin.lng();
+                    if (selectedLat == originLat && selectedLng == originLng) {
+                        selectedTrailIntersection = trailIntersection;
+
+                        // selectedTrailIntersection.index == undefined implies the selectedTrailIntersection is not from this session; it was read in from the db
+                        if (selectedTrailIntersection.index == undefined) {
+
+                            var closestPoints = getClosestPoints(selectedTrailIntersection.origin.lat(), selectedTrailIntersection.origin.lng());
+
+                            var keepGoing = true;
+                            var pointIndex = 0;
+                            while (keepGoing) { // also check to ensure that there are more points
+                                var pointOnPath = closestPoints[pointIndex];
+                                var usePoint = confirm("Trail intersection selected: " + selectedTrailIntersection.name + ". Use the point : " + pointOnPath.distanceFromStart.toFixed(2) + " miles from the start of the ride (at point " + pointOnPath.index.toString() + " of " + pointOnPath.numberOfPoints.toString() + ")?");
+                                if (usePoint == true) {
+                                    selectedTrailIntersection.index = pointOnPath.index;
+                                    useTrailIntersection = true;
+                                    return;
+                                }
+                                else {
+                                    var keepGoing = confirm("Continue looking?");
+                                    if (keepGoing == true) {
+                                        pointIndex++;
+                                    }
+                                    else {
+                                        selectedTrailIntersection = null;
+                                        return;
+                                    }
+                                }
+                            }
+
+                            //if (selectedTrailIntersection.activityId != selectedActivity.activityId) {
+                            //    // what to do? user is clicking on a point from the database that was created using an activity other than the current one
+                            //    var closestPoints = getClosestPoints(selectedTrailIntersection.origin.lat(), selectedTrailIntersection.origin.lng());
+                            //    debugger;
+                            //}
+                            //else {
+                            //    var pointOnPath = getClosestPoint(selectedTrailIntersection.origin.lat(), selectedTrailIntersection.origin.lng());
+                            //    if (pointOnPath == -1) debugger;
+                            //}
+
+                            //selectedTrailIntersection.index = pointOnPath.index;
+                        }
+                        return;
+                    }
+                });
+
+                if (selectedTrailIntersection != null) {
+                    console.log("clicked on " + selectedTrailIntersection.name);
+
+                    if (useTrailIntersection == undefined) {
+                        var useTrailIntersection = confirm("Do you want to use the existing trail intersection " + selectedTrailIntersection.name + "?");
+                    }
+                    if (useTrailIntersection == true) {
+                        if (buildingTrailSegment) {
+                            // add a trail segment from the origin to this trail intersection
+                            // origin is
+                            //      segmentStartTrailIntersection
+                            // destination is
+                            //      location associated with selectedTrailIntersection
+                            debugger;
+                            addTrail(selectedTrailIntersection, segmentStartTrailIntersection.pointOnPath);
+                        }
+                        else {
+                            segmentStartTrailIntersection = selectedTrailIntersection;
+                        }
+                        buildingTrailSegment = !buildingTrailSegment;
+                    }
+                }
+                else {
+                    console.log("Error - trail intersection not found");
+                }
+            }
+
+            function addTrailIntersectionThenTrail(trailIntersectionName, pointOnPath) {
+
+                var trailIntersection = new TrailIntersection(trailIntersectionName, pointOnPath.latLng, pointOnPath.elevation, pointOnPath.index, selectedActivity.activityId, pointOnPath, buildingTrailSegment);
+                trailIntersections.push(trailIntersection);
+                google.maps.event.addListener(trailIntersectionMarker, 'click', trailIntersectionSelectedEventHandler);
+
+                if (buildingTrailSegment) {
+                    // end of trail; add trail to segmentStartTrailIntersection.trailList
+                    //addTrail(trailIntersection, pointOnPath);
+                }
+                else {
+                    segmentStartTrailIntersection = trailIntersection;
+                }
+
+            }
+
+            // add a trail from 'segmentStartTrailIntersection' / 'pointOnPath' to 'trailIntersection'
+            function addTrail(trailIntersection, pointOnPath) {
+
+                var trailLength = 0;
+                var path = [];
+                var elevationGain = 0;
+                var elevationGainReverseDirection = 0;
+
+                // for now, assume that originIndex < destinationIndex
+                var trailPointIndex = segmentStartTrailIntersection.index + 1;
+                while (trailPointIndex <= trailIntersection.index) {
+
+                    trailLength += (pointOnPath.distances[trailPointIndex] - pointOnPath.distances[trailPointIndex - 1]);
+                    path.push(pointOnPath.locations[trailPointIndex]);
+
+                    if (pointOnPath.elevations[trailPointIndex] > pointOnPath.elevations[trailPointIndex - 1]) {
+                        elevationGain += pointOnPath.elevations[trailPointIndex] - pointOnPath.elevations[trailPointIndex - 1];
+                    }
+
+                    if (pointOnPath.elevations[trailPointIndex] < pointOnPath.elevations[trailPointIndex - 1]) {
+                        elevationGainReverseDirection += pointOnPath.elevations[trailPointIndex - 1] - pointOnPath.elevations[trailPointIndex];
+                    }
+
+                    trailPointIndex++;
+                }
+
+                trail = new Trail(trailLength, path, elevationGain, elevationGainReverseDirection, segmentStartTrailIntersection, trailIntersection);
+
+                //segmentStartTrailIntersection.trailList.push(trail);
+            }
+
+            function Trail(length, path, elevationGain, elevationGainReverseDirection, startTrailIntersection, trailIntersection) {
+
+                this.destinationTrailIntersection = trailIntersection;
+                this.destinationTrailIntersectionId = trailIntersection.id;
+                this.length = length;
+                this.path = path;
+                this.elevationGain = elevationGain;
+                this.elevationGainReverseDirection = elevationGainReverseDirection;
+
+                var thisTrail = this;
+
+
+                // add trail to database
+                $.ajax({
+                    url: 'http://' + hostName + ':8080/trail',
+                    data: { "destinationTrailIntersectionId": this.destinationTrailIntersectionId, "length": this.length, "path": JSON.stringify(this.path), "elevationGain": this.elevationGain, "elevationGainReverseDirection": this.elevationGainReverseDirection },        
+                    type: 'GET',
+                    dataType: 'json',
+                    error: function () { alert('Failed!'); },
+                })
+                .success(function (data, textStatus, jqXHR) {
+                    console.log("trail success");
+                    console.log(textStatus);
+                    console.log(data);
+
+                    thisTrail.id = data;
+
+                    startTrailIntersection.trailList.push(thisTrail);
+
+                    // add trail to trail intersection in db
+                    $.ajax({
+                        url: 'http://' + hostName + ':8080/trailAtTrailIntersection',
+                        data: { "trailIntersectionId": startTrailIntersection.id, "trailId": thisTrail.id },
+                        type: 'GET',
+                        dataType: 'json',
+                        error: function () { alert('Failed!'); },
+                    })
+                    .success(function (data, textStatus, jqXHR) {
+                        console.log("trailAtTrailIntersection success");
+                        console.log(textStatus);
+                        console.log(data);
+                    });
+                });
+            }
+
+            function TrailMin(length, path, elevationGain, elevationGainReverserDirection, id, destinationTrailIntersectionId) {
+                this.length = length;
+                this.path = path;
+                this.elevationGain = elevationGain;
+                this.elevationGainReverserDirection = elevationGainReverserDirection;
+                this.id = id;
+                this.destinationTrailIntersectionId = destinationTrailIntersectionId
+            }
+
+            function TrailIntersectionMin(name, origin, elevation, activityId, id) {
+                this.name = name;
+                this.origin = origin;
+                this.elevation = elevation;
+                this.activityId = activityId;
+                this.id = id;
+                this.trailList = [];
+            }
+
+            function TrailIntersection(name, origin, elevation, index, activityId, pointOnPath, addTrailToIntersection) {
+                this.name = name;
+                this.origin = origin;
+                this.elevation = elevation;
+                this.index = index;
+                this.activityId = activityId;
+                this.pointOnPath = pointOnPath;
+                this.trailList = [];
+
+                var thisTrailIntersection = this;
+
+                // add object to database
+                $.ajax({
+                    url: 'http://' + hostName + ':8080/trailIntersection',
+                    data: { "name": this.name, "latitude": this.origin.lat(), "longitude": this.origin.lng(), "elevation": this.elevation, "activityId": this.activityId },
+                    type: 'GET',
+                    dataType: 'json',
+                    error: function () { alert('Failed!'); },
+                })
+                .success(function (data, textStatus, jqXHR) {
+                    console.log("trailIntersection success");
+                    console.log(textStatus);
+                    console.log(data);
+
+                    //debugger;
+
+                    thisTrailIntersection.id = data;
+
+                    if (addTrailToIntersection) {
+                        addTrail(thisTrailIntersection, pointOnPath);
+                    }
+                });
+            }
+
+
+            function failedSegmentBuilderEvent(event) {
+                console.log("missed");
+                segmentBuilderEventHandler(event);
+            }
+
+            function getStreamData() {
+
+                var stream = JSON.parse(selectedActivity.stream);
+
+                var distances;
+                var locations;
+                var elevations;
+
+                // at this point, stream is an array that includes a number of streams; need to pick out the required stream data
+                for (i = 0; i < stream.length; i++) {
+                    switch (stream[i].type) {
+                        case 'distance':
+                            distances = stream[i].data;
+                            break;
+                        case 'latlng':
+                            locations = stream[i].data;
+                            break;
+                        case 'altitude':
+                            elevations = stream[i].data;
+                            break;
+                    }
+                }
+
+                if (locations == undefined || elevations == undefined) {
+                    console.log("stream undefined");
+                    return -1;
+                }
+
+                streamData = {};
+                streamData.distances = distances;
+                streamData.locations = locations;
+                streamData.elevations = elevations;
+
+                return streamData;
+            }
+
+            function getClosestPoints(lat, lng) {
+
+                var streamData = getStreamData();
+                if (streamData == -1) return -1;
+
+                var distances = streamData.distances;
+                var locations = streamData.locations;
+                var elevations = streamData.elevations;
+
+                var distancesFromSelectedPoint = [];
+
+                for (i = 0; i < locations.length; i++) {
+
+                    var location = locations[i];
+
+                    var distanceFromSelectedPoint = getDistance(location[0], location[1], lat, lng);
+
+                    locationInfo = {};
+                    locationInfo.index = i;
+                    locationInfo.distanceFromSelectedPoint = distanceFromSelectedPoint
+                    locationInfo.numberOfPoints = locations.length;
+                    locationInfo.distanceFromSelectedPoint = metersToFeet(distanceFromSelectedPoint * 1000);
+                    locationInfo.distanceFromStart = metersToMiles(distances[i]);
+                    locationInfo.distances = distances;
+                    locationInfo.locations = locations;
+                    locationInfo.elevations = elevations;
+
+                    locationInfo.latLng = new google.maps.LatLng(locations[i][0], locations[i][1]);
+                    locationInfo.elevation = elevations[i];
+
+                    distancesFromSelectedPoint.push(locationInfo);
+                }
+
+                distancesFromSelectedPoint.sort(compareLocationInfo);
+
+                return distancesFromSelectedPoint;
+            }
+
+            function compareLocationInfo(a, b) {
+                if (a.distanceFromSelectedPoint < b.distanceFromSelectedPoint)
+                    return -1;
+                if (a.distanceFromSelectedPoint > b.distanceFromSelectedPoint)
+                    return 1;
+                return 0;
+            }
+
+            function getClosestPoint(lat, lng) {
+
+                var streamData = getStreamData();
+                if (streamData == -1) return -1;
+
+                var distances = streamData.distances;
+                var locations = streamData.locations;
+                var elevations = streamData.elevations;
+
+                var locationInfo = {};
+                var minDistance = 9999;
+                var minIndex = -1;
+
+                for (i = 0; i < locations.length; i++) {
+
+                    var location = locations[i];
+
+                    var pointsDistance = getDistance(location[0], location[1], lat, lng);
+                    if (Math.min(minDistance, pointsDistance) != minDistance) {
+                        minIndex = i;
+                        minDistance = pointsDistance;
+                    }
+                }
+
+                console.log("getClosestPoint: minIndex=" + minIndex.toString() + ", minDistance=" + minDistance.toString());
+
+                locationInfo.index = minIndex;
+                locationInfo.numberOfPoints = locations.length;
+                locationInfo.distanceFromPath = metersToFeet(minDistance * 1000);
+                locationInfo.distanceFromStart = metersToMiles(distances[minIndex]);
+                locationInfo.distances = distances;
+                locationInfo.locations = locations;
+                locationInfo.elevations = elevations;
+
+                locationInfo.latLng = new google.maps.LatLng(locations[minIndex][0], locations[minIndex][1]);
+                locationInfo.elevation = elevations[minIndex];
+
+                return locationInfo;
+            }
+
+            function getDistance(lat1, lon1, lat2, lon2) {
+
+                var R = 6371; // km
+                var φ1 = toRad(lat1);
+                var φ2 = toRad(lat2);
+                var Δφ = toRad(lat2 - lat1);
+                var Δλ = toRad(lon2 - lon1);
+
+                var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                        Math.cos(φ1) * Math.cos(φ2) *
+                        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+                var d = R * c;
+
+                return d;
+            }
+
+            function toRad(x) {
+                return x * Math.PI / 180;
+            }
+
+
+// ENTRY POINT, determine what to do by fetching athleteId / stravaState, etc.
+
+            //debugger
+
+            console.log("startup, history.state: ");
+            console.log(history.state);
+            console.log("startup history.length: ", history.length);
+
+            if (history.state == null) {
+                console.log("retrieve athleteId from body");
+                athleteId = $('body').data('athleteid');
+                console.log("athleteId: " + athleteId);
+
+                // note the intended use of 'thleteIdPlaceholder'
+                if (athleteId == null || athleteId == undefined || athleteId == "" || athleteId.toString().substr(1) == "thleteIdPlaceholder") {
+
+                    console.log("athleteId from body invalid, retrieve from document.URL");
+                    athleteId = getParameterByName("athleteId", document.URL);
+                    console.log("athleteId from URL: " + athleteId);
+
+                    if (athleteId == null || athleteId == undefined || athleteId == "" || athleteId.toString().substr(1) == "thleteIdPlaceholder") {
+                        console.log("scenario: user navigated directly to site");
+                        console.log("athleteId completely unavailable, interpret as direct connect.");
+                        // scenario: user navigated directly to StravaStatsHome.html
+                        // redirect to Strava
+                        window.location.replace("https://www.strava.com/oauth/authorize?client_id=2055&response_type=code&redirect_uri=http://" + hostName + ":8080/StravaStatsHome.html");
+                    }
+                    else {
+                        console.log("scenario: user clicked on bookmark or perhaps used the browser's forward / back button");
+                        // scenario: user clicked on bookmark
+                        // get initial state
+                        // for now, assume summary activities
+                        //debugger
+                        var targetState = getParameterByName("stravaState", document.URL);
+                        console.log("targetState = " + targetState);
+
+                        if (targetState == "summaryActivities") {
+                            startup(false);
+                        }
+
+                        return;
+                    }
+                }
+                else {
+                    console.log("scenario: user connected to Strava from separate page; security token retrieved");
+                    // athleteId is set
+                    // scenario: connected to Strava from separate page; security token retrieved
+                    // history.state == null && athleteId from body is good. means source was Strava
+                    // launch summary activities stream
+                    // return
+                    startup(true);
+                    return;
+                }
+            }
+            else {
+                // scenarios
+                //      refresh
+                //      in app, go to google, hit Back - history is still there? (sometimes it is)
+                //debugger
+
+                console.log("history.state exists");
+                athleteId = history.state.athleteId;
+                console.log("athleteId from history.state: " + athleteId);
+
+                // get intended state
+                var targetState = history.state.stravaState;
+                console.log("targetState = " + targetState);
+
+                if (targetState == "summaryActivities") {
+                    startup(false);
+                }
+
+                return;
+            }
+
+        });
+    </script>
+
+</head>
+<body data-athleteId="athleteIdPlaceholder", data-athleteName="athleteNamePlaceholder">
+    <!--<p>My Strava Data</p>-->
+
+    <!--<div class="background" style="position: relative; width:1900px; height:900px;">-->
+    <div class="background" style="position: relative; width:1900px;">
+
+    </div>
+</body>
+</html>
