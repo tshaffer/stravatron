@@ -3,12 +3,20 @@
  */
 var https = require('https');
 
+export const SET_SUMMARY_ACTIVITIES = 'SET_SUMMARY_ACTIVITIES';
+export function setSummaryActivities(summaryActivities) {
+
+    return {
+        type: SET_SUMMARY_ACTIVITIES,
+        summaryActivities
+    }
+}
+
+
 export function loadSummaryActivities() {
 
     return function(dispatch, getState) {
 
-        debugger;
-        
         console.log("actions/index.js::loadSummaryActivities invoked");
 
         let responseData = {};
@@ -45,7 +53,7 @@ export function loadSummaryActivities() {
 
                 debugger;
 
-                dispatch(setSummaryActivities(summaryActivites));
+                dispatch(setSummaryActivities(summaryActivities));
             });
 
         }).on('error', function () {

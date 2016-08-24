@@ -18,20 +18,26 @@ class App extends Component {
 
 
     componentDidMount() {
-
-        debugger;
-
+        
         console.log("app.js::componentDidMount invoked");
 
         this.props.loadSummaryActivities();
     }
 
+
     render() {
+
+        let athleteId = "unknown athlete";
+        if (this.props.summaryActivities && this.props.summaryActivities.length > 0) {
+            debugger;
+            athleteId = this.props.summaryActivities[0].athlete.id.toString();
+        }
 
         return (
             <MuiThemeProvider>
                 <div>
                     pizza
+                    {athleteId}
                 </div>
             </MuiThemeProvider>
         );
@@ -40,7 +46,7 @@ class App extends Component {
 
 function mapStateToProps (state) {
     return {
-        foo: state.foo
+        summaryActivities: state.summaryActivities
     }
 }
 function mapDispatchToProps(dispatch) {
