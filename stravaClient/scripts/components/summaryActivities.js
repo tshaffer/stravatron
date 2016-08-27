@@ -6,8 +6,110 @@ class SummaryActivities extends Component {
         console.log("showDetails() invoked");
     }
 
+// <tr>
+// <td>
+// <input type='checkbox'/>
+// </td>
+// <td>
+// 1/1/2016
+// </td>
+// <td>
+// Arastradero
+// </td>
+// <td>
+// 69 minutes
+// </td>
+// <td>
+// 69 miles
+// </td>
+// <td>
+// 69 feet
+// </td>
+// <td>
+// 69 mph
+// </td>
+// <td>
+// 69 calories
+// </td>
+// <td>
+// <button onClick={this.showDetails.bind(this)}>Show details</button>
+// </td>
+// </tr>
+
+    buildSummaryActivityRow(summaryActivity) {
+        
+        return (
+            // <tr key={summaryActivity.id}>
+            //     <td>herro</td>
+            //     <td>kitty</td>
+            // </tr>
+
+            <tr key={summaryActivity.id}>
+                <td>
+                    <input type='checkbox'/>
+                </td>
+                <td>
+                    1/1/2016
+                </td>
+                <td>
+                    {summaryActivity.name}
+                </td>
+                <td>
+                    69 minutes
+                </td>
+                <td>
+                    69 miles
+                </td>
+                <td>
+                    69 feet
+                </td>
+                <td>
+                    69 mph
+                </td>
+                <td>
+                    69 calories
+                </td>
+                <td>
+                    <button onClick={this.showDetails.bind(this)}>Show details</button>
+                </td>
+            </tr>
+        );
+    }
+
+    buildSummaryActivityRows() {
+
+        var self = this;
+
+        let summaryActivities = [];
+
+        const activitiesLUT = this.props.summaryActivities.summaryActivitiesById;
+        for (const key in activitiesLUT) {
+            if (activitiesLUT.hasOwnProperty(key)) {
+                summaryActivities.push(activitiesLUT[key]);
+            }
+        }
+
+        let summaryActivityRows = summaryActivities.map(function(summaryActivity) {
+            const summaryActivityRow = self.buildSummaryActivityRow(summaryActivity);
+            return summaryActivityRow;
+            // return (
+            //     {summaryActivityRow}
+            // );
+            // return (
+            //     <tr key={index}>
+            //         <td>herro</td>
+            //         <td>kitty</td>
+            //     </tr>
+            // );
+        });
+        return summaryActivityRows;
+
+    }
+
     // number of summary activities is: {Object.keys(this.props.summaryActivities.summaryActivitiesById).length}
     render() {
+
+        const summaryActivityRows = this.buildSummaryActivityRows();
 
         // number of summary activities is: {Object.keys(this.props.summaryActivities.summaryActivitiesById).length}
         return (
@@ -28,35 +130,7 @@ class SummaryActivities extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <input type='checkbox'/>
-                            </td>
-                            <td>
-                                1/1/2016
-                            </td>
-                            <td>
-                                Arastradero
-                            </td>
-                            <td>
-                                69 minutes
-                            </td>
-                            <td>
-                                69 miles
-                            </td>
-                            <td>
-                                69 feet
-                            </td>
-                            <td>
-                                69 mph
-                            </td>
-                            <td>
-                                69 calories
-                            </td>
-                            <td>
-                                <button onClick={this.showDetails.bind(this)}>Show details</button>
-                            </td>
-                        </tr>
+                        {summaryActivityRows}
                     </tbody>
                 </table>
             </div>
