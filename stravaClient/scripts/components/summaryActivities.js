@@ -4,7 +4,7 @@ import { getMovingTime } from '../utilities/converters';
 import { getDateTime } from '../utilities/converters';
 import { metersToMiles } from '../utilities/converters';
 import { metersToFeet } from '../utilities/converters';
-import { speedToMph } from '../utilities/converters';
+import { metersPerSecondToMilesPerHour } from '../utilities/converters';
 
 class SummaryActivities extends Component {
 
@@ -37,10 +37,10 @@ class SummaryActivities extends Component {
                     {metersToFeet(summaryActivity.totalElevationGain).toFixed(0)} ft
                 </td>
                 <td>
-                    {speedToMph(summaryActivity.averageSpeed).toFixed(1)} mph
+                    {metersPerSecondToMilesPerHour(summaryActivity.averageSpeed).toFixed(1)} mph
                 </td>
                 <td>
-                    {summaryActivity.kilojoules.toFixed(0)} 
+                    {summaryActivity.kilojoules.toFixed(0)}
                 </td>
                 <td>
                     <button onClick={() => self.showDetails(summaryActivity.id)}>Show details</button>
