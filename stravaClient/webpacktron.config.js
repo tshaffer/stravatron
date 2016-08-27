@@ -8,6 +8,14 @@ module.exports = {
     devtool: "source-map",
     target: 'electron',
     module: {
+        preLoaders: [
+            {
+                test: /\.jsx$|\.js$/,
+                loader: 'eslint-loader',
+                include: __dirname + '/scripts',
+                exclude: /build\.js$/
+            }
+        ],
         loaders: [{
             test: /\.jsx?$/,
             loader: 'babel-loader',

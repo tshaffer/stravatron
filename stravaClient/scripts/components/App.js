@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { loadSummaryActivities } from '../actions/index';
@@ -47,7 +47,7 @@ class App extends Component {
 function mapStateToProps (state) {
     return {
         summaryActivities: state.summaryActivities
-    }
+    };
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({loadSummaryActivities},

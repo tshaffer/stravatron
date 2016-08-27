@@ -39,7 +39,7 @@ const store = createStore(
         thunkMiddleware, // lets us dispatch() functions
         ReduxPromise
     )
-)
+);
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941

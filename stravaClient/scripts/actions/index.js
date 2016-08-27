@@ -11,7 +11,7 @@ export function addSummaryActivities(summaryActivities) {
     return {
         type: ADD_SUMMARY_ACTIVITIES,
         summaryActivities
-    }
+    };
 }
 
 
@@ -21,7 +21,7 @@ function getAthleteData() {
     let athlete = {};
     athlete.id = "2843574";
     athlete.firstName = "Ted";
-    athlete.lastName = "Shaffer"
+    athlete.lastName = "Shaffer";
     athlete.email = "shaffer_family@yahoo.com";
 
     return athlete;
@@ -322,6 +322,6 @@ export function loadSummaryActivities() {
             dispatch(addSummaryActivities(summaryActivities));
         });
 
-    }
+    };
 }
 
