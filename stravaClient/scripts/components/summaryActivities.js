@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
 
+import { getMovingTime } from '../utilities/converters';
+import { getDateTime } from '../utilities/converters';
+import { metersToMiles } from '../utilities/converters';
+import { metersToFeet } from '../utilities/converters';
+import { speedToMph } from '../utilities/converters';
+
 class SummaryActivities extends Component {
 
     showDetails(activityId) {
@@ -16,25 +22,25 @@ class SummaryActivities extends Component {
                     <input type='checkbox'/>
                 </td>
                 <td>
-                    1/1/2016
+                    {getDateTime(summaryActivity.startDateLocal)}
                 </td>
                 <td>
                     {summaryActivity.name}
                 </td>
                 <td>
-                    69 minutes
+                    {getMovingTime(summaryActivity.movingTime)}
                 </td>
                 <td>
-                    69 miles
+                    {metersToMiles(summaryActivity.distance).toFixed(1)} mi
                 </td>
                 <td>
-                    69 feet
+                    {metersToFeet(summaryActivity.totalElevationGain).toFixed(0)} ft
                 </td>
                 <td>
-                    69 mph
+                    {speedToMph(summaryActivity.averageSpeed).toFixed(1)} mph
                 </td>
                 <td>
-                    69 calories
+                    {summaryActivity.kilojoules.toFixed(0)} 
                 </td>
                 <td>
                     <button onClick={() => self.showDetails(summaryActivity.id)}>Show details</button>
@@ -42,7 +48,7 @@ class SummaryActivities extends Component {
             </tr>
         );
     }
-    
+
     buildSummaryActivityRows() {
 
         var self = this;
