@@ -2,48 +2,15 @@ import React, { Component } from 'react';
 
 class SummaryActivities extends Component {
 
-    showDetails() {
-        console.log("showDetails() invoked");
+    showDetails(activityId) {
+        console.log("showDetails() invoked for activityId ", activityId);
     }
 
-// <tr>
-// <td>
-// <input type='checkbox'/>
-// </td>
-// <td>
-// 1/1/2016
-// </td>
-// <td>
-// Arastradero
-// </td>
-// <td>
-// 69 minutes
-// </td>
-// <td>
-// 69 miles
-// </td>
-// <td>
-// 69 feet
-// </td>
-// <td>
-// 69 mph
-// </td>
-// <td>
-// 69 calories
-// </td>
-// <td>
-// <button onClick={this.showDetails.bind(this)}>Show details</button>
-// </td>
-// </tr>
-
     buildSummaryActivityRow(summaryActivity) {
-        
-        return (
-            // <tr key={summaryActivity.id}>
-            //     <td>herro</td>
-            //     <td>kitty</td>
-            // </tr>
 
+        var self = this;
+
+        return (
             <tr key={summaryActivity.id}>
                 <td>
                     <input type='checkbox'/>
@@ -70,12 +37,12 @@ class SummaryActivities extends Component {
                     69 calories
                 </td>
                 <td>
-                    <button onClick={this.showDetails.bind(this)}>Show details</button>
+                    <button onClick={() => self.showDetails(summaryActivity.id)}>Show details</button>
                 </td>
             </tr>
         );
     }
-
+    
     buildSummaryActivityRows() {
 
         var self = this;
@@ -92,15 +59,6 @@ class SummaryActivities extends Component {
         let summaryActivityRows = summaryActivities.map(function(summaryActivity) {
             const summaryActivityRow = self.buildSummaryActivityRow(summaryActivity);
             return summaryActivityRow;
-            // return (
-            //     {summaryActivityRow}
-            // );
-            // return (
-            //     <tr key={index}>
-            //         <td>herro</td>
-            //         <td>kitty</td>
-            //     </tr>
-            // );
         });
         return summaryActivityRows;
 
@@ -137,25 +95,6 @@ class SummaryActivities extends Component {
         );
     }
 }
-
-// <td>
-//     <input id='" + activityId + "' type='submit' value='Show details'/>
-// </td>
-
-// <table id="activitiesTable">
-//     <tr>
-//         <th/>
-//         <th>Date</th>
-//         <th>Name</th>
-//         <th>Riding Time</th>
-//         <th>Distance</th>
-//         <th>Elevation</th>
-//         <th>Average Speed</th>
-//         <th>Calories</th>
-//         <th/>
-//     </tr>
-//
-// </table>
 
 SummaryActivities.propTypes = {
     summaryActivities: React.PropTypes.object.isRequired
