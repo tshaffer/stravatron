@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 
-import { getMovingTime } from '../utilities/converters';
-import { getDateTime } from '../utilities/converters';
-import { metersToMiles } from '../utilities/converters';
-import { metersToFeet } from '../utilities/converters';
-import { metersPerSecondToMilesPerHour } from '../utilities/converters';
+import * as Converters from '../utilities/converters';
 
 class SummaryActivities extends Component {
 
@@ -22,22 +18,22 @@ class SummaryActivities extends Component {
                     <input type='checkbox'/>
                 </td>
                 <td>
-                    {getDateTime(summaryActivity.startDateLocal)}
+                    {Converters.getDateTime(summaryActivity.startDateLocal)}
                 </td>
                 <td>
                     {summaryActivity.name}
                 </td>
                 <td>
-                    {getMovingTime(summaryActivity.movingTime)}
+                    {Converters.getMovingTime(summaryActivity.movingTime)}
                 </td>
                 <td>
-                    {metersToMiles(summaryActivity.distance).toFixed(1)} mi
+                    {Converters.metersToMiles(summaryActivity.distance).toFixed(1)} mi
                 </td>
                 <td>
-                    {metersToFeet(summaryActivity.totalElevationGain).toFixed(0)} ft
+                    {Converters.metersToFeet(summaryActivity.totalElevationGain).toFixed(0)} ft
                 </td>
                 <td>
-                    {metersPerSecondToMilesPerHour(summaryActivity.averageSpeed).toFixed(1)} mph
+                    {Converters.metersPerSecondToMilesPerHour(summaryActivity.averageSpeed).toFixed(1)} mph
                 </td>
                 <td>
                     {summaryActivity.kilojoules.toFixed(0)}
