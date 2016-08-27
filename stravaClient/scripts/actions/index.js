@@ -177,7 +177,7 @@ function fetchStravaData(endPoint) {
                 resolve(data);
             });
 
-        }).on('error', function () {
+        }).on('error', function (err) {
             console.log('Caught exception: ' + err);
             reject(err);
         });
@@ -306,7 +306,7 @@ function fetchStravaData(endPoint) {
 
 export function loadSummaryActivities() {
 
-    return function(dispatch, getState) {
+    return function(dispatch) {
 
         console.log("actions/index.js::loadSummaryActivities invoked");
 

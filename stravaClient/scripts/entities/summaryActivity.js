@@ -1,5 +1,3 @@
-import { guid } from '../utilities/utils';
-
 export default class SummaryActivity {
     constructor(summaryActivity) {
 
