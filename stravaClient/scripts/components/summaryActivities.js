@@ -6,6 +6,7 @@ class SummaryActivities extends Component {
 
     showDetails(activityId) {
         console.log("showDetails() invoked for activityId ", activityId);
+        this.props.loadDetailedActivity(activityId);
     }
 
     buildSummaryActivityRow(summaryActivity) {
@@ -99,7 +100,8 @@ class SummaryActivities extends Component {
 }
 
 SummaryActivities.propTypes = {
-    summaryActivities: React.PropTypes.object.isRequired
+    summaryActivities: React.PropTypes.object.isRequired,
+    loadDetailedActivity: React.PropTypes.func.isRequired
 
     // activeBSEventType: React.PropTypes.string.isRequired,
     // propertySheetOpen: React.PropTypes.bool.isRequired,
@@ -109,58 +111,3 @@ SummaryActivities.propTypes = {
 };
 
 export default SummaryActivities;
-
-// from stravaVS/public/StravaStatsHome.html
-// function buildActivityRow(activity) {
-//
-//     //console.log("buildActivityRow invoked, activity is ");
-//     //console.log(activity);
-//
-//     // activityName
-//     var activityName = activity.name;
-//
-//     // athleteId
-//     var athleteId = activity.athleteId;
-//
-//     // id
-//     var activityId = activity.activityId;
-//
-//     // ride date
-//     //d = new Date(activity.start_date_local);
-//     var d = new Date(activity.startDateTime);
-//     var date = d.toLocaleString();
-//
-//     // distance
-//     var miles = activity.distance;
-//
-//     // riding time
-//     var movingTime = getMovingTime(activity.movingTime);
-//
-//     // elevation gain
-//     var elevationGain = activity.totalElevationGain;
-//
-//     // average speed (meters per second)
-//     var mph = activity.averageSpeed;
-//
-//     var calories = activity.calories;
-//
-//     //rowToAdd = '<tr><td>' + date + '</td><td>' + activity.name + '</td><td>' + movingTime + '</td><td>' + miles.toFixed(0) + ' miles</td><td>' + elevationGain + ' ft</td><td>' + mph.toFixed(1) + ' mph</td><td>' + calories + '</td><td>' + "<input id='" + activityId + "' type='submit' value='Show details'/>" + '</td></tr>';
-//     var rowToAdd = "<tr id='tr" + activityId + "'><td><input type='checkbox'/></td><td>" + date + '</td><td>' + activity.name + '</td><td>' + movingTime + '</td><td>' + miles.toFixed(0) + ' miles</td><td>' + elevationGain + ' ft</td><td>' + mph.toFixed(1) + ' mph</td><td>' + calories + '</td><td>' + "<input id='" + activityId + "' type='submit' value='Show details'/>" + '</td><td>' + "<input id='" + activityId + "-mapBuilder' type='submit' value='Map builder'/>" + '</td></tr>';
-//     $('#activitiesTable').append(rowToAdd);
-//
-//     // add button handlers for this particular activity
-//     var btnId = "#" + activityId;
-//     $(btnId).click({ activityId: activityId, athleteId: athleteId, activityName: activityName, activity: activity }, showDetailsEventHandler);
-//
-//     btnId = "#" + activityId + "-mapBuilder";
-//     $(btnId).click({ activityId: activityId, athleteId: athleteId, activityName: activityName, activity: activity }, mapBuilderInvokedEventHandler);
-// }
-//
-// function buildActivitiesTable(activities) {
-//
-//     $("#activitiesTable input").unbind("click");
-//
-//     $.each(activities, function (index, activityElement) {
-//         buildActivityRow(activityElement);
-//     });
-// }

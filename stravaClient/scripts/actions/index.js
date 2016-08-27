@@ -3,6 +3,7 @@
  */
 const https = require('https');
 
+import SegmentEffort from '../entities/segmentEffort';
 import SummaryActivity from '../entities/summaryActivity';
 
 export const ADD_SUMMARY_ACTIVITIES = 'ADD_SUMMARY_ACTIVITIES';
@@ -14,6 +15,24 @@ export function addSummaryActivities(summaryActivities) {
     };
 }
 
+export const ADD_DETAILED_ACTIVITY_ATTRIBUTES = 'ADD_DETAILED_ACTIVITY_ATTRIBUTES';
+export function addDetailedActivityAttributes(activityId, detailedActivityAttributes) {
+
+    return {
+        type: ADD_DETAILED_ACTIVITY_ATTRIBUTES,
+        activityId,
+        detailedActivityAttributes
+    };
+}
+
+export const ADD_SEGMENT_EFFORTS = 'ADD_SEGMENT_EFFORTS';
+export function addSegmentEfforts(segmentEfforts) {
+
+    return {
+        type: ADD_SEGMENT_EFFORTS,
+        segmentEfforts
+    };
+}
 
 // hardcoded for now
 function getAthleteData() {
@@ -36,66 +55,6 @@ function getResponseData() {
     return responseData;
 }
 
-// export function loadDetailedActivity(detailedActivityIdToFetchFromServer, detailedActivityIdsToFetchFromServer, idsOfActivitiesFetchedFromStrava) {
-//
-//     return function(dispatch, getState) {
-//
-//         console.log("actions/index.js::loadDetailedActivity invoked");
-//
-//         const responseData = getResponseData();
-//
-//         var options = {
-//             host: 'www.strava.com',
-//             path: '/api/v3/athlete/activities/' + detailedActivityIdToFetchFromServer.toString(),
-//             port: 443,
-//             headers: {
-//                 'Authorization': 'Bearer ' + responseData.accessToken
-//             }
-//         };
-//
-//         var str = "";
-//
-//         https.get(options, function (res) {
-//             res.on('data', function (d) {
-//                 str += d;
-//
-//             });
-//             res.on('end', function () {
-//                 // convert string from server into JSON object
-//                 var detailedActivityData = JSON.parse(str);
-//                 fetchStreamFromStrava(responseData, detailedActivityData, detailedActivityIdToFetchFromServer, detailedActivityIdsToFetchFromServer, idsOfActivitiesFetchedFromStrava);
-//             });
-//
-//         }).on('error', function () {
-//             console.log('Caught exception: ' + err);
-//         });
-//
-//         // var summaryActivitiesStr = "";
-//         //
-//         // https.get(options, function (res) {
-//         //
-//         //     res.on('data', function (d) {
-//         //         console.log("chunk received");
-//         //         summaryActivitiesStr += d;
-//         //     });
-//         //     res.on('end', function () {
-//         //         console.log("end received");
-//         //
-//         //         var summaryActivities = JSON.parse(summaryActivitiesStr);
-//         //
-//         //         console.log("summaryActivities retrieved");
-//         //
-//         //         debugger;
-//         //
-//         //         dispatch(setSummaryActivities(summaryActivities));
-//         //     });
-//         //
-//         // }).on('error', function () {
-//         //     console.log('Caught exception: ' + err);
-//         // });
-//     }
-//
-// }
 
 // function fetchStreamFromStrava(responseData, detailedActivityData, detailedActivityIdToFetchFromServer, detailedActivityIdsToFetchFromServer, idsOfActivitiesFetchedFromStrava) {
 //
@@ -158,7 +117,7 @@ function fetchStravaData(endPoint) {
 
         var options = {
             host: 'www.strava.com',
-            path: '/api/v3/athlete/' + endPoint,
+            path: '/api/v3/' + endPoint,
             port: 443,
             headers: {
                 'Authorization': 'Bearer ' + responseData.accessToken
@@ -304,13 +263,43 @@ function fetchStravaData(endPoint) {
 //
 // }
 
+export function loadDetailedActivity(activityId) {
+
+    return function(dispatch) {
+
+        console.log("actions/index.js::loadDetailedActivity invoked");
+
+        fetchStravaData("activities/" + activityId).then( (stravaDetailedActivity)=> {
+
+            debugger;
+            let segmentEfforts = [];
+
+            stravaDetailedActivity.segment_efforts.forEach( (stravaSegmentEffort) => {
+                const segmentEffort = new SegmentEffort(stravaSegmentEffort);
+                segmentEfforts.push(segmentEffort);
+
+                // extract the segment and add it to the store
+            });
+            dispatch(addSegmentEfforts(segmentEfforts));
+
+            const detailedActivityAttributes =
+                {
+                    "calories": stravaDetailedActivity.calories,
+                    "segmentEfforts": stravaDetailedActivity.segment_efforts,
+                    "map": stravaDetailedActivity.map
+                };
+            dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
+        });
+    };
+}
+
 export function loadSummaryActivities() {
 
     return function(dispatch) {
 
         console.log("actions/index.js::loadSummaryActivities invoked");
 
-        fetchStravaData("activities").then( (stravaSummaryActivities)=> {
+        fetchStravaData("athlete/activities").then( (stravaSummaryActivities)=> {
 
             let summaryActivities = [];
 

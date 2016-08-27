@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { loadSummaryActivities } from '../actions/index';
+import { loadSummaryActivities, loadDetailedActivity } from '../actions/index';
 import SummaryActivities from '../components/summaryActivities';
 
 class SummaryActivitiesContainer extends Component {
@@ -19,6 +19,7 @@ class SummaryActivitiesContainer extends Component {
             <div>
                 <SummaryActivities
                     summaryActivities={this.props.summaryActivities}
+                    loadDetailedActivity={this.props.loadDetailedActivity}
                 />
             </div>
         );
@@ -32,12 +33,13 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({loadSummaryActivities},
+    return bindActionCreators({loadSummaryActivities, loadDetailedActivity},
         dispatch);
 }
 
 SummaryActivitiesContainer.propTypes = {
     loadSummaryActivities: React.PropTypes.func.isRequired,
+    loadDetailedActivity: React.PropTypes.func.isRequired,
     summaryActivities: React.PropTypes.object.isRequired
 };
 
