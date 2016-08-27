@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { loadSummaryActivities } from '../actions/index';
+import SummaryActivities from '../components/summaryActivities';
 
-class SummaryActivities extends Component {
+class SummaryActivitiesContainer extends Component {
 
     componentWillMount() {
 
@@ -13,11 +14,12 @@ class SummaryActivities extends Component {
         this.props.loadSummaryActivities();
     }
 
-
     render() {
         return (
             <div>
-                number of summary activities is: {Object.keys(this.props.summaryActivities.summaryActivitiesById).length}
+                <SummaryActivities
+                    summaryActivities={this.props.summaryActivities}
+                />
             </div>
         );
     }
@@ -28,15 +30,16 @@ function mapStateToProps (state) {
         summaryActivities: state.summaryActivities
     };
 }
+
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({loadSummaryActivities},
         dispatch);
 }
 
-SummaryActivities.propTypes = {
+SummaryActivitiesContainer.propTypes = {
     loadSummaryActivities: React.PropTypes.func.isRequired,
     summaryActivities: React.PropTypes.object.isRequired
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(SummaryActivities);
+export default connect(mapStateToProps, mapDispatchToProps)(SummaryActivitiesContainer);

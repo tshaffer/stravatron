@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import SummaryActivities from '../containers/summaryActivities';
+import SummaryActivitiesContainer from '../containers/summaryActivitiesContainer';
 
 export default class App extends Component {
 
@@ -15,7 +15,7 @@ export default class App extends Component {
 
         return (
             <MuiThemeProvider>
-                <SummaryActivities />
+                <SummaryActivitiesContainer />
             </MuiThemeProvider>
         );
     }
