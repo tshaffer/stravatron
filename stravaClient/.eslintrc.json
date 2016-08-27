@@ -6,11 +6,12 @@
         "node": true
     },
     "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType":"module",
         "ecmaFeatures": {
-            "experimentalObjectRestSpread": true,
-            "jsx": true
-        },
-        "sourceType": "module"
+            "jsx": true,
+            "modules": true
+        }
     },
     "plugins": [
         "react"
