@@ -27,17 +27,17 @@ class App extends Component {
 
     render() {
 
-        let athleteId = "unknown athlete";
-        if (this.props.summaryActivities && this.props.summaryActivities.length > 0) {
-            debugger;
-            athleteId = this.props.summaryActivities[0].athlete.id.toString();
-        }
+        // let athleteId = "unknown athlete";
+        // if (this.props.summaryActivities && this.props.summaryActivities.length > 0) {
+        //     debugger;
+        //     athleteId = this.props.summaryActivities[0].athlete.id.toString();
+        // }
 
         return (
             <MuiThemeProvider>
                 <div>
                     pizza
-                    {athleteId}
+                    number of summary activities is: {Object.keys(this.props.summaryActivities.summaryActivitiesById).length}
                 </div>
             </MuiThemeProvider>
         );
