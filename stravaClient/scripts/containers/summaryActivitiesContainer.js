@@ -18,7 +18,7 @@ class SummaryActivitiesContainer extends Component {
         return (
             <div>
                 <SummaryActivities
-                    summaryActivities={this.props.summaryActivities}
+                    activities={this.props.activities}
                     loadDetailedActivity={this.props.loadDetailedActivity}
                 />
             </div>
@@ -28,7 +28,7 @@ class SummaryActivitiesContainer extends Component {
 
 function mapStateToProps (state) {
     return {
-        summaryActivities: state.summaryActivities
+        activities: state.activities
     };
 }
 
@@ -40,7 +40,7 @@ function mapDispatchToProps(dispatch) {
 SummaryActivitiesContainer.propTypes = {
     loadSummaryActivities: React.PropTypes.func.isRequired,
     loadDetailedActivity: React.PropTypes.func.isRequired,
-    summaryActivities: React.PropTypes.object.isRequired
+    activities: React.PropTypes.object.isRequired
 };
 
 

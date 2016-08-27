@@ -4,14 +4,14 @@
 const https = require('https');
 
 import SegmentEffort from '../entities/segmentEffort';
-import SummaryActivity from '../entities/summaryActivity';
+import Activity from '../entities/activity';
 
-export const ADD_SUMMARY_ACTIVITIES = 'ADD_SUMMARY_ACTIVITIES';
-export function addSummaryActivities(summaryActivities) {
+export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
+export function addActivities(activities) {
 
     return {
-        type: ADD_SUMMARY_ACTIVITIES,
-        summaryActivities
+        type: ADD_ACTIVITIES,
+        activities
     };
 }
 
@@ -271,7 +271,6 @@ export function loadDetailedActivity(activityId) {
 
         fetchStravaData("activities/" + activityId).then( (stravaDetailedActivity)=> {
 
-            debugger;
             let segmentEfforts = [];
 
             stravaDetailedActivity.segment_efforts.forEach( (stravaSegmentEffort) => {
@@ -301,16 +300,15 @@ export function loadSummaryActivities() {
 
         fetchStravaData("athlete/activities").then( (stravaSummaryActivities)=> {
 
-            let summaryActivities = [];
+            let activities = [];
 
-            stravaSummaryActivities.forEach( (stravaSummaryActivity) => {
-                const summaryActivity = new SummaryActivity(stravaSummaryActivity);
-                summaryActivities.push(summaryActivity);
+            stravaSummaryActivities.forEach( (stravaActivity) => {
+                const summaryActivity = new Activity(stravaActivity);
+                activities.push(summaryActivity);
             });
 
-            dispatch(addSummaryActivities(summaryActivities));
+            dispatch(addActivities(activities));
         });
-
     };
 }
 

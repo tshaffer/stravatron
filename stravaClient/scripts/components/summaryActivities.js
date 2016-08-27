@@ -9,38 +9,38 @@ class SummaryActivities extends Component {
         this.props.loadDetailedActivity(activityId);
     }
 
-    buildSummaryActivityRow(summaryActivity) {
+    buildSummaryActivityRow(activity) {
 
         var self = this;
 
         return (
-            <tr key={summaryActivity.id}>
+            <tr key={activity.id}>
                 <td>
                     <input type='checkbox'/>
                 </td>
                 <td>
-                    {Converters.getDateTime(summaryActivity.startDateLocal)}
+                    {Converters.getDateTime(activity.startDateLocal)}
                 </td>
                 <td>
-                    {summaryActivity.name}
+                    {activity.name}
                 </td>
                 <td>
-                    {Converters.getMovingTime(summaryActivity.movingTime)}
+                    {Converters.getMovingTime(activity.movingTime)}
                 </td>
                 <td>
-                    {Converters.metersToMiles(summaryActivity.distance).toFixed(1)} mi
+                    {Converters.metersToMiles(activity.distance).toFixed(1)} mi
                 </td>
                 <td>
-                    {Converters.metersToFeet(summaryActivity.totalElevationGain).toFixed(0)} ft
+                    {Converters.metersToFeet(activity.totalElevationGain).toFixed(0)} ft
                 </td>
                 <td>
-                    {Converters.metersPerSecondToMilesPerHour(summaryActivity.averageSpeed).toFixed(1)} mph
+                    {Converters.metersPerSecondToMilesPerHour(activity.averageSpeed).toFixed(1)} mph
                 </td>
                 <td>
-                    {summaryActivity.kilojoules.toFixed(0)}
+                    {activity.kilojoules.toFixed(0)}
                 </td>
                 <td>
-                    <button onClick={() => self.showDetails(summaryActivity.id)}>Show details</button>
+                    <button onClick={() => self.showDetails(activity.id)}>Show details</button>
                 </td>
             </tr>
         );
@@ -50,29 +50,27 @@ class SummaryActivities extends Component {
 
         var self = this;
 
-        let summaryActivities = [];
+        let activities = [];
 
-        const activitiesLUT = this.props.summaryActivities.summaryActivitiesById;
+        const activitiesLUT = this.props.activities.activitiesById;
         for (const key in activitiesLUT) {
             if (activitiesLUT.hasOwnProperty(key)) {
-                summaryActivities.push(activitiesLUT[key]);
+                activities.push(activitiesLUT[key]);
             }
         }
 
-        let summaryActivityRows = summaryActivities.map(function(summaryActivity) {
-            const summaryActivityRow = self.buildSummaryActivityRow(summaryActivity);
+        let summaryActivityRows = activities.map(function(activity) {
+            const summaryActivityRow = self.buildSummaryActivityRow(activity);
             return summaryActivityRow;
         });
         return summaryActivityRows;
 
     }
 
-    // number of summary activities is: {Object.keys(this.props.summaryActivities.summaryActivitiesById).length}
     render() {
 
         const summaryActivityRows = this.buildSummaryActivityRows();
 
-        // number of summary activities is: {Object.keys(this.props.summaryActivities.summaryActivitiesById).length}
         return (
             <div id="SummaryActivities">
                 <button type="button" id="btnCompareSelectedRides">Compare selected rides</button>
@@ -100,14 +98,8 @@ class SummaryActivities extends Component {
 }
 
 SummaryActivities.propTypes = {
-    summaryActivities: React.PropTypes.object.isRequired,
+    activities: React.PropTypes.object.isRequired,
     loadDetailedActivity: React.PropTypes.func.isRequired
-
-    // activeBSEventType: React.PropTypes.string.isRequired,
-    // propertySheetOpen: React.PropTypes.bool.isRequired,
-    // onSelectTimeoutEvent: React.PropTypes.func.isRequired,
-    // onSelectMediaEndEvent: React.PropTypes.func.isRequired,
-    // onToggleOpenClosePropertySheet: React.PropTypes.func.isRequired
 };
 
 export default SummaryActivities;
