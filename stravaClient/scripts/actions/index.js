@@ -3,6 +3,8 @@
  */
 var https = require('https');
 
+import SummaryActivity from '../entities/summaryActivity';
+
 export const SET_SUMMARY_ACTIVITIES = 'SET_SUMMARY_ACTIVITIES';
 export function setSummaryActivities(summaryActivities) {
 
@@ -13,15 +15,23 @@ export function setSummaryActivities(summaryActivities) {
 }
 
 
+// hardcoded for now
+function getAthleteData() {
+    
+    let athlete = {};
+    athlete.id = "2843574";
+    athlete.firstName = "Ted";
+    athlete.lastName = "Shaffer"
+    athlete.email = "shaffer_family@yahoo.com";
+
+    return athlete;
+}
+
 function getResponseData() {
 
     let responseData = {};
     responseData.accessToken = "fb8085cc4c7f3633533e875eae3dc1e04cef06e8";
-    responseData.athlete = {};
-    responseData.athlete.id = "2843574";
-    responseData.athlete.firstName = "Ted";
-    responseData.athlete.lastName = "Shaffer"
-    responseData.athlete.email = "shaffer_family@yahoo.com";
+    responseData.athlete = getAthleteData();
 
     return responseData;
 }
@@ -138,6 +148,42 @@ function fetchStreamFromStrava(responseData, detailedActivityData, detailedActiv
     });
 }
 
+function fetchStravaData(endPoint) {
+
+    console.log("actions/index.js::fetchStravaData from " + endPoint);
+
+    return new Promise(function (resolve, reject) {
+
+        const responseData = getResponseData();
+
+        var options = {
+            host: 'www.strava.com',
+            path: '/api/v3/athlete/' + endPoint,
+            port: 443,
+            headers: {
+                'Authorization': 'Bearer ' + responseData.accessToken
+            }
+        };
+
+        var str = "";
+
+        https.get(options, function (res) {
+            res.on('data', function (d) {
+                str += d;
+            });
+            res.on('end', function () {
+                var data = JSON.parse(str);
+                console.log("strava data retrieved from " + endPoint);
+                resolve(data);
+            });
+
+        }).on('error', function () {
+            console.log('Caught exception: ' + err);
+            reject(err);
+        });
+    });
+}
+
 function listRoutes() {
 
     // GET https://www.strava.com/api/v3/athletes/:id/routes
@@ -179,6 +225,8 @@ function listRoutes() {
 }
 function loadRoute() {
 
+    // GET https://www.strava.com/api/v3/routes/:routeid
+
     console.log("actions/index.js::loadRoute invoked");
 
     const responseData = getResponseData();
@@ -215,7 +263,6 @@ function loadRoute() {
     });
 
 }
-
 function loadRouteStream() {
 
     // GET https://www.strava.com/api/v3/routes/:id/streams
@@ -261,6 +308,19 @@ export function loadSummaryActivities() {
     return function(dispatch, getState) {
 
         console.log("actions/index.js::loadSummaryActivities invoked");
+
+        fetchStravaData("activities").then( (summaryActivities)=> {
+
+            summaryActivities.forEach( (stravaSummaryActivity) => {
+                debugger;
+                const summaryActivity = new SummaryActivity(stravaSummaryActivity);
+                // dispatch to create summary activity in store
+            });
+
+            debugger;
+        });
+
+return;
 
         const responseData = getResponseData();
 
