@@ -33,4 +33,10 @@ function mapDispatchToProps(dispatch) {
         dispatch);
 }
 
+SummaryActivities.propTypes = {
+    loadSummaryActivities: React.PropTypes.func.isRequired,
+    summaryActivities: React.PropTypes.object.isRequired
+};
+
+
 export default connect(mapStateToProps, mapDispatchToProps)(SummaryActivities);

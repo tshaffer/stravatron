@@ -13,8 +13,7 @@ export default function(state = initialState, action) {
 
     switch (action.type) {
 
-        case ADD_SUMMARY_ACTIVITIES:
-
+        case ADD_SUMMARY_ACTIVITIES: {
             newSummaryActivitiesById = Object.assign( {}, state.summaryActivitiesById);
 
             const summaryActivities = action.summaryActivities;
@@ -26,6 +25,8 @@ export default function(state = initialState, action) {
                 summaryActivitiesById: newSummaryActivitiesById
             };
             return newState;
+        }
+
     }
 
     return state;
