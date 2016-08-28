@@ -276,7 +276,7 @@ function fetchStravaData(endPoint) {
 
 export function loadDetailedActivity(activityId) {
 
-    return function(dispatch, getState) {
+    return function(dispatch) {
 
         console.log("actions/index.js::loadDetailedActivity invoked");
 
@@ -284,8 +284,6 @@ export function loadDetailedActivity(activityId) {
 
             let segments = [];
             let segmentEfforts = [];
-
-            debugger;
 
             stravaDetailedActivity.segment_efforts.forEach( (stravaSegmentEffort) => {
 
@@ -295,8 +293,6 @@ export function loadDetailedActivity(activityId) {
                 const segmentEffort = new SegmentEffort(stravaSegmentEffort);
                 segmentEfforts.push(segmentEffort);
             });
-
-            debugger;
 
             dispatch(addSegments(segments));
             dispatch(addSegmentEfforts(segmentEfforts));
@@ -308,10 +304,6 @@ export function loadDetailedActivity(activityId) {
                     "map": stravaDetailedActivity.map
                 };
             dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
-
-            debugger;
-
-            const finalState = getState();
         });
     };
 }
