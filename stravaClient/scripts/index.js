@@ -15,6 +15,7 @@ import { Route } from 'react-router';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import App from './components/app';
+import DetailedActivity from './components/detailedActivity';
 
 const store = createStore(
     reducers,
@@ -32,6 +33,7 @@ ReactDOM.render(
     <Provider store={store}>
         <Router history={hashHistory}>
             <Route path="/" component={App} />
+            <Route path="/detailedActivity/:id" component={DetailedActivity} />
         </Router>
     </Provider>
     , document.getElementById('content'));

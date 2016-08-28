@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 
+import { hashHistory } from 'react-router';
+
 import * as Converters from '../utilities/converters';
 
 class SummaryActivities extends Component {
 
     showDetails(activityId) {
         console.log("showDetails() invoked for activityId ", activityId);
-        this.props.loadDetailedActivity(activityId);
+
+        // let photoSpec = photo.url.split("/").join("^");
+        // photoSpec += "|" + "O=" + photo.orientation.toString();
+
+        hashHistory.push('/detailedActivity/' + activityId);
+
     }
 
     buildSummaryActivityRow(activity) {
