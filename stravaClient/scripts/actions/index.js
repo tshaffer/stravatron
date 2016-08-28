@@ -3,6 +3,7 @@
  */
 const https = require('https');
 
+import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
 
@@ -24,6 +25,16 @@ export function addDetailedActivityAttributes(activityId, detailedActivityAttrib
         detailedActivityAttributes
     };
 }
+
+export const ADD_SEGMENTS = 'ADD_SEGMENTS';
+export function addSegments(segments) {
+
+    return {
+        type: ADD_SEGMENTS,
+        segments
+    };
+}
+
 
 export const ADD_SEGMENT_EFFORTS = 'ADD_SEGMENT_EFFORTS';
 export function addSegmentEfforts(segmentEfforts) {
@@ -265,20 +276,29 @@ function fetchStravaData(endPoint) {
 
 export function loadDetailedActivity(activityId) {
 
-    return function(dispatch) {
+    return function(dispatch, getState) {
 
         console.log("actions/index.js::loadDetailedActivity invoked");
 
         fetchStravaData("activities/" + activityId).then( (stravaDetailedActivity)=> {
 
+            let segments = [];
             let segmentEfforts = [];
 
+            debugger;
+
             stravaDetailedActivity.segment_efforts.forEach( (stravaSegmentEffort) => {
+
+                const segment = new Segment(stravaSegmentEffort.segment);
+                segments.push(segment);
+
                 const segmentEffort = new SegmentEffort(stravaSegmentEffort);
                 segmentEfforts.push(segmentEffort);
-
-                // extract the segment and add it to the store
             });
+
+            debugger;
+
+            dispatch(addSegments(segments));
             dispatch(addSegmentEfforts(segmentEfforts));
 
             const detailedActivityAttributes =
@@ -288,6 +308,10 @@ export function loadDetailedActivity(activityId) {
                     "map": stravaDetailedActivity.map
                 };
             dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
+
+            debugger;
+
+            const finalState = getState();
         });
     };
 }
