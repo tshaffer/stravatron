@@ -64,17 +64,6 @@ class DetailedActivity extends Component {
     //     }
     //     var uniqueSegmentId = segmentId + segmentEffortOccurrenceCount[segmentId].toString();
     //     var segmentEffortId = detailedEffort.segmentEffortId;
-    //     // name
-    //     var segmentEffortName = detailedEffort.segmentEffortName;
-    //     // time
-    //     var movingTime = getMovingTime(detailedEffort.movingTime);
-    //     // distance
-    //     var distanceInMiles = detailedEffort.segmentEffortDistance;
-    //     // speed
-    //     var speed = detailedEffort.segmentEffortDistance / (detailedEffort.movingTime / 3600);
-    //     detailedEffort.speed = speed;
-    //     // average grade
-    //     var averageGrade = detailedEffort.averageGrade;
     //     // elevation gain
     //     var elevationGain = detailedEffort.totalElevationGain;
     //     rowToAdd = "<tr><td>" + segmentEffortName + "</td><td>" + movingTime + "</td><td>" + distanceInMiles.toFixed(1) + " mi</td><td>" + speed.toFixed(1) + " mph</td><td>" + averageGrade + "%</td><td>" + elevationGain.toFixed(0) + " ft</td><td>" + "<input id='" + uniqueSegmentId + "' type='submit' value='Show friends'/>" + '</td><td>' + "<input id='" + uniqueSegmentId + "MyEfforts" + "' type='submit' value='My efforts'/>" + '</td></tr>';
@@ -90,17 +79,20 @@ class DetailedActivity extends Component {
 
     buildSegmentEffortRow(segmentEffort) {
 
-        // <th>Name</th>
-        // <th>Time</th>
-        // <th>Distance</th>
-        // <th>Speed</th>
-        // <th>Average Grade</th>
-        // <th>Elevation Gain</th>
-
         const segmentId = segmentEffort.segmentId;
         const segment = this.props.segments.segmentsById[segmentId];
 
         const speed = segmentEffort.distance / segmentEffort.movingTime;
+
+        let averageGrade = "";
+        if (segment && segment.averageGrade) {
+            averageGrade = segment.averageGrade.toFixed(1) + '%';
+        }
+
+        let totalElevationGain = "";
+        if (segment && segment.totalElevationGain) {
+            totalElevationGain = Converters.metersToFeet(segment.totalElevationGain) + "'";
+        }
 
         return (
             <tr key={segmentEffort.id}>
@@ -118,16 +110,14 @@ class DetailedActivity extends Component {
 
                 </td>
                 <td>
-                    {segment.averageGrade.toFixed(1)}%
+                    {averageGrade}
                 </td>
                 <td>
-                    6900'
+                    {totalElevationGain}
                 </td>
             </tr>
         );
-
     }
-
 
     buildSegmentEffortRows(segmentEffortIds) {
 
@@ -149,7 +139,6 @@ class DetailedActivity extends Component {
         });
         return segmentEffortRows;
     }
-
 
     buildSegmentEffortsTable(activity) {
 
@@ -179,21 +168,6 @@ class DetailedActivity extends Component {
             </div>
 
         );
-
-
-// debugger;
-//
-//         activity.segmentEffortIds.forEach( (segmentEffortId) => {
-//
-//             const segmentEffort = this.props.segmentEffortsById[segmentEffortId];
-//
-//         });
-//
-//         return (
-//             <div>
-//                 Segment efforts go here for {activity.name}
-//             </div>
-//         );
     }
 
     render () {
@@ -219,10 +193,6 @@ class DetailedActivity extends Component {
 
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);
         const segmentEffortsTable = this.buildSegmentEffortsTable(activity);
-
-        // Detailed activity for {activity.name}
-        // <br/>
-        // Number of segment efforts = {activity.segmentEffortIds.length}
 
         return (
             <div>

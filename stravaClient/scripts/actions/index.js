@@ -154,125 +154,42 @@ function fetchStravaData(endPoint) {
     });
 }
 
-// function listRoutes() {
-//
-//     // GET https://www.strava.com/api/v3/athletes/:id/routes
-//     console.log("actions/index.js::listRoutes invoked");
-//
-//     const responseData = getResponseData();
-//
-//     var options = {
-//         host: 'www.strava.com',
-//         path: '/api/v3/athletes/2843574/routes',
-//         port: 443,
-//         headers: {
-//             'Authorization': 'Bearer ' + responseData.accessToken
-//         }
-//     };
-//
-//     var routeListStr = "";
-//
-//     https.get(options, function (res) {
-//
-//         res.on('data', function (d) {
-//             console.log("chunk received");
-//             routeListStr += d;
-//         });
-//         res.on('end', function () {
-//             console.log("end received");
-//
-//             var routeList = JSON.parse(routeListStr);
-//
-//             console.log("routeList retrieved");
-//
-//             debugger;
-//         });
-//
-//     }).on('error', function () {
-//         console.log('Caught exception: ' + err);
-//     });
-//
-// }
-// function loadRoute() {
-//
-//     // GET https://www.strava.com/api/v3/routes/:routeid
-//
-//     console.log("actions/index.js::loadRoute invoked");
-//
-//     const responseData = getResponseData();
-//
-//     var options = {
-//         host: 'www.strava.com',
-//         path: '/api/v3/routes/6288858',
-//         port: 443,
-//         headers: {
-//             'Authorization': 'Bearer ' + responseData.accessToken
-//         }
-//     };
-//
-//     var routeStr = "";
-//
-//     https.get(options, function (res) {
-//
-//         res.on('data', function (d) {
-//             console.log("chunk received");
-//             routeStr += d;
-//         });
-//         res.on('end', function () {
-//             console.log("end received");
-//
-//             var route = JSON.parse(routeStr);
-//
-//             console.log("route retrieved");
-//
-//             debugger;
-//         });
-//
-//     }).on('error', function () {
-//         console.log('Caught exception: ' + err);
-//     });
-//
-// }
-// function loadRouteStream() {
-//
-//     // GET https://www.strava.com/api/v3/routes/:id/streams
-//     console.log("actions/index.js::loadRouteStream invoked");
-//
-//     const responseData = getResponseData();
-//
-//     var options = {
-//         host: 'www.strava.com',
-//         path: '/api/v3/routes/6288858/streams',
-//         port: 443,
-//         headers: {
-//             'Authorization': 'Bearer ' + responseData.accessToken
-//         }
-//     };
-//
-//     var streamsStr = "";
-//
-//     https.get(options, function (res) {
-//
-//         res.on('data', function (d) {
-//             console.log("chunk received");
-//             streamsStr += d;
-//         });
-//         res.on('end', function () {
-//             console.log("end received");
-//
-//             var streams = JSON.parse(streamsStr);
-//
-//             console.log("streams retrieved");
-//
-//             debugger;
-//         });
-//
-//     }).on('error', function () {
-//         console.log('Caught exception: ' + err);
-//     });
-//
-//
-// }
+export function loadSegment(segmentId) {
+
+    return function(dispatch) {
+
+        console.log("actions/index.js::loadSegment invoked: ", segmentId);
+
+        // fetchStravaData("segments/" + segmentId).then( (stravaDetailedSegment)=> {
+        //
+        //     debugger;
+        //
+        //     let segments = [];
+        //     let segmentEfforts = [];
+        //
+        //     stravaDetailedActivity.segment_efforts.forEach( (stravaSegmentEffort) => {
+        //
+        //         const segment = new Segment(stravaSegmentEffort.segment);
+        //         segments.push(segment);
+        //
+        //         const segmentEffort = new SegmentEffort(stravaSegmentEffort);
+        //         segmentEfforts.push(segmentEffort);
+        //     });
+        //
+        //     dispatch(addSegments(segments));
+        //     dispatch(addSegmentEfforts(segmentEfforts));
+        //
+        //     const detailedActivityAttributes =
+        //     {
+        //         "calories": stravaDetailedActivity.calories,
+        //         "segmentEfforts": stravaDetailedActivity.segment_efforts,
+        //         "map": stravaDetailedActivity.map
+        //     };
+        //     dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
+        // });
+    };
+
+}
 
 export function loadDetailedActivity(activityId) {
 
@@ -282,24 +199,30 @@ export function loadDetailedActivity(activityId) {
 
         fetchStravaData("activities/" + activityId).then( (stravaDetailedActivity)=> {
 
-            debugger;
-
             let segments = [];
+            let segmentIds = [];
             let segmentEfforts = [];
 
             stravaDetailedActivity.segment_efforts.forEach( (stravaSegmentEffort) => {
 
-                debugger;
-                
                 const segment = new Segment(stravaSegmentEffort.segment);
                 segments.push(segment);
+
+                segmentIds.push(stravaSegmentEffort.segment.id);
 
                 const segmentEffort = new SegmentEffort(stravaSegmentEffort);
                 segmentEfforts.push(segmentEffort);
             });
 
-            dispatch(addSegments(segments));
             dispatch(addSegmentEfforts(segmentEfforts));
+
+            // at this point, we have a list of segmentIds for this activity
+            // next, fetch all the detailed segments. what is the best way to do that?
+            dispatch(addSegments(segments));
+            // a few options
+            //      invoke loadSegment for each segmentId; get back a promise. do a Promise.all, then perform dispatch on all
+            //      invoke loadSegment one at a time; when one finishes, invoke the next one. perform dispatch when they are all complete.
+            //      use the segment summary objects, then fill in the detailed data later.
 
             const detailedActivityAttributes =
                 {
