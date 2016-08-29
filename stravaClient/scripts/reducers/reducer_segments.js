@@ -21,7 +21,7 @@ export default function(state = initialState, action) {
             });
 
             newState = {
-                segmentById: newSegmentsById
+                segmentsById: newSegmentsById
             };
             return newState;
         }

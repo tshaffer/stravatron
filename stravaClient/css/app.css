@@ -15,8 +15,8 @@ th,td
 }
 
 #RideSummary {
-    position: absolute;
-    top: 0px;
+    /*position: absolute;*/
+    /*top: 32px;*/
     width: 1800px;
     height: 55px;
     /*display: none;*/

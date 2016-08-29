@@ -282,11 +282,15 @@ export function loadDetailedActivity(activityId) {
 
         fetchStravaData("activities/" + activityId).then( (stravaDetailedActivity)=> {
 
+            debugger;
+
             let segments = [];
             let segmentEfforts = [];
 
             stravaDetailedActivity.segment_efforts.forEach( (stravaSegmentEffort) => {
 
+                debugger;
+                
                 const segment = new Segment(stravaSegmentEffort.segment);
                 segments.push(segment);
 

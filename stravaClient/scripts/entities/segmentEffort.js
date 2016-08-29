@@ -14,10 +14,10 @@ export default class SegmentEffort {
         this.startDate = segmentEffort.start_date;
         this.startDateLocal = segmentEffort.start_date_local;
         this.startIndex = segmentEffort.start_index;
-        this.startLatitude = segmentEffort.start_latitude;
-        this.startLongitude = segmentEffort.start_longitude;
-        this.timezone = segmentEffort.timezone;
-        this.totalElevationGain = segmentEffort.total_elevation_gain;
-        this.totalPhotoCount = segmentEffort.total_photo_count;
+        // this.startLatitude = segmentEffort.start_latitude;
+        // this.startLongitude = segmentEffort.start_longitude;
+        // this.timezone = segmentEffort.timezone;
+        // this.totalElevationGain = segmentEffort.total_elevation_gain;
+        // this.totalPhotoCount = segmentEffort.total_photo_count;
     }
 }

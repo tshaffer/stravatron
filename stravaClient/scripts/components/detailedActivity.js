@@ -20,6 +20,10 @@ class DetailedActivity extends Component {
 
     buildRideSummaryHeader(activity) {
 
+        if (!activity) {
+            return <div>pizza</div>;
+        }
+
         return (
             <div id="RideSummary">
                 <table className="summaryTable">
@@ -50,6 +54,148 @@ class DetailedActivity extends Component {
         );
     }
 
+    // {/*function buildSegmentEffortsRow(detailedEffort) {*/}
+    //     {/*var segmentId = detailedEffort.segmentId;*/}
+    //     {/*if (segmentId in segmentEffortOccurrenceCount) {*/}
+    //         {/*segmentEffortOccurrenceCount[segmentId] = segmentEffortOccurrenceCount[segmentId] + 1;*/}
+    //     {/*}*/}
+    //     {/*else {*/}
+    //         {/*segmentEffortOccurrenceCount[segmentId] = 0;*/}
+    //     }
+    //     var uniqueSegmentId = segmentId + segmentEffortOccurrenceCount[segmentId].toString();
+    //     var segmentEffortId = detailedEffort.segmentEffortId;
+    //     // name
+    //     var segmentEffortName = detailedEffort.segmentEffortName;
+    //     // time
+    //     var movingTime = getMovingTime(detailedEffort.movingTime);
+    //     // distance
+    //     var distanceInMiles = detailedEffort.segmentEffortDistance;
+    //     // speed
+    //     var speed = detailedEffort.segmentEffortDistance / (detailedEffort.movingTime / 3600);
+    //     detailedEffort.speed = speed;
+    //     // average grade
+    //     var averageGrade = detailedEffort.averageGrade;
+    //     // elevation gain
+    //     var elevationGain = detailedEffort.totalElevationGain;
+    //     rowToAdd = "<tr><td>" + segmentEffortName + "</td><td>" + movingTime + "</td><td>" + distanceInMiles.toFixed(1) + " mi</td><td>" + speed.toFixed(1) + " mph</td><td>" + averageGrade + "%</td><td>" + elevationGain.toFixed(0) + " ft</td><td>" + "<input id='" + uniqueSegmentId + "' type='submit' value='Show friends'/>" + '</td><td>' + "<input id='" + uniqueSegmentId + "MyEfforts" + "' type='submit' value='My efforts'/>" + '</td></tr>';
+    //     $('#DetailedActivityTable').append(rowToAdd);
+    //
+    //     // add button handler to show friends' result for this segment
+    //     btnId = "#" + uniqueSegmentId;
+    //     $(btnId).click({ segment: detailedEffort }, showFriendsResults);
+    //
+    //     // add button handler to show my results for this segment
+    //     btnId = "#" + uniqueSegmentId + "MyEfforts";
+    //     $(btnId).click({ id: segmentId, name: segmentEffortName, segment: detailedEffort }, showMyEfforts);
+
+    buildSegmentEffortRow(segmentEffort) {
+
+        // <th>Name</th>
+        // <th>Time</th>
+        // <th>Distance</th>
+        // <th>Speed</th>
+        // <th>Average Grade</th>
+        // <th>Elevation Gain</th>
+
+        const segmentId = segmentEffort.segmentId;
+        const segment = this.props.segments.segmentsById[segmentId];
+
+        const speed = segmentEffort.distance / segmentEffort.movingTime;
+
+        return (
+            <tr key={segmentEffort.id}>
+                <td>
+                    {segmentEffort.name}
+                </td>
+                <td>
+                    {Converters.getMovingTime(segmentEffort.movingTime)}
+                </td>
+                <td>
+                    {Converters.metersToMiles(segmentEffort.distance).toFixed(1)} mi
+                </td>
+                <td>
+                    {Converters.metersPerSecondToMilesPerHour(speed).toFixed(1)} mph
+
+                </td>
+                <td>
+                    {segment.averageGrade.toFixed(1)}%
+                </td>
+                <td>
+                    6900'
+                </td>
+            </tr>
+        );
+
+    }
+
+
+    buildSegmentEffortRows(segmentEffortIds) {
+
+        const self = this;
+
+        let segmentEffort = null;
+        let segmentEfforts = [];
+
+        segmentEffortIds.forEach( (segmentEffortId) => {
+
+            segmentEffort = this.props.segmentEfforts.segmentEffortsById[segmentEffortId];
+            segmentEfforts.push(segmentEffort);
+            this.buildSegmentEffortRow(segmentEffort);
+        });
+
+        let segmentEffortRows = segmentEfforts.map(function(segmentEffort) {
+            const segmentEffortRow = self.buildSegmentEffortRow(segmentEffort);
+            return segmentEffortRow;
+        });
+        return segmentEffortRows;
+    }
+
+
+    buildSegmentEffortsTable(activity) {
+
+        console.log("segment effforts for activity", activity.name);
+
+
+        const segmentEffortRows = this.buildSegmentEffortRows(activity.segmentEffortIds);
+
+        return (
+
+            <div id="DetailedActivity" className="detailsActivity">
+                <table id="DetailedActivityTable" className="detailsActivityTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Time</th>
+                            <th>Distance</th>
+                            <th>Speed</th>
+                            <th>Average Grade</th>
+                            <th>Elevation Gain</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {segmentEffortRows}
+                    </tbody>
+                </table>
+            </div>
+
+        );
+
+
+// debugger;
+//
+//         activity.segmentEffortIds.forEach( (segmentEffortId) => {
+//
+//             const segmentEffort = this.props.segmentEffortsById[segmentEffortId];
+//
+//         });
+//
+//         return (
+//             <div>
+//                 Segment efforts go here for {activity.name}
+//             </div>
+//         );
+    }
+
     render () {
 
         const activityId = this.props.params.id;
@@ -72,6 +218,7 @@ class DetailedActivity extends Component {
         }
 
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);
+        const segmentEffortsTable = this.buildSegmentEffortsTable(activity);
 
         // Detailed activity for {activity.name}
         // <br/>
@@ -82,6 +229,7 @@ class DetailedActivity extends Component {
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
                 {rideSummaryHeader}
+                {segmentEffortsTable}
             </div>
         );
     }
@@ -89,7 +237,9 @@ class DetailedActivity extends Component {
 
 function mapStateToProps (state) {
     return {
-        activities: state.activities
+        activities: state.activities,
+        segments: state.segments,
+        segmentEfforts: state.segmentEfforts
     };
 }
 
@@ -103,7 +253,9 @@ function mapDispatchToProps(dispatch) {
 DetailedActivity.propTypes = {
     activities: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
-    loadDetailedActivity: React.PropTypes.func.isRequired
+    loadDetailedActivity: React.PropTypes.func.isRequired,
+    segments: React.PropTypes.object.isRequired,
+    segmentEfforts: React.PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailedActivity);
