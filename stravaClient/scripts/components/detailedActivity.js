@@ -91,7 +91,7 @@ class DetailedActivity extends Component {
 
         let totalElevationGain = "";
         if (segment && segment.totalElevationGain) {
-            totalElevationGain = Converters.metersToFeet(segment.totalElevationGain) + "'";
+            totalElevationGain = Converters.metersToFeet(segment.totalElevationGain).toFixed(0) + "ft";
         }
 
         return (

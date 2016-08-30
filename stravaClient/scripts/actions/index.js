@@ -152,7 +152,6 @@ function fetchStravaData(endPoint) {
             });
             res.on('end', function () {
                 var data = JSON.parse(str);
-                console.log("strava data retrieved from " + endPoint);
                 resolve(data);
             });
 
@@ -161,42 +160,6 @@ function fetchStravaData(endPoint) {
             reject(err);
         });
     });
-}
-
-export function loadSegment(segmentId) {
-
-    return function(dispatch) {
-
-        console.log("actions/index.js::loadSegment invoked: ", segmentId);
-
-        // fetchStravaData("segments/" + segmentId).then( (stravaDetailedSegment)=> {
-        //
-        //     debugger;
-        //
-        //     let segments = [];
-        //     let segmentEfforts = [];
-        //
-        //     stravaDetailedActivity.segment_efforts.forEach( (stravaSegmentEffort) => {
-        //
-        //         const segment = new Segment(stravaSegmentEffort.segment);
-        //         segments.push(segment);
-        //
-        //         const segmentEffort = new SegmentEffort(stravaSegmentEffort);
-        //         segmentEfforts.push(segmentEffort);
-        //     });
-        //
-        //     dispatch(addSegments(segments));
-        //     dispatch(addSegmentEfforts(segmentEfforts));
-        //
-        //     const detailedActivityAttributes =
-        //     {
-        //         "calories": stravaDetailedActivity.calories,
-        //         "segmentEfforts": stravaDetailedActivity.segment_efforts,
-        //         "map": stravaDetailedActivity.map
-        //     };
-        //     dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
-        // });
-    };
 }
 
 function fetchSegment(segmentId) {
@@ -262,7 +225,6 @@ export function loadDetailedActivity(activityId) {
             let detailedSegmentsAttributes = [];
 
             Promise.all(fetchSegmentPromises).then(segments => {
-                debugger;
 
                 segments.forEach(segment => {
                     detailedSegmentsAttributes.push(
