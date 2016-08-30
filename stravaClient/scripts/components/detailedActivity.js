@@ -128,9 +128,12 @@ class DetailedActivity extends Component {
 
         segmentEffortIds.forEach( (segmentEffortId) => {
 
-            segmentEffort = this.props.segmentEfforts.segmentEffortsById[segmentEffortId];
-            segmentEfforts.push(segmentEffort);
-            this.buildSegmentEffortRow(segmentEffort);
+            segmentEffort = self.props.segmentEfforts.segmentEffortsById[segmentEffortId];
+
+            if (segmentEffort) {
+                segmentEfforts.push(segmentEffort);
+                self.buildSegmentEffortRow(segmentEffort);
+            }
         });
 
         let segmentEffortRows = segmentEfforts.map(function(segmentEffort) {

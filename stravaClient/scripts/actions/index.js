@@ -35,6 +35,15 @@ export function addSegments(segments) {
     };
 }
 
+export const ADD_DETAILED_SEGMENT_ATTRIBUTES = 'ADD_DETAILED_SEGMENT_ATTRIBUTES';
+export function addDetailedSegmentAttributes(detailedSegmentsAttributes) {
+
+    return {
+        type: ADD_DETAILED_SEGMENT_ATTRIBUTES,
+        detailedSegmentsAttributes
+    };
+}
+
 
 export const ADD_SEGMENT_EFFORTS = 'ADD_SEGMENT_EFFORTS';
 export function addSegmentEfforts(segmentEfforts) {
@@ -188,7 +197,18 @@ export function loadSegment(segmentId) {
         //     dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
         // });
     };
+}
 
+function fetchSegment(segmentId) {
+
+    return new Promise((resolve, reject) => {
+
+        console.log("actions/index.js::fetchSegment invoked: ", segmentId);
+
+        fetchStravaData("segments/" + segmentId).then( (stravaDetailedSegment)=> {
+            resolve(stravaDetailedSegment);
+        });
+    });
 }
 
 export function loadDetailedActivity(activityId) {
@@ -198,6 +218,14 @@ export function loadDetailedActivity(activityId) {
         console.log("actions/index.js::loadDetailedActivity invoked");
 
         fetchStravaData("activities/" + activityId).then( (stravaDetailedActivity)=> {
+
+            const detailedActivityAttributes =
+                {
+                    "calories": stravaDetailedActivity.calories,
+                    "segmentEfforts": stravaDetailedActivity.segment_efforts,
+                    "map": stravaDetailedActivity.map
+                };
+            dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
 
             let segments = [];
             let segmentIds = [];
@@ -218,19 +246,39 @@ export function loadDetailedActivity(activityId) {
 
             // at this point, we have a list of segmentIds for this activity
             // next, fetch all the detailed segments. what is the best way to do that?
-            dispatch(addSegments(segments));
             // a few options
             //      invoke loadSegment for each segmentId; get back a promise. do a Promise.all, then perform dispatch on all
             //      invoke loadSegment one at a time; when one finishes, invoke the next one. perform dispatch when they are all complete.
             //      use the segment summary objects, then fill in the detailed data later.
 
-            const detailedActivityAttributes =
-                {
-                    "calories": stravaDetailedActivity.calories,
-                    "segmentEfforts": stravaDetailedActivity.segment_efforts,
-                    "map": stravaDetailedActivity.map
-                };
-            dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
+            // do this with the summary segments or wait until all the detailed segments are retrieved?
+            dispatch(addSegments(segments));
+
+            let fetchSegmentPromises = [];
+            segmentIds.forEach( (segmentId) => {
+                fetchSegmentPromises.push(fetchSegment(segmentId));
+            });
+
+            let detailedSegmentsAttributes = [];
+
+            Promise.all(fetchSegmentPromises).then(segments => {
+                debugger;
+
+                segments.forEach(segment => {
+                    detailedSegmentsAttributes.push(
+                        {
+                            "id": segment.id,
+                            "createdAt": segment.created_at,
+                            "totalElevationGain": segment.total_elevation_gain,
+                            "map": segment.map,
+                            "effortCount": segment.effort_count
+                        }
+                    );
+                });
+
+                dispatch(addDetailedSegmentAttributes(detailedSegmentsAttributes));
+            });
+
         });
     };
 }
