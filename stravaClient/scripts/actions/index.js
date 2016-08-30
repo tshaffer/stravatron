@@ -164,7 +164,8 @@ function fetchStravaData(endPoint) {
 
 function fetchSegment(segmentId) {
 
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
 
         console.log("actions/index.js::fetchSegment invoked: ", segmentId);
 
