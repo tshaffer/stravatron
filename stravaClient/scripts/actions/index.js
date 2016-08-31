@@ -7,6 +7,17 @@ import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
 
+
+export const ADD_EFFORTS_FOR_SEGMENT = 'ADD_EFFORTS_FOR_SEGMENT';
+function addEffortsForSegment(segmentId, effortsForSegment) {
+    return {
+        type: ADD_EFFORTS_FOR_SEGMENT,
+        segmentId,
+        effortsForSegment
+    };
+}
+
+
 export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
 export function addActivities(activities) {
 
@@ -162,6 +173,19 @@ function fetchStravaData(endPoint) {
     });
 }
 
+function fetchAllEfforts(athleteId, segmentId) {
+    // return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
+
+        console.log("actions/index.js::fetchAllEfforts invoked: ", segmentId);
+
+        fetchStravaData("segments/" + segmentId.toString() + '/all_efforts?athlete_id=' + athleteId.toString()).then( (stravaAllEfforts) => {
+            resolve(stravaAllEfforts);
+        });
+    });
+}
+
+
 function fetchSegment(segmentId) {
 
     // return new Promise((resolve, reject) => {
@@ -175,9 +199,10 @@ function fetchSegment(segmentId) {
     });
 }
 
+
 export function loadDetailedActivity(activityId) {
 
-    return function(dispatch) {
+    return function(dispatch, getState) {
 
         console.log("actions/index.js::loadDetailedActivity invoked");
 
@@ -208,40 +233,48 @@ export function loadDetailedActivity(activityId) {
 
             dispatch(addSegmentEfforts(segmentEfforts));
 
-            // at this point, we have a list of segmentIds for this activity
-            // next, fetch all the detailed segments. what is the best way to do that?
-            // a few options
-            //      invoke loadSegment for each segmentId; get back a promise. do a Promise.all, then perform dispatch on all
-            //      invoke loadSegment one at a time; when one finishes, invoke the next one. perform dispatch when they are all complete.
-            //      use the segment summary objects, then fill in the detailed data later.
-
-            // do this with the summary segments or wait until all the detailed segments are retrieved?
             dispatch(addSegments(segments));
 
-            let fetchSegmentPromises = [];
+            // retrieve all efforts for each of the segments in this activity
+            let fetchAllEffortsPromises = [];
+            const athleteId = "2843574";
             segmentIds.forEach( (segmentId) => {
-                fetchSegmentPromises.push(fetchSegment(segmentId));
+                fetchAllEffortsPromises.push(fetchAllEfforts(athleteId, segmentId));
             });
 
-            let detailedSegmentsAttributes = [];
+            let allEffortsList = [];
 
-            Promise.all(fetchSegmentPromises).then(segments => {
+            Promise.all(fetchAllEffortsPromises).then(allEffortsForSegmentsInCurrentActivity => {
 
-                segments.forEach(segment => {
-                    detailedSegmentsAttributes.push(
-                        {
-                            "id": segment.id,
-                            "createdAt": segment.created_at,
-                            "totalElevationGain": segment.total_elevation_gain,
-                            "map": segment.map,
-                            "effortCount": segment.effort_count
+                if (allEffortsForSegmentsInCurrentActivity instanceof Array) {
+
+                    allEffortsForSegmentsInCurrentActivity.forEach(allEffortsForSegment => {
+                        if (allEffortsForSegment instanceof Array) {
+
+                            // get information about segment as appropriate, presumably from first 'effort for segment'
+
+                            // convert to stravatron segmentEfforts
+                            segmentEfforts = [];
+                            allEffortsForSegment.forEach(  (stravaSegmentEffort) => {
+                                const segmentEffort = new SegmentEffort(stravaSegmentEffort);
+                                segmentEfforts.push(segmentEffort);
+
+                            });
+
+                            // add all individual segment efforts to store
+                            let beforeState = getState();
+                            dispatch(addSegmentEfforts(segmentEfforts));
+                            let afterState = getState();
+
+                            // add all efforts for this segment to store
+                            if (segmentEfforts.length > 0) {
+                                dispatch(addEffortsForSegment(segmentEfforts[0].segmentId, segmentEfforts));
+                            }
+                            afterState = getState();
                         }
-                    );
-                });
-
-                dispatch(addDetailedSegmentAttributes(detailedSegmentsAttributes));
+                    });
+                }
             });
-
         });
     };
 }
