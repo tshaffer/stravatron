@@ -275,6 +275,31 @@ export function loadDetailedActivity(activityId) {
                     });
                 }
             });
+
+            let fetchSegmentPromises = [];
+            segmentIds.forEach( (segmentId) => {
+                fetchSegmentPromises.push(fetchSegment(segmentId));
+            });
+
+            let detailedSegmentsAttributes = [];
+
+            Promise.all(fetchSegmentPromises).then(segments => {
+
+                segments.forEach(segment => {
+                    detailedSegmentsAttributes.push(
+                        {
+                            "id": segment.id,
+                            "createdAt": segment.created_at,
+                            "totalElevationGain": segment.total_elevation_gain,
+                            "map": segment.map,
+                            "effortCount": segment.effort_count
+                        }
+                    );
+                });
+
+                dispatch(addDetailedSegmentAttributes(detailedSegmentsAttributes));
+            });
+
         });
     };
 }
