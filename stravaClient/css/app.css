@@ -58,3 +58,9 @@ th,td
     padding-left:10px;
 }
 
+.smallDimDate {
+    font-size: 10px;
+    color: dimgray;
+    margin-left: 4px;
+    margin-bottom: 4px;
+}

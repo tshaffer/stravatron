@@ -7,6 +7,8 @@ import { loadDetailedActivity } from '../actions/index';
 
 import * as Converters from '../utilities/converters';
 
+var moment = require('moment');
+
 class DetailedActivity extends Component {
 
     componentDidMount() {
@@ -54,28 +56,31 @@ class DetailedActivity extends Component {
         );
     }
 
-    // {/*function buildSegmentEffortsRow(detailedEffort) {*/}
-    //     {/*var segmentId = detailedEffort.segmentId;*/}
-    //     {/*if (segmentId in segmentEffortOccurrenceCount) {*/}
-    //         {/*segmentEffortOccurrenceCount[segmentId] = segmentEffortOccurrenceCount[segmentId] + 1;*/}
-    //     {/*}*/}
-    //     {/*else {*/}
-    //         {/*segmentEffortOccurrenceCount[segmentId] = 0;*/}
-    //     }
-    //     var uniqueSegmentId = segmentId + segmentEffortOccurrenceCount[segmentId].toString();
-    //     var segmentEffortId = detailedEffort.segmentEffortId;
-    //     // elevation gain
-    //     var elevationGain = detailedEffort.totalElevationGain;
-    //     rowToAdd = "<tr><td>" + segmentEffortName + "</td><td>" + movingTime + "</td><td>" + distanceInMiles.toFixed(1) + " mi</td><td>" + speed.toFixed(1) + " mph</td><td>" + averageGrade + "%</td><td>" + elevationGain.toFixed(0) + " ft</td><td>" + "<input id='" + uniqueSegmentId + "' type='submit' value='Show friends'/>" + '</td><td>' + "<input id='" + uniqueSegmentId + "MyEfforts" + "' type='submit' value='My efforts'/>" + '</td></tr>';
-    //     $('#DetailedActivityTable').append(rowToAdd);
-    //
-    //     // add button handler to show friends' result for this segment
-    //     btnId = "#" + uniqueSegmentId;
-    //     $(btnId).click({ segment: detailedEffort }, showFriendsResults);
-    //
-    //     // add button handler to show my results for this segment
-    //     btnId = "#" + uniqueSegmentId + "MyEfforts";
-    //     $(btnId).click({ id: segmentId, name: segmentEffortName, segment: detailedEffort }, showMyEfforts);
+
+    analyzeEffortsForSegment(effortsForSegment) {
+
+        // 'best time' by sorting efforts by movingTime
+        effortsForSegment.sort( (a, b) => {
+
+            const aMovingTime = Number(a.movingTime);
+            const bMovingTime = Number(b.movingTime);
+
+            if (aMovingTime > bMovingTime) {
+                return 1;
+            }
+            if (aMovingTime < bMovingTime) {
+                return -1;
+            }
+            return 0;
+        });
+
+        const analyzedEffortsForSegment =
+            {
+                bestEffortForSegment: effortsForSegment[0]
+            };
+
+        return analyzedEffortsForSegment;
+    }
 
     buildSegmentEffortRow(segmentEffort) {
 
@@ -92,6 +97,32 @@ class DetailedActivity extends Component {
         let totalElevationGain = "";
         if (segment && segment.totalElevationGain) {
             totalElevationGain = Converters.metersToFeet(segment.totalElevationGain).toFixed(0) + "ft";
+        }
+
+        let effortsForSegmentLbl = "none reported";
+        if (this.props.effortsForSegments) {
+            const effortsForSegment = this.props.effortsForSegments.effortsForSegmentsBySegmentId[segmentId];
+            if (effortsForSegment) {
+                if (effortsForSegment.length > 0) {
+
+                    const effortData = this.analyzeEffortsForSegment(effortsForSegment);
+
+                    const bestEffortTime = moment().startOf('day')
+                        .seconds(Number(effortData.bestEffortForSegment.movingTime))
+                        .format('mm:ss');
+
+                    const bestEffortDate = moment(effortData.bestEffortForSegment.startDateLocal).format('YYYY-MM-DD');
+
+                    effortsForSegmentLbl += " " + bestEffortDate;
+                    effortsForSegmentLbl =
+                        (
+                        <span>
+                            <span>{bestEffortTime}</span>
+                            <span className="smallDimDate">{bestEffortDate}</span>
+                        </span>
+                        );
+                }
+            }
         }
 
         return (
@@ -114,6 +145,9 @@ class DetailedActivity extends Component {
                 </td>
                 <td>
                     {totalElevationGain}
+                </td>
+                <td>
+                    {effortsForSegmentLbl}
                 </td>
             </tr>
         );
@@ -162,6 +196,7 @@ class DetailedActivity extends Component {
                             <th>Speed</th>
                             <th>Average Grade</th>
                             <th>Elevation Gain</th>
+                            <th>Best Time</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -212,7 +247,8 @@ function mapStateToProps (state) {
     return {
         activities: state.activities,
         segments: state.segments,
-        segmentEfforts: state.segmentEfforts
+        segmentEfforts: state.segmentEfforts,
+        effortsForSegments: state.effortsForSegments
     };
 }
 
@@ -228,7 +264,8 @@ DetailedActivity.propTypes = {
     params: React.PropTypes.object.isRequired,
     loadDetailedActivity: React.PropTypes.func.isRequired,
     segments: React.PropTypes.object.isRequired,
-    segmentEfforts: React.PropTypes.object.isRequired
+    segmentEfforts: React.PropTypes.object.isRequired,
+    effortsForSegments: React.PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailedActivity);
