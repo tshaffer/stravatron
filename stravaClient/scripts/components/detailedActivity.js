@@ -59,8 +59,11 @@ class DetailedActivity extends Component {
 
     analyzeEffortsForSegment(effortsForSegment) {
 
+        let effortsSortedByMovingTime = effortsForSegment.concat();
+        let effortsSortedByDate = effortsForSegment.concat();
+
         // 'best time' by sorting efforts by movingTime
-        effortsForSegment.sort( (a, b) => {
+        effortsSortedByMovingTime.sort( (a, b) => {
 
             const aMovingTime = Number(a.movingTime);
             const bMovingTime = Number(b.movingTime);
@@ -74,9 +77,25 @@ class DetailedActivity extends Component {
             return 0;
         });
 
+        // most recent will be first in the array
+        effortsSortedByDate.sort( (a, b) => {
+
+            const aDate = a.startDateLocal;
+            const bDate = b.startDateLocal;
+
+            if (aDate < bDate) {
+                return 1;
+            }
+            if (aDate > bDate) {
+                return -1;
+            }
+            return 0;
+        });
+
         const analyzedEffortsForSegment =
             {
-                bestEffortForSegment: effortsForSegment[0]
+                effortsSortedByMovingTime,
+                effortsSortedByDate
             };
 
         return analyzedEffortsForSegment;
@@ -99,7 +118,8 @@ class DetailedActivity extends Component {
             totalElevationGain = Converters.metersToFeet(segment.totalElevationGain).toFixed(0) + "ft";
         }
 
-        let effortsForSegmentLbl = "none reported";
+        let effortsForSegmentLbl = "none";
+        let recentEffortsLbl = "none";
         if (this.props.effortsForSegments) {
             const effortsForSegment = this.props.effortsForSegments.effortsForSegmentsBySegmentId[segmentId];
             if (effortsForSegment) {
@@ -108,17 +128,72 @@ class DetailedActivity extends Component {
                     const effortData = this.analyzeEffortsForSegment(effortsForSegment);
 
                     const bestEffortTime = moment().startOf('day')
-                        .seconds(Number(effortData.bestEffortForSegment.movingTime))
+                        .seconds(Number(effortData.effortsSortedByMovingTime[0].movingTime))
                         .format('mm:ss');
 
-                    const bestEffortDate = moment(effortData.bestEffortForSegment.startDateLocal).format('YYYY-MM-DD');
+                    const bestEffortDate = moment(effortData.effortsSortedByMovingTime[0].startDateLocal).format('YYYY-MM-DD');
 
-                    effortsForSegmentLbl += " " + bestEffortDate;
                     effortsForSegmentLbl =
                         (
                         <span>
                             <span>{bestEffortTime}</span>
                             <span className="smallDimDate">{bestEffortDate}</span>
+                        </span>
+                        );
+
+                    if (effortData.effortsSortedByMovingTime[1]) {
+
+                        const nextBestEffortTime = moment().startOf('day')
+                            .seconds(Number(effortData.effortsSortedByMovingTime[1].movingTime))
+                            .format('mm:ss');
+                        const nextBestEffortDate = moment(effortData.effortsSortedByMovingTime[1].startDateLocal).format('YYYY-MM-DD');
+
+                        effortsForSegmentLbl =
+                            (
+                            <span>
+                                <span>{bestEffortTime}</span>
+                                <span className="smallDimDate">{bestEffortDate}</span>
+                                <span>, {nextBestEffortTime}</span>
+                                <span className="smallDimDate">{nextBestEffortDate}</span>
+                            </span>
+                            );
+                    }
+
+                    // effortsSortedByDate
+                    let recentEfforts = [];
+                    let recentEffort =
+                        {
+                            movingTime: '',
+                            date: ''
+                        };
+
+                    recentEfforts.push(recentEffort);
+                    recentEfforts.push(recentEffort);
+                    recentEfforts.push(recentEffort);
+
+                    let index = 0;
+                    while (index < 3) {
+                        if (effortData.effortsSortedByDate.length > index) {
+                            const effort = effortData.effortsSortedByDate[index];
+                            recentEfforts[index] =
+                            {
+                                movingTime: effort.movingTime,
+                                date: effort.startDateLocal
+                            };
+                        }
+                        index++;
+                    }
+
+                    // **** converters aren't expecting '' - fix them
+                    recentEffortsLbl =
+                        (
+                        <span>
+                            <span>{Converters.elapsedTimeToTimeString(recentEfforts[0].movingTime)}</span>
+                            <span className="smallDimDate">{Converters.formatDate([0].date)}</span>
+                            <span>, {Converters.elapsedTimeToTimeString(recentEfforts[1].movingTime)}</span>
+                            <span className="smallDimDate">{Converters.formatDate(recentEfforts[1].date)}</span>
+                            <span>, {Converters.elapsedTimeToTimeString(recentEfforts[2].movingTime)}</span>
+                            <span className="smallDimDate">{Converters.formatDate(recentEfforts[2].date)}</span>
                         </span>
                         );
                 }
@@ -134,6 +209,12 @@ class DetailedActivity extends Component {
                     {Converters.getMovingTime(segmentEffort.movingTime)}
                 </td>
                 <td>
+                    {effortsForSegmentLbl}
+                </td>
+                <td>
+                    {recentEffortsLbl}
+                </td>
+                <td>
                     {Converters.metersToMiles(segmentEffort.distance).toFixed(1)} mi
                 </td>
                 <td>
@@ -145,9 +226,6 @@ class DetailedActivity extends Component {
                 </td>
                 <td>
                     {totalElevationGain}
-                </td>
-                <td>
-                    {effortsForSegmentLbl}
                 </td>
             </tr>
         );
@@ -184,6 +262,8 @@ class DetailedActivity extends Component {
 
         const segmentEffortRows = this.buildSegmentEffortRows(activity.segmentEffortIds);
 
+        // <th>&Delta; Best Times</th>
+        // <th>&#x394;</th>
         return (
 
             <div id="DetailedActivity" className="detailsActivity">
@@ -192,11 +272,12 @@ class DetailedActivity extends Component {
                         <tr>
                             <th>Name</th>
                             <th>Time</th>
+                            <th>Best Times</th>
+                            <th>Recent Efforts</th>
                             <th>Distance</th>
                             <th>Speed</th>
                             <th>Average Grade</th>
                             <th>Elevation Gain</th>
-                            <th>Best Time</th>
                         </tr>
                     </thead>
                     <tbody>

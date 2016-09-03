@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 export function getMovingTime(moving_time) {
 
     const hours = Math.floor(moving_time / 3600);
@@ -39,4 +41,22 @@ export function metersToFeet(meters) {
 
 export function metersPerSecondToMilesPerHour(speed) {
     return speed * 2.23694;
+}
+
+export function elapsedTimeToTimeString(elapsedTime) {
+    if (elapsedTime == '') {
+        return '';
+    }
+
+    return moment().startOf('day')
+        .seconds(Number(elapsedTime))
+        .format('mm:ss');
+}
+
+export function formatDate(date) {
+    if (date == '') {
+        return '';
+    }
+    
+    return moment(date).format('YYYY-MM-DD');
 }
