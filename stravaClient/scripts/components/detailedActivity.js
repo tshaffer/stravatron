@@ -58,7 +58,6 @@ class DetailedActivity extends Component {
         );
     }
 
-
     analyzeEffortsForSegment(effortsForSegment) {
 
         let effortsSortedByMovingTime = effortsForSegment.concat();
@@ -318,11 +317,17 @@ class DetailedActivity extends Component {
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);
         const segmentEffortsTable = this.buildSegmentEffortsTable(activity);
 
+        let mapPolyline = null;
+        if (activity.map && activity.map.polyline) {
+            mapPolyline = activity.map.polyline;
+        }
+
         return (
             <div>
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
                 <SimpleMap
+                    mapPolyline={mapPolyline}
                     startLatitude={activity.startLatitude}
                     startLongitude={activity.startLongitude}
                     zoom={14}

@@ -53,8 +53,7 @@ export default function(state = initialState, action) {
                 newActivity.map =
                 {
                     id: detailedActivityAttributes.map.id,
-                    polyline: detailedActivityAttributes.map.polyline,
-                    Polyline: detailedActivityAttributes.map.polyline
+                    polyline: detailedActivityAttributes.map.polyline
                 };
 
                 newActivitiesById[activityId] = newActivity;

@@ -3,31 +3,72 @@ import { default as React, Component } from "react";
 import { GoogleMap } from "react-google-maps";
 
 class SimpleMap extends Component {
+
+    decodeLevels(encodedLevelsString) {
+        var decodedLevels = [];
+
+        for (var i = 0; i < encodedLevelsString.length; ++i) {
+            var level = encodedLevelsString.charCodeAt(i) - 63;
+            decodedLevels.push(level);
+        }
+        return decodedLevels;
+    }
+
+
     render() {
         /*
          * 2. Render GoogleMap component with containerProps
          */
         // height: `100%`,
+        // mapTypeId={'satellite'}
 
         const mapCenter = {
             lat: this.props.startLatitude,
             lng: this.props.startLongitude
         };
 
-        return (
-            <GoogleMap
-                containerProps={{
-                    style: {
-                        height: 400,
-                    },
-                }}
-                /*
-                 * 3. config <GoogleMap> instance by properties
-                 */
-                defaultZoom={this.props.zoom}
-                defaultCenter={ mapCenter }
-            />
-        );
+
+        if (this.props.mapPolyline) {
+
+            let pathToDecode = this.props.mapPolyline;
+            let ridePathDecoded = google.maps.geometry.encoding.decodePath(pathToDecode);
+            var decodedLevels = this.decodeLevels("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
+            var bounds = new google.maps.LatLngBounds();
+            ridePathDecoded.forEach( (location) => {
+                bounds.extend(location);
+            });
+
+            bounds={ bounds };
+
+            return (
+                <GoogleMap
+                    containerProps={{
+                        style: {
+                            height: 400,
+                        },
+                    }}
+                    defaultZoom={this.props.zoom}
+                    center={ mapCenter }
+                    mapTypeId={ google.maps.MapTypeId.ROADMAP }
+                    bounds={ bounds }
+                />
+            );
+        }
+        else {
+            return (
+                <GoogleMap
+                    containerProps={{
+                        style: {
+                            height: 400,
+                        },
+                    }}
+                    defaultZoom={this.props.zoom}
+                    center={ mapCenter }
+                    mapTypeId={ google.maps.MapTypeId.ROADMAP }
+                />
+            );
+        }
     }
 }
 
