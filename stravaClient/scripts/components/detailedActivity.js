@@ -9,6 +9,10 @@ import * as Converters from '../utilities/converters';
 
 var moment = require('moment');
 
+var activityMap;
+var activityPath;
+var ridePathDecoded;
+
 class DetailedActivity extends Component {
 
     componentDidMount() {
@@ -18,6 +22,74 @@ class DetailedActivity extends Component {
         // create a DetailedActivityContainer and move this functionality to that object
         const activityId = this.props.params.id;
         this.props.loadDetailedActivity(activityId);
+    }
+
+// GOOGLE MAPS
+
+    decodeLevels(encodedLevelsString) {
+        var decodedLevels = [];
+
+        for (var i = 0; i < encodedLevelsString.length; ++i) {
+            var level = encodedLevelsString.charCodeAt(i) - 63;
+            decodedLevels.push(level);
+        }
+        return decodedLevels;
+    }
+
+    initializeMap(activity, mapId) {
+
+        var myLatlng = new google.maps.LatLng(activity.startLatitude, activity.startLongitude);
+        var myOptions = {
+            zoom: 14,
+            center: myLatlng,
+            //mapTypeId: google.maps.MapTypeId.TERRAIN
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+
+        var createNewMap;
+        if (activityMap == undefined) {
+            createNewMap = true;
+        }
+        else {
+            createNewMap = false;
+        }
+
+        if (createNewMap) {
+            activityMap = new google.maps.Map(document.getElementById(mapId), myOptions);
+        }
+        else {
+            activityMap.setZoom(14);
+            activityMap.setCenter(myLatlng);
+            if (activityPath != undefined) {
+                activityPath.setMap(null);
+            }
+        }
+
+        var pathToDecode = activity.mapPolyline;
+        ridePathDecoded = google.maps.geometry.encoding.decodePath(pathToDecode);
+        var decodedLevels = this.decodeLevels("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
+        var existingBounds = activityMap.getBounds();
+
+        var bounds = new google.maps.LatLngBounds();
+        $.each(ridePathDecoded, function (index, location) {
+            bounds.extend(location);
+        });
+
+        if (createNewMap) {
+            activityMap.fitBounds(bounds);
+        }
+        else {
+            setTimeout(function () { activityMap.fitBounds(bounds); }, 1);
+        }
+        activityPath = new google.maps.Polyline({
+            path: ridePathDecoded,
+            levels: decodedLevels,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+            map: activityMap
+        });
     }
 
     buildRideSummaryHeader(activity) {
@@ -55,7 +127,6 @@ class DetailedActivity extends Component {
             </div>
         );
     }
-
 
     analyzeEffortsForSegment(effortsForSegment) {
 
@@ -294,6 +365,7 @@ class DetailedActivity extends Component {
 
     render () {
 
+
         const activityId = this.props.params.id;
         console.log("activityId=", activityId);
 
@@ -311,7 +383,11 @@ class DetailedActivity extends Component {
                     </div>
                 );
             }
+
+            debugger;
+            this.initializeMap(activity, "map-canvas");
         }
+
 
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);
         const segmentEffortsTable = this.buildSegmentEffortsTable(activity);
@@ -321,6 +397,7 @@ class DetailedActivity extends Component {
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
                 {rideSummaryHeader}
+                <div id="map-canvas"></div>
                 {segmentEffortsTable}
             </div>
         );

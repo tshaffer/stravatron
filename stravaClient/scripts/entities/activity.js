@@ -16,6 +16,8 @@ export default class Activity {
             // activity.map.id
             // activity.map.summary_polyline
             this.maxSpeed = activity.max_speed;
+            this.mapPolyline = activity.map.polyline;
+
             this.movingTime = activity.moving_time;
             this.name = activity.name;
             this.startDate = activity.start_date;
