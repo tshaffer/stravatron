@@ -55,6 +55,7 @@ export default function(state = initialState, action) {
                     id: detailedActivityAttributes.map.id,
                     polyline: detailedActivityAttributes.map.polyline
                 };
+                newActivity.streams = detailedActivityAttributes.streams;
 
                 newActivitiesById[activityId] = newActivity;
             }
