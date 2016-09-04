@@ -7,6 +7,8 @@ import { loadDetailedActivity } from '../actions/index';
 
 import * as Converters from '../utilities/converters';
 
+import SimpleMap from './simpleMap';
+
 var moment = require('moment');
 
 class DetailedActivity extends Component {
@@ -320,6 +322,10 @@ class DetailedActivity extends Component {
             <div>
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
+                <SimpleMap
+                    startLatitude={activity.startLatitude}
+                    startLongitude={activity.startLongitude}
+                />
                 {rideSummaryHeader}
                 {segmentEffortsTable}
             </div>
