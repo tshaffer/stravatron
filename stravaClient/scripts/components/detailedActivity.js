@@ -326,13 +326,13 @@ class DetailedActivity extends Component {
             <div>
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
+                {rideSummaryHeader}
                 <SimpleMap
                     mapPolyline={mapPolyline}
                     startLatitude={activity.startLatitude}
                     startLongitude={activity.startLongitude}
                     zoom={14}
                 />
-                {rideSummaryHeader}
                 {segmentEffortsTable}
             </div>
         );

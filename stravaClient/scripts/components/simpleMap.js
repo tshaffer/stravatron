@@ -1,19 +1,8 @@
 import { default as React, Component } from "react";
 
-import { GoogleMap, Marker, Polyline } from "react-google-maps";
+import { GoogleMap, Polyline } from "react-google-maps";
 
 class SimpleMap extends Component {
-
-    decodeLevels(encodedLevelsString) {
-        var decodedLevels = [];
-
-        for (var i = 0; i < encodedLevelsString.length; ++i) {
-            var level = encodedLevelsString.charCodeAt(i) - 63;
-            decodedLevels.push(level);
-        }
-        return decodedLevels;
-    }
-
 
     render() {
         /*
@@ -32,7 +21,6 @@ class SimpleMap extends Component {
 
             let pathToDecode = this.props.mapPolyline;
             let ridePathDecoded = google.maps.geometry.encoding.decodePath(pathToDecode);
-            var decodedLevels = this.decodeLevels("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 
             var bounds = new google.maps.LatLngBounds();
             ridePathDecoded.forEach( (location) => {
@@ -44,6 +32,8 @@ class SimpleMap extends Component {
             // <Marker
             //     position= { mapCenter }
             // />
+            // strokeColor = "#FF0000"
+            // strokeColor = {"#FF0000"}
 
             return (
                 <GoogleMap
@@ -59,8 +49,6 @@ class SimpleMap extends Component {
                 >
                     <Polyline
                         path ={ridePathDecoded}
-                        levels = {decodedLevels}
-                        strokeColor = "#FF0000"
                         strokeOpacity = "1.0"
                         strokeWeight = "2"
                     />
