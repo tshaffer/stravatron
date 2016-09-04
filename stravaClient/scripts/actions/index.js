@@ -237,8 +237,6 @@ export function loadDetailedActivity(activityId) {
                 //          string = 'distance'
                 //      type
                 //          string = 'latlng'
-                debugger;
-
                 const detailedActivityAttributes =
                     {
                         "calories": stravaDetailedActivity.calories,
@@ -247,6 +245,8 @@ export function loadDetailedActivity(activityId) {
                         "streams": stravaStreams
                     };
                 dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
+
+                const s=getState();
             });
 
             let segments = [];
@@ -267,24 +267,6 @@ export function loadDetailedActivity(activityId) {
             dispatch(addSegmentEfforts(segmentEfforts));
 
             dispatch(addSegments(segments));
-
-//
-//             // convert from Strava JSON format into the format digestible by the db
-//             var convertedActivity = convertDetailedActivity(detailedActivityData);
-//             responseData.detailedActivitiesToReturn.push(convertedActivity);
-//
-//             // retrieve segment effort ids (and segment id's?) from detailed activity
-//             segmentEfforts = detailedActivityData.segment_efforts;
-//             console.log("number of segment efforts for this activity is " + segmentEfforts.length);
-//
-//             segmentEfforts.forEach(addSegmentEffortIdToDB);
-//
-//             console.log("check for completion");
-//             if (idsOfActivitiesFetchedFromStrava.length == Object.keys(detailedActivityIdsToFetchFromServer).length) {
-//                 console.log("all detailed activities fetched from strava");
-//                 sendActivitiesResponse(responseData.serverResponse, responseData.detailedActivitiesToReturn);
-//                 return;
-//             }
 
             // retrieve all efforts for each of the segments in this activity
             let fetchAllEffortsPromises = [];
