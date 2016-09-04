@@ -11,9 +11,17 @@ class SimpleMap extends Component {
         // defaultCenter={{ lat: -34.397, lng: 150.644 }}
         // defaultCenter={{ lat: {lat}, lng: {longitude} }}
         // defaultCenter={{ lat: 37.39, lng: -122.17 }}
+    //     defaultCenter={
+    //     { lat: 37.39, lng: -122.17 }
+    // }
 
         const lat = this.props.startLatitude;
         const longitude = this.props.startLongitude;
+
+        const center = {
+            lat: lat,
+            lng: longitude
+        };
 
         return (
             <GoogleMap
@@ -26,9 +34,7 @@ class SimpleMap extends Component {
                  * 3. config <GoogleMap> instance by properties
                  */
                 defaultZoom={8}
-                defaultCenter={
-                    { lat: 37.39, lng: -122.17 }
-                }
+                defaultCenter={ center }
             />
         );
     }
