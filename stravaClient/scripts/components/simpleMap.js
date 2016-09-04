@@ -8,19 +8,10 @@ class SimpleMap extends Component {
          * 2. Render GoogleMap component with containerProps
          */
         // height: `100%`,
-        // defaultCenter={{ lat: -34.397, lng: 150.644 }}
-        // defaultCenter={{ lat: {lat}, lng: {longitude} }}
-        // defaultCenter={{ lat: 37.39, lng: -122.17 }}
-    //     defaultCenter={
-    //     { lat: 37.39, lng: -122.17 }
-    // }
 
-        const lat = this.props.startLatitude;
-        const longitude = this.props.startLongitude;
-
-        const center = {
-            lat: lat,
-            lng: longitude
+        const mapCenter = {
+            lat: this.props.startLatitude,
+            lng: this.props.startLongitude
         };
 
         return (
@@ -33,8 +24,8 @@ class SimpleMap extends Component {
                 /*
                  * 3. config <GoogleMap> instance by properties
                  */
-                defaultZoom={8}
-                defaultCenter={ center }
+                defaultZoom={this.props.zoom}
+                defaultCenter={ mapCenter }
             />
         );
     }

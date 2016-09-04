@@ -325,6 +325,7 @@ class DetailedActivity extends Component {
                 <SimpleMap
                     startLatitude={activity.startLatitude}
                     startLongitude={activity.startLongitude}
+                    zoom={14}
                 />
                 {rideSummaryHeader}
                 {segmentEffortsTable}
