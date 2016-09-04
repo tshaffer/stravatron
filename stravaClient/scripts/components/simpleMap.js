@@ -1,6 +1,6 @@
 import { default as React, Component } from "react";
 
-import { GoogleMap } from "react-google-maps";
+import { GoogleMap, Marker, Polyline } from "react-google-maps";
 
 class SimpleMap extends Component {
 
@@ -41,6 +41,10 @@ class SimpleMap extends Component {
 
             bounds={ bounds };
 
+            // <Marker
+            //     position= { mapCenter }
+            // />
+
             return (
                 <GoogleMap
                     containerProps={{
@@ -52,7 +56,15 @@ class SimpleMap extends Component {
                     center={ mapCenter }
                     mapTypeId={ google.maps.MapTypeId.ROADMAP }
                     bounds={ bounds }
-                />
+                >
+                    <Polyline
+                        path ={ridePathDecoded}
+                        levels = {decodedLevels}
+                        strokeColor = "#FF0000"
+                        strokeOpacity = "1.0"
+                        strokeWeight = "2"
+                    />
+                </GoogleMap>
             );
         }
         else {
