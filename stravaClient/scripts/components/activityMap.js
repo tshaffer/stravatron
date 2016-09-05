@@ -64,6 +64,27 @@ class ActivityMap extends Component {
             strokeWeight: 2,
             map: activityMap
         });
+
+        let markerLocation = ridePathDecoded[0];
+        if (this.props.location) {
+            markerLocation = new google.maps.LatLng(this.props.location[0], this.props.location[1]);
+        }
+
+        // draw marker at specified location
+        var markerOptions = {
+            strokeColor: '#FFFFFF',
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            fillColor: '#00FF00',
+            fillOpacity: 1,
+            map: activityMap,
+            center: markerLocation,
+            radius: 50,
+            editable: false,
+            draggable: false
+        };
+
+        new google.maps.Circle(markerOptions);
     }
 
     render() {

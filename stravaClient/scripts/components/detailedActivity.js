@@ -332,9 +332,11 @@ class DetailedActivity extends Component {
                 {rideSummaryHeader}
                 <ActivityMap
                     activity={activity}
+                    location={this.state.chartLocation}
                 />
                 <ElevationChart
                     activity={activity}
+                    onLocationChanged = { this.handleChartLocationChange.bind(this) }
                 />
                 {segmentEffortsTable}
             </div>
