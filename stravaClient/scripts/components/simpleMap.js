@@ -16,8 +16,6 @@ class SimpleMap extends Component {
             lng: this.props.startLongitude
         };
 
-        let rideStart = null;
-
         if (this.props.mapPolyline) {
 
             let pathToDecode = this.props.mapPolyline;
@@ -30,7 +28,10 @@ class SimpleMap extends Component {
 
             bounds={ bounds };
 
-            rideStart = ridePathDecoded[0];
+            let markerLocation = ridePathDecoded[0];
+            if (this.props.location) {
+                markerLocation = new google.maps.LatLng(this.props.location[0], this.props.location[1]);
+            }
 
             // <Marker
             //     position= { mapCenter }
@@ -62,7 +63,7 @@ class SimpleMap extends Component {
                         strokeWeight = "2"
                         fillColor= '#0000FF'
                         fillOpacity= "1"
-                        center = { rideStart }
+                        center = { markerLocation }
                         radius= {40}
                         editable = {false}
                         draggable = {false}

@@ -10,8 +10,28 @@ class ElevationChart extends Component {
         };
 
         this.mapMarker = null;
+
+        this.lastProps = null;
     }
 
+
+    shouldComponentUpdate(nextProps, nextState) {
+
+        // console.log("nextProps");
+        // console.log(nextProps);
+        //
+        // const lastProps = this.lastProps;
+        //
+        // this.lastProps = nextProps;
+        //
+        // if (!nextProps && !lastProps) return false;
+        //
+        // if (nextProps && !lastProps) return true;
+        //
+        // return false;
+
+        return true;
+    }
 
     buildElevationGraph(activity) {
 
@@ -116,43 +136,19 @@ class ElevationChart extends Component {
         function chartMouseOver(e) {
             chart.setSelection([e]);
 
-            // let item = chart.getSelection();
-            // if (item != undefined) {
-            //     var selectedItem = item[0];
-            //
-            //     //console.log("item selected:  row=" + selectedItem.row + ", column=" + selectedItem.column);
-            //     //console.log("distance is: " + dataTable.getValue(selectedItem.row, 0));
-            //     //console.log("elevation is: " + dataTable.getValue(selectedItem.row, selectedItem.column));
-            //
-            //     var selectedLocation = mapDistanceToLocation[dataTable.getValue(selectedItem.row, 0)];
-            //     if (selectedLocation != undefined) {
-            //         //console.log("selected location: ");
-            //         //console.log(selectedLocation);
-            //         //console.log("lat is: " + selectedLocation.lat() + ", lng is: " + selectedLocation.lng());
-            //
-            //         // erase old marker, if it existed
-            //         if (self.mapMarker != null) {
-            //             self.mapMarker.setMap(null);
-            //         }
-            //
-            //         var markerOptions = {
-            //             strokeColor: '#FFFFFF',
-            //             strokeOpacity: 1,
-            //             strokeWeight: 2,
-            //             fillColor: '#0000FF',
-            //             fillOpacity: 1,
-            //             map: activityMap,
-            //             center: selectedLocation,
-            //             radius: 40,
-            //             editable: false,
-            //             draggable: false
-            //         };
-            //
-            //         self.mapMarker = new google.maps.Circle(markerOptions);
-            //
-            //     }
-            // }
+            let item = chart.getSelection();
+            if (item != undefined) {
+                var selectedItem = item[0];
 
+                //console.log("item selected:  row=" + selectedItem.row + ", column=" + selectedItem.column);
+                //console.log("distance is: " + dataTable.getValue(selectedItem.row, 0));
+                //console.log("elevation is: " + dataTable.getValue(selectedItem.row, selectedItem.column));
+
+                var selectedLocation = mapDistanceToLocation[dataTable.getValue(selectedItem.row, 0)];
+                if (selectedLocation != undefined) {
+                    self.props.onLocationChanged(selectedLocation);
+                }
+            }
         }
 
         function chartMouseOut(e) {
@@ -162,6 +158,8 @@ class ElevationChart extends Component {
     }
 
     render() {
+
+        console.log("elevationChart:: render invoked");
 
         this.buildElevationGraph(this.props.activity);
 

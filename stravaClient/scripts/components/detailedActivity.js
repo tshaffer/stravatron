@@ -14,6 +14,14 @@ var moment = require('moment');
 
 class DetailedActivity extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            chartLocation: null
+        };
+    }
+
+
     componentDidMount() {
 
         console.log("detailedActivity.js::componentDidMount invoked");
@@ -262,9 +270,6 @@ class DetailedActivity extends Component {
 
     buildSegmentEffortsTable(activity) {
 
-        console.log("segment effforts for activity", activity.name);
-
-
         const segmentEffortRows = this.buildSegmentEffortRows(activity.segmentEffortIds);
 
         // <th>&Delta; Best Times</th>
@@ -294,10 +299,13 @@ class DetailedActivity extends Component {
         );
     }
 
+    handleChartLocationChange(chartLocation) {
+        // this.setState({ chartLocation: chartLocation });
+    }
+
     render () {
 
         const activityId = this.props.params.id;
-        console.log("activityId=", activityId);
 
         const activitiesById = this.props.activities.activitiesById;
 
@@ -333,9 +341,11 @@ class DetailedActivity extends Component {
                     startLatitude={activity.startLatitude}
                     startLongitude={activity.startLongitude}
                     zoom={14}
+                    location={this.state.chartLocation}
                 />
                 <ElevationChart
                     activity = {activity}
+                    onLocationChanged = { this.handleChartLocationChange.bind(this) }
                 />
                 {segmentEffortsTable}
             </div>
