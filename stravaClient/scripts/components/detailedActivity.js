@@ -15,6 +15,7 @@ var moment = require('moment');
 let activityMap = null;
 let activityPath = null;
 let ridePathDecoded = null;
+let google = null;
 
 class DetailedActivity extends Component {
 
@@ -25,6 +26,9 @@ class DetailedActivity extends Component {
         };
     }
 
+    componentWillMount() {
+        google = window.google;
+    }
 
     componentDidMount() {
 
@@ -308,7 +312,7 @@ class DetailedActivity extends Component {
     }
 
     buildElevationGraph(activity) {
-        
+
         let stream = activity.streams;
 
         var distances;
@@ -416,9 +420,6 @@ class DetailedActivity extends Component {
     }
 
     initializeMap(activity, mapId) {
-
-        //console.log("initializeMap: activity is");
-        //console.log(activity);
 
         var myLatlng = new google.maps.LatLng(activity.startLatitude, activity.startLongitude);
         var myOptions = {
