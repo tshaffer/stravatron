@@ -16,6 +16,8 @@ let activityMap = null;
 let activityPath = null;
 let ridePathDecoded = null;
 let google = null;
+let startMarker = null;
+let mapMarker = null;
 
 class DetailedActivity extends Component {
 
@@ -417,6 +419,60 @@ class DetailedActivity extends Component {
             editable: false,
             draggable: false
         };
+
+        startMarker = new google.maps.Circle(startMarkerOptions);
+
+        // Add our over/out handlers.
+        google.visualization.events.addListener(chart, 'onmouseover', chartMouseOver);
+        google.visualization.events.addListener(chart, 'onmouseout', chartMouseOut);
+
+        function chartMouseOver(e) {
+            console.log("chartMouseOver");
+            chart.setSelection([e]);
+
+            var item = chart.getSelection();
+            if (item != undefined) {
+                var selectedItem = item[0];
+                //console.log("item selected:  row=" + selectedItem.row + ", column=" + selectedItem.column);
+                //console.log("distance is: " + dataTable.getValue(selectedItem.row, 0));
+                //console.log("elevation is: " + dataTable.getValue(selectedItem.row, selectedItem.column));
+
+                var selectedLocation = mapDistanceToLocation[dataTable.getValue(selectedItem.row, 0)];
+                if (selectedLocation != undefined) {
+                    //console.log("selected location: ");
+                    //console.log(selectedLocation);
+
+                    //console.log("lat is: " + selectedLocation[0] + ", lng is: " + selectedLocation[1]);
+                    var myLatlng = new google.maps.LatLng(selectedLocation[0], selectedLocation[1]);
+
+                    // erase old marker, if it existed
+                    if (mapMarker != null) {
+                        mapMarker.setMap(null);
+                    }
+
+                    var markerOptions = {
+                        strokeColor: '#FFFFFF',
+                        strokeOpacity: 1,
+                        strokeWeight: 2,
+                        fillColor: '#0000FF',
+                        fillOpacity: 1,
+                        map: activityMap,
+                        center: myLatlng,
+                        radius: 50,
+                        editable: false,
+                        draggable: false
+                    };
+
+                    mapMarker = new google.maps.Circle(markerOptions);
+
+                }
+            }
+        }
+
+        function chartMouseOut(e) {
+            chart.setSelection([{ 'row': null, 'column': null }]);
+        }
+
     }
 
     initializeMap(activity, mapId) {
