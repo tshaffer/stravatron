@@ -7,9 +7,6 @@ import { loadDetailedActivity } from '../actions/index';
 
 import * as Converters from '../utilities/converters';
 
-import SimpleMap from './simpleMap';
-import ElevationChart from './elevationChart';
-
 var moment = require('moment');
 
 let activityMap = null;
