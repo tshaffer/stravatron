@@ -4,6 +4,7 @@ let google = null;
 let activityMap = null;
 let activityPath = null;
 let ridePathDecoded = null;
+let markerLocation = null;
 
 class ActivityMap extends Component {
 
@@ -11,9 +12,9 @@ class ActivityMap extends Component {
         google = window.google;
     }
 
-    initializeMap(activity, mapId) {
+    initializeMap(mapId) {
 
-        var myLatlng = new google.maps.LatLng(activity.startLatitude, activity.startLongitude);
+        var myLatlng = new google.maps.LatLng(this.props.startLatitude, this.props.startLongitude);
         var myOptions = {
             zoom: 14,
             center: myLatlng,
@@ -41,7 +42,7 @@ class ActivityMap extends Component {
             }
         }
 
-        var pathToDecode = activity.map.polyline;
+        var pathToDecode = this.props.mapPolyline;
         ridePathDecoded = google.maps.geometry.encoding.decodePath(pathToDecode);
 
         var existingBounds = activityMap.getBounds();
@@ -65,7 +66,13 @@ class ActivityMap extends Component {
             map: activityMap
         });
 
-        let markerLocation = ridePathDecoded[0];
+        this.drawMarker();
+    }
+
+
+    drawMarker() {
+
+        markerLocation = ridePathDecoded[0];
         if (this.props.location) {
             markerLocation = new google.maps.LatLng(this.props.location[0], this.props.location[1]);
         }
@@ -89,10 +96,16 @@ class ActivityMap extends Component {
 
     render() {
 
-        const activity = this.props.activity;
+        if (this.refs.activityGMap && this.props.mapPolyline) {
+            if (!activityMap) {
+                this.initializeMap("activityGMap");
+            }
 
-        if (activity && this.refs.activityGMap && activity.map && activity.map.polyline) {
-            this.initializeMap(activity, "activityGMap");
+            if (this.props.location) {
+                if (markerLocation[0] != this.props.location[0] || markerLocation[1] != this.props.location[1]) {
+                    this.drawMarker();
+                }
+            }
         }
 
         return (

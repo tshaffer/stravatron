@@ -299,7 +299,7 @@ class DetailedActivity extends Component {
     }
 
     handleChartLocationChange(chartLocation) {
-        // this.setState({ chartLocation: chartLocation });
+        this.setState({ chartLocation: chartLocation });
     }
 
     render () {
@@ -325,19 +325,27 @@ class DetailedActivity extends Component {
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);
         const segmentEffortsTable = this.buildSegmentEffortsTable(activity);
 
+        let mapPolyline = null;
+        if (activity.map && activity.map.polyline) {
+            mapPolyline = activity.map.polyline;
+        }
+
         return (
             <div>
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
                 {rideSummaryHeader}
                 <ActivityMap
-                    activity={activity}
+                    startLatitude={activity.startLatitude}
+                    startLongitude={activity.startLongitude}
+                    mapPolyline={mapPolyline}
                     location={this.state.chartLocation}
                 />
                 <ElevationChart
                     activity={activity}
                     onLocationChanged = { this.handleChartLocationChange.bind(this) }
                 />
+
                 {segmentEffortsTable}
             </div>
         );
