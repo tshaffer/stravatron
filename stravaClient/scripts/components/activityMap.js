@@ -7,7 +7,6 @@ let ridePathDecoded = null;
 
 class ActivityMap extends Component {
 
-
     componentWillMount() {
         google = window.google;
     }
