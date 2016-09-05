@@ -307,6 +307,114 @@ class DetailedActivity extends Component {
         // this.setState({ chartLocation: chartLocation });
     }
 
+    buildElevationGraph(activity) {
+        
+        let stream = activity.streams;
+
+        var distances;
+        var elevations;
+        var gradients;
+        var locations;
+
+        // at this point, stream is an array that includes a number of streams; need to pick out the required stream data
+        for (let i = 0; i < stream.length; i++) {
+            switch (stream[i].type) {
+                case 'distance':
+                    distances = stream[i].data;
+                    break;
+                case 'altitude':
+                    elevations = stream[i].data;
+                    break;
+                case 'grade_smooth':
+                    gradients = stream[i].data;
+                    break;
+                case 'latlng':
+                    locations = stream[i].data;
+                    break;
+            }
+        }
+
+        if (distances == undefined || elevations == undefined || gradients == undefined || locations == undefined) {
+            console.log("stream undefined");
+            return;
+        }
+
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('number', 'Distance');
+        dataTable.addColumn('number', 'Elevation');
+        dataTable.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
+
+        var row = [];
+        var mapDistanceToLocation = {};
+
+        for (let i = 0; i < distances.length; i++) {
+
+            var distance = distances[i];
+            var elevation = elevations[i];
+            var gradient = gradients[i];
+            var location = locations[i];
+
+            var distanceInMiles = Converters.metersToMiles(distance);
+            var elevationInFeet = Converters.metersToFeet(elevation);
+
+            row = [];
+            row.push(distanceInMiles);
+            row.push(elevationInFeet);
+
+            var ttHtml = '<div style="padding:5px 5px 5px 5px;">Distance:<b>' + distanceInMiles.toFixed(1) + 'mi</b><br>Elevation:<b>' + elevationInFeet.toFixed(0) + 'ft</b><br>Grade:<b>' + gradient.toFixed(1) + '%</b></div>';
+            row.push(ttHtml);
+
+            dataTable.addRow(row);
+
+            mapDistanceToLocation[Converters.metersToMiles(distance).toString()] = location;
+        }
+
+        var options = {
+            chartArea: { left: 60, top: 10, height: 160 },
+            hAxis: {
+                format: '## mi',
+                textStyle: {
+                    fontSize: 10
+                }
+            },
+            vAxis: {
+                format: '## ft',
+                textStyle: {
+                    fontSize: 10
+                }
+            },
+            legend: {
+                position: 'none'
+            },
+            tooltip: {
+                isHtml: true
+            },
+            //curveType: 'function'
+            width: 1800
+        };
+
+        let elevationChart = this.refs.elevationChart;
+        var chart = new google.visualization.LineChart(elevationChart);
+
+        chart.draw(dataTable, options);
+
+        // draw marker at the beginning of the ride
+        var startLocation = mapDistanceToLocation[dataTable.getValue(0, 0)];
+        var startLatlng = new google.maps.LatLng(startLocation[0], startLocation[1]);
+        var startMarkerOptions = {
+            strokeColor: '#FFFFFF',
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            fillColor: '#00FF00',
+            fillOpacity: 1,
+            map: activityMap,
+            center: startLatlng,
+            radius: 50,
+            editable: false,
+            draggable: false
+        };
+    }
+
     initializeMap(activity, mapId) {
 
         //console.log("initializeMap: activity is");
@@ -410,13 +518,17 @@ class DetailedActivity extends Component {
             // this.initializeMap(activity, this.refs.activityMap);
             this.initializeMap(activity, "activityGMap");
         }
+        if (activity && this.refs.elevationChart && activity.streams) {
+            this.buildElevationGraph(activity);
+        }
 
         return (
             <div>
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
-                <div id="activityGMap" ref="activityGMap"/>
                 {rideSummaryHeader}
+                <div id="activityGMap" ref="activityGMap"/>
+                <div id="elevationChart" ref="elevationChart"></div>
                 {segmentEffortsTable}
             </div>
         );
