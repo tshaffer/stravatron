@@ -8,6 +8,12 @@ let markerLocation = null;
 
 class ActivityMap extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.mapMarker = null;
+    }
+
     componentWillMount() {
         google = window.google;
     }
@@ -18,7 +24,6 @@ class ActivityMap extends Component {
         var myOptions = {
             zoom: 14,
             center: myLatlng,
-            //mapTypeId: google.maps.MapTypeId.TERRAIN
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
@@ -31,7 +36,6 @@ class ActivityMap extends Component {
         }
 
         if (createNewMap) {
-            // activityMap = new google.maps.Map(document.getElementById(mapId), myOptions);
             activityMap = new google.maps.Map(document.getElementById(mapId), myOptions);
         }
         else {
@@ -77,6 +81,11 @@ class ActivityMap extends Component {
             markerLocation = new google.maps.LatLng(this.props.location[0], this.props.location[1]);
         }
 
+        // erase old marker, if it existed
+        if (this.mapMarker != null) {
+            this.mapMarker.setMap(null);
+        }
+
         // draw marker at specified location
         var markerOptions = {
             strokeColor: '#FFFFFF',
@@ -91,7 +100,7 @@ class ActivityMap extends Component {
             draggable: false
         };
 
-        new google.maps.Circle(markerOptions);
+        this.mapMarker = new google.maps.Circle(markerOptions);
     }
 
     render() {

@@ -12,8 +12,22 @@ let mapMarker = null;
 
 class ElevationChart extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+        };
+        this.chartDrawn = false;
+    }
+
     componentWillMount() {
         google = window.google;
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+
+        if (this.chartDrawn) return false;
+
+        return true;
     }
 
     buildElevationGraph(stream) {
@@ -104,71 +118,11 @@ class ElevationChart extends Component {
         var chart = new google.visualization.LineChart(elevationChart);
 
         chart.draw(dataTable, options);
-
-        // draw marker at the beginning of the ride
-        var startLocation = mapDistanceToLocation[dataTable.getValue(0, 0)];
-        var startLatlng = new google.maps.LatLng(startLocation[0], startLocation[1]);
-        var startMarkerOptions = {
-            strokeColor: '#FFFFFF',
-            strokeOpacity: 1,
-            strokeWeight: 2,
-            fillColor: '#00FF00',
-            fillOpacity: 1,
-            map: activityMap,
-            center: startLatlng,
-            radius: 50,
-            editable: false,
-            draggable: false
-        };
-
-        startMarker = new google.maps.Circle(startMarkerOptions);
+        this.chartDrawn = true;
 
         // Add our over/out handlers.
         google.visualization.events.addListener(chart, 'onmouseover', chartMouseOver);
         google.visualization.events.addListener(chart, 'onmouseout', chartMouseOut);
-
-        // function chartMouseOver(e) {
-        //     console.log("chartMouseOver");
-        //     chart.setSelection([e]);
-        //
-        //     var item = chart.getSelection();
-        //     if (item != undefined) {
-        //         var selectedItem = item[0];
-        //         //console.log("item selected:  row=" + selectedItem.row + ", column=" + selectedItem.column);
-        //         //console.log("distance is: " + dataTable.getValue(selectedItem.row, 0));
-        //         //console.log("elevation is: " + dataTable.getValue(selectedItem.row, selectedItem.column));
-        //
-        //         var selectedLocation = mapDistanceToLocation[dataTable.getValue(selectedItem.row, 0)];
-        //         if (selectedLocation != undefined) {
-        //             //console.log("selected location: ");
-        //             //console.log(selectedLocation);
-        //
-        //             //console.log("lat is: " + selectedLocation[0] + ", lng is: " + selectedLocation[1]);
-        //             var myLatlng = new google.maps.LatLng(selectedLocation[0], selectedLocation[1]);
-        //
-        //             // erase old marker, if it existed
-        //             if (mapMarker != null) {
-        //                 mapMarker.setMap(null);
-        //             }
-        //
-        //             var markerOptions = {
-        //                 strokeColor: '#FFFFFF',
-        //                 strokeOpacity: 1,
-        //                 strokeWeight: 2,
-        //                 fillColor: '#0000FF',
-        //                 fillOpacity: 1,
-        //                 map: activityMap,
-        //                 center: myLatlng,
-        //                 radius: 50,
-        //                 editable: false,
-        //                 draggable: false
-        //             };
-        //
-        //             mapMarker = new google.maps.Circle(markerOptions);
-        //
-        //         }
-        //     }
-        // }
 
         let self = this;
 
@@ -190,7 +144,6 @@ class ElevationChart extends Component {
         function chartMouseOut(e) {
             chart.setSelection([{ 'row': null, 'column': null }]);
         }
-
     }
 
     render() {
