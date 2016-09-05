@@ -16,9 +16,7 @@ class ElevationChart extends Component {
         google = window.google;
     }
 
-    buildElevationGraph(activity) {
-
-        let stream = activity.streams;
+    buildElevationGraph(stream) {
 
         var distances;
         var elevations;
@@ -197,10 +195,8 @@ class ElevationChart extends Component {
 
     render() {
 
-        const activity = this.props.activity;
-
-        if (activity && this.refs.elevationChart && activity.streams) {
-            this.buildElevationGraph(activity);
+        if (this.refs.elevationChart && this.props.streams) {
+            this.buildElevationGraph(this.props.streams);
         }
 
         return (

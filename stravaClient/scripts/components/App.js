@@ -11,7 +11,7 @@ export default class App extends Component {
         console.log("app.js::componentDidMount invoked");
 
         // load visualization package for later use
-        google.load("visualization", "1", { packages: ["corechart"] });
+        window.google.load("visualization", "1", { packages: ["corechart"] });
     }
     
     render() {

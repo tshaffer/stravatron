@@ -342,7 +342,7 @@ class DetailedActivity extends Component {
                     location={this.state.chartLocation}
                 />
                 <ElevationChart
-                    activity={activity}
+                    streams={activity.streams}
                     onLocationChanged = { this.handleChartLocationChange.bind(this) }
                 />
 

@@ -20,7 +20,7 @@ class ActivityMap extends Component {
             center: myLatlng,
             //mapTypeId: google.maps.MapTypeId.TERRAIN
             mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
+        };
 
         var createNewMap;
         if (!activityMap) {
