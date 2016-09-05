@@ -1,6 +1,6 @@
 import { default as React, Component } from "react";
 
-import { GoogleMap, Polyline } from "react-google-maps";
+import { GoogleMap, Polyline, Circle } from "react-google-maps";
 
 class SimpleMap extends Component {
 
@@ -16,6 +16,7 @@ class SimpleMap extends Component {
             lng: this.props.startLongitude
         };
 
+        let rideStart = null;
 
         if (this.props.mapPolyline) {
 
@@ -28,6 +29,8 @@ class SimpleMap extends Component {
             });
 
             bounds={ bounds };
+
+            rideStart = ridePathDecoded[0];
 
             // <Marker
             //     position= { mapCenter }
@@ -51,6 +54,18 @@ class SimpleMap extends Component {
                         path ={ridePathDecoded}
                         strokeOpacity = "1.0"
                         strokeWeight = "2"
+                    />
+                    
+                    <Circle
+                        strokeColor = '#FFFFFF'
+                        strokeOpacity = "1"
+                        strokeWeight = "2"
+                        fillColor= '#0000FF'
+                        fillOpacity= "1"
+                        center = { rideStart }
+                        radius= {40}
+                        editable = {false}
+                        draggable = {false}
                     />
                 </GoogleMap>
             );

@@ -4,7 +4,18 @@ import * as Converters from '../utilities/converters';
 
 class ElevationChart extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+        };
+
+        this.mapMarker = null;
+    }
+
+
     buildElevationGraph(activity) {
+
+        var self = this;
 
         if (!activity) return;
 
@@ -97,6 +108,57 @@ class ElevationChart extends Component {
         let chart = new google.visualization.LineChart(elevationChart);
 
         chart.draw(dataTable, options);
+
+        // Add our over/out handlers.
+        google.visualization.events.addListener(chart, 'onmouseover', chartMouseOver);
+        google.visualization.events.addListener(chart, 'onmouseout', chartMouseOut);
+
+        function chartMouseOver(e) {
+            chart.setSelection([e]);
+
+            // let item = chart.getSelection();
+            // if (item != undefined) {
+            //     var selectedItem = item[0];
+            //
+            //     //console.log("item selected:  row=" + selectedItem.row + ", column=" + selectedItem.column);
+            //     //console.log("distance is: " + dataTable.getValue(selectedItem.row, 0));
+            //     //console.log("elevation is: " + dataTable.getValue(selectedItem.row, selectedItem.column));
+            //
+            //     var selectedLocation = mapDistanceToLocation[dataTable.getValue(selectedItem.row, 0)];
+            //     if (selectedLocation != undefined) {
+            //         //console.log("selected location: ");
+            //         //console.log(selectedLocation);
+            //         //console.log("lat is: " + selectedLocation.lat() + ", lng is: " + selectedLocation.lng());
+            //
+            //         // erase old marker, if it existed
+            //         if (self.mapMarker != null) {
+            //             self.mapMarker.setMap(null);
+            //         }
+            //
+            //         var markerOptions = {
+            //             strokeColor: '#FFFFFF',
+            //             strokeOpacity: 1,
+            //             strokeWeight: 2,
+            //             fillColor: '#0000FF',
+            //             fillOpacity: 1,
+            //             map: activityMap,
+            //             center: selectedLocation,
+            //             radius: 40,
+            //             editable: false,
+            //             draggable: false
+            //         };
+            //
+            //         self.mapMarker = new google.maps.Circle(markerOptions);
+            //
+            //     }
+            // }
+
+        }
+
+        function chartMouseOut(e) {
+            chart.setSelection([{ 'row': null, 'column': null }]);
+        }
+
     }
 
     render() {
