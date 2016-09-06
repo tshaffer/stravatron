@@ -136,14 +136,19 @@ class ElevationChart extends Component {
 
     render() {
 
-        if (this.refs.elevationChart && this.props.streams) {
+        if (this.refs.elevationChart && this.props.streams.length > 0) {
             this.buildElevationGraph(this.props.streams);
         }
 
         return (
-            <div id="elevationChart" ref="elevationChart"></div>
+            <div id="elevationChart" ref="elevationChart"/>
         );
     }
 }
+
+ElevationChart.propTypes = {
+    streams: React.PropTypes.array.isRequired
+};
+
 
 export default ElevationChart;

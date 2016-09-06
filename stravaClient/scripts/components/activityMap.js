@@ -37,7 +37,7 @@ class ActivityMap extends Component {
             // }
         }
 
-        var pathToDecode = this.props.mapPolyline;
+        const pathToDecode = this.props.mapPolyline;
         const ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
 
         var existingBounds = this.activityMap.getBounds();
@@ -67,7 +67,7 @@ class ActivityMap extends Component {
 
     drawMarker() {
 
-        if (!this.props.location) return;
+        if (!this.props.location || this.props.location.length == 0) return;
 
         const markerLocation = new window.google.maps.LatLng(this.props.location[0], this.props.location[1]);
 
@@ -95,12 +95,12 @@ class ActivityMap extends Component {
 
     render() {
 
-        if (this.refs.activityGMap && this.props.mapPolyline) {
+        if (this.refs.activityGMap && this.props.mapPolyline != "") {
             if (!this.activityMap) {
                 this.initializeMap("activityGMap");
             }
 
-            if (this.props.location) {
+            if (this.props.location && this.props.location.length > 0) {
                 this.drawMarker();
             }
         }
@@ -110,5 +110,13 @@ class ActivityMap extends Component {
         );
     }
 }
+
+ActivityMap.propTypes = {
+    startLatitude: React.PropTypes.number.isRequired,
+    startLongitude: React.PropTypes.number.isRequired,
+    mapPolyline: React.PropTypes.string.isRequired,
+    location: React.PropTypes.array.isRequired
+};
+
 
 export default ActivityMap;

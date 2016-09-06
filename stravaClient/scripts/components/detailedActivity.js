@@ -17,7 +17,7 @@ class DetailedActivity extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            chartLocation: null
+            chartLocation: []
         };
     }
 
@@ -325,9 +325,14 @@ class DetailedActivity extends Component {
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);
         const segmentEffortsTable = this.buildSegmentEffortsTable(activity);
 
-        let mapPolyline = null;
+        let mapPolyline = "";
         if (activity.map && activity.map.polyline) {
             mapPolyline = activity.map.polyline;
+        }
+
+        let streams = [];
+        if (activity.streams) {
+            streams = activity.streams;
         }
 
         return (
@@ -342,8 +347,8 @@ class DetailedActivity extends Component {
                     location={this.state.chartLocation}
                 />
                 <ElevationChart
-                    streams={activity.streams}
-                    onLocationChanged = { this.handleChartLocationChange.bind(this) }
+                    streams={streams}
+                    onLocationChanged = {this.handleChartLocationChange.bind(this)}
                 />
 
                 {segmentEffortsTable}
