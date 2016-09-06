@@ -2,14 +2,6 @@ import React, { Component } from 'react';
 
 import * as Converters from '../utilities/converters';
 
-let activityMap = null;
-let activityPath = null;
-let ridePathDecoded = null;
-let google = null;
-let startMarker = null;
-let mapMarker = null;
-
-
 class ElevationChart extends Component {
 
     constructor(props) {
@@ -17,10 +9,6 @@ class ElevationChart extends Component {
         this.state = {
         };
         this.chartDrawn = false;
-    }
-
-    componentWillMount() {
-        google = window.google;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -60,7 +48,7 @@ class ElevationChart extends Component {
             return;
         }
 
-        var dataTable = new google.visualization.DataTable();
+        var dataTable = new window.google.visualization.DataTable();
         dataTable.addColumn('number', 'Distance');
         dataTable.addColumn('number', 'Elevation');
         dataTable.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
@@ -115,14 +103,14 @@ class ElevationChart extends Component {
         };
 
         let elevationChart = this.refs.elevationChart;
-        var chart = new google.visualization.LineChart(elevationChart);
+        var chart = new window.google.visualization.LineChart(elevationChart);
 
         chart.draw(dataTable, options);
         this.chartDrawn = true;
 
         // Add our over/out handlers.
-        google.visualization.events.addListener(chart, 'onmouseover', chartMouseOver);
-        google.visualization.events.addListener(chart, 'onmouseout', chartMouseOut);
+        window.google.visualization.events.addListener(chart, 'onmouseover', chartMouseOver);
+        window.google.visualization.events.addListener(chart, 'onmouseout', chartMouseOut);
 
         let self = this;
 
