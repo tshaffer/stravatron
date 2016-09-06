@@ -98,8 +98,9 @@ class ElevationChart extends Component {
             tooltip: {
                 isHtml: true
             },
-            //curveType: 'function'
-            width: 1800
+            // width: 1800
+            // width of 1500 looks best on laptop
+            width: 1500
         };
 
         let elevationChart = this.elevationChart;
