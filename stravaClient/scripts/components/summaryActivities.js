@@ -65,6 +65,21 @@ class SummaryActivities extends Component {
                 activities.push(activitiesLUT[key]);
             }
         }
+        
+        // sort by start_date
+        activities.sort( (a, b) => {
+
+            const asd = a.startDate;
+            const bsd = b.startDate;
+
+            if (asd > bsd) {
+                return -1;
+            }
+            if (asd < bsd) {
+                return 1;
+            }
+            return 0;
+        });
 
         let summaryActivityRows = activities.map(function(activity) {
             const summaryActivityRow = self.buildSummaryActivityRow(activity);
