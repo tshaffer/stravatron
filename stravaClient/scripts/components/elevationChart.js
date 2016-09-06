@@ -102,7 +102,7 @@ class ElevationChart extends Component {
             width: 1800
         };
 
-        let elevationChart = this.refs.elevationChart;
+        let elevationChart = this.elevationChart;
         var chart = new window.google.visualization.LineChart(elevationChart);
 
         chart.draw(dataTable, options);
@@ -136,12 +136,12 @@ class ElevationChart extends Component {
 
     render() {
 
-        if (this.refs.elevationChart && this.props.streams.length > 0) {
+        if (this.elevationChart && this.props.streams.length > 0) {
             this.buildElevationGraph(this.props.streams);
         }
 
         return (
-            <div id="elevationChart" ref="elevationChart"/>
+            <div id="elevationChart" ref={(c) => { this.elevationChart = c; }}/>
         );
     }
 }

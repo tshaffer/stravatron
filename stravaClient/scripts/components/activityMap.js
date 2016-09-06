@@ -95,7 +95,7 @@ class ActivityMap extends Component {
 
     render() {
 
-        if (this.refs.activityGMap && this.props.mapPolyline != "") {
+        if (this.activityGMap && this.props.mapPolyline != "") {
             if (!this.activityMap) {
                 this.initializeMap("activityGMap");
             }
@@ -106,7 +106,7 @@ class ActivityMap extends Component {
         }
 
         return (
-            <div id="activityGMap" ref="activityGMap"/>
+            <div id="activityGMap" ref={(c) => { this.activityGMap = c; }}/>
         );
     }
 }
