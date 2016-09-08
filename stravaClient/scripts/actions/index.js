@@ -92,58 +92,6 @@ function getResponseData() {
     return responseData;
 }
 
-
-// function fetchStreamFromStrava(responseData, detailedActivityData, detailedActivityIdToFetchFromServer, detailedActivityIdsToFetchFromServer, idsOfActivitiesFetchedFromStrava) {
-//
-//     var str = "";
-//
-//     var options = {
-//         host: 'www.strava.com',
-//         path: '/api/v3/activities/' + detailedActivityIdToFetchFromServer.toString() + '/streams/time,latlng,distance,altitude,grade_smooth',
-//         port: 443,
-//         headers: {
-//             'Authorization': 'Bearer ' + responseData.accessToken
-//         }
-//     };
-//
-//     https.get(options, function (streamResponse) {
-//         console.log('STATUS: ' + streamResponse.statusCode);
-//         console.log('HEADERS: ' + JSON.stringify(streamResponse.headers));
-//
-//         streamResponse.on('data', function (d) {
-//             str += d;
-//             console.log("stream chunk received for detailedActivityIdToFetchFromServer = " + detailedActivityIdToFetchFromServer);
-//         });
-//
-//         streamResponse.on('end', function () {
-//             console.log("end received for stream fetch of detailedActivityIdToFetchFromServer = " + detailedActivityIdToFetchFromServer);
-//
-//             idsOfActivitiesFetchedFromStrava.push(detailedActivityIdToFetchFromServer);
-//
-//             // what is the length of the stream?
-//             detailedActivityData.stream = str;
-//             console.log("length of stream string is: " + detailedActivityData.stream.length);
-//
-//             // convert from Strava JSON format into the format digestible by the db
-//             var convertedActivity = convertDetailedActivity(detailedActivityData);
-//             responseData.detailedActivitiesToReturn.push(convertedActivity);
-//
-//             // retrieve segment effort ids (and segment id's?) from detailed activity
-//             segmentEfforts = detailedActivityData.segment_efforts;
-//             console.log("number of segment efforts for this activity is " + segmentEfforts.length);
-//
-//             segmentEfforts.forEach(addSegmentEffortIdToDB);
-//
-//             console.log("check for completion");
-//             if (idsOfActivitiesFetchedFromStrava.length == Object.keys(detailedActivityIdsToFetchFromServer).length) {
-//                 console.log("all detailed activities fetched from strava");
-//                 sendActivitiesResponse(responseData.serverResponse, responseData.detailedActivitiesToReturn);
-//                 return;
-//             }
-//         });
-//     });
-// }
-
 function fetchStravaData(endPoint) {
 
     console.log("actions/index.js::fetchStravaData from " + endPoint);
