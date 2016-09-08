@@ -1,4 +1,4 @@
-import { ADD_ACTIVITIES, ADD_DETAILED_ACTIVITY_ATTRIBUTES } from '../actions/index';
+import { ADD_ACTIVITIES, ADD_DETAILED_ACTIVITY_ATTRIBUTES, ADD_ACTIVITY_MAP } from '../actions/index';
 import Activity from '../entities/activity';
 
 const initialState =
@@ -26,6 +26,36 @@ export default function(state = initialState, action) {
                 activitiesById: newActivitiesById
             };
             return newState;
+        }
+
+        case ADD_ACTIVITY_MAP: {
+
+            newActivitiesById = Object.assign( {}, state.activitiesById);
+
+            const activityId = action.activityId;
+
+            if (activityId in state.activitiesById) {
+
+                let activity = state.activitiesById[activityId];
+
+                const map = action.map;
+
+                let newActivity = new Activity();
+                newActivity = Object.assign(newActivity, activity);
+
+                newActivity.map =
+                {
+                    id: map.id,
+                    polyline: map.polyline
+                };
+                newActivitiesById[activityId] = newActivity;
+            }
+
+            newState = {
+                activitiesById: newActivitiesById
+            };
+            return newState;
+
         }
 
         case ADD_DETAILED_ACTIVITY_ATTRIBUTES: {

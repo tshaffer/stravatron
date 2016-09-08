@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { loadDetailedActivity } from '../actions/index';
+import { loadActivityMap } from '../actions/index';
 
 import ActivityMap from './activityMap';
 
@@ -26,7 +26,7 @@ class MapOfRides extends Component {
         this.setState({activityIds: activityIds});
 
         activityIds.forEach( (activityId) => {
-            this.props.loadDetailedActivity(activityId);
+            this.props.loadActivityMap(activityId);
         });
     }
 
@@ -93,12 +93,12 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({loadDetailedActivity},
+    return bindActionCreators({loadActivityMap},
         dispatch);
 }
 
 MapOfRides.propTypes = {
-    loadDetailedActivity: React.PropTypes.func.isRequired,
+    loadActivityMap: React.PropTypes.func.isRequired,
     activities: React.PropTypes.object.isRequired
 };
 

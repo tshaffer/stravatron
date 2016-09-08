@@ -27,6 +27,18 @@ export function addActivities(activities) {
     };
 }
 
+
+export const ADD_ACTIVITY_MAP = 'ADD_ACTIVITY_MAP';
+export function addActivityMap(activityId, map) {
+
+    return {
+        type: ADD_ACTIVITY_MAP,
+        activityId,
+        map
+    };
+}
+
+
 export const ADD_DETAILED_ACTIVITY_ATTRIBUTES = 'ADD_DETAILED_ACTIVITY_ATTRIBUTES';
 export function addDetailedActivityAttributes(activityId, detailedActivityAttributes) {
 
@@ -165,6 +177,18 @@ function fetchSegment(segmentId) {
     });
 }
 
+export function loadActivityMap(activityId) {
+
+    return function(dispatch, getState) {
+
+        console.log("actions/index.js::loadActivityMap invoked");
+        fetchStravaData("activities/" + activityId).then((stravaDetailedActivity)=> {
+            dispatch(addActivityMap(stravaDetailedActivity.id, stravaDetailedActivity.map));
+            debugger;
+            let s = getState();
+        });
+    };
+}
 
 export function loadDetailedActivity(activityId) {
 
@@ -199,8 +223,6 @@ export function loadDetailedActivity(activityId) {
                         "streams": stravaStreams
                     };
                 dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
-
-                const s=getState();
             });
 
             let segments = [];
