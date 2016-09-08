@@ -80,6 +80,7 @@ class MapOfRides extends Component {
                     polylineColors={["#FF0000","#0000FF"]}
                     location={[]}
                     totalActivities={this.state.activityIds.length}
+                    mapHeight={"760px"}
                 />
             </div>
         );

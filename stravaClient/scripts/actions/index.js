@@ -184,7 +184,6 @@ export function loadActivityMap(activityId) {
         console.log("actions/index.js::loadActivityMap invoked");
         fetchStravaData("activities/" + activityId).then((stravaDetailedActivity)=> {
             dispatch(addActivityMap(stravaDetailedActivity.id, stravaDetailedActivity.map));
-            debugger;
             let s = getState();
         });
     };

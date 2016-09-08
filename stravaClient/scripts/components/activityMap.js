@@ -58,16 +58,6 @@ class ActivityMap extends Component {
             setTimeout(function () { this.activityMap.fitBounds(bounds); }, 1);
         }
 
-        // let activityPath = new window.google.maps.Polyline({
-        //     path: ridePathDecoded,
-        //     strokeColor: "#FF0000",
-        //     strokeOpacity: 1.0,
-        //     strokeWeight: 2,
-        //     map: this.activityMap
-        // });
-
-        // this.props.mapPolylines.forEach( (mapPolyline) => {
-
         for (let i = 0; i < this.props.mapPolylines.length; i++) {
 
             const activityPath = this.props.mapPolylines[i];
@@ -135,6 +125,9 @@ class ActivityMap extends Component {
         }
 
         if (this.activityGMap && allDataLoaded) {
+
+            this.activityGMap.style.height = this.props.mapHeight;
+
             if (!this.activityMap) {
                 this.initializeMap("activityGMap");
             }
@@ -157,6 +150,7 @@ ActivityMap.propTypes = {
     polylineColors: React.PropTypes.array.isRequired,
     location: React.PropTypes.array.isRequired,
     totalActivities: React.PropTypes.number.isRequired,
+    mapHeight: React.PropTypes.string.isRequired
 };
 
 

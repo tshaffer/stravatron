@@ -344,7 +344,10 @@ class DetailedActivity extends Component {
                     startLatitude={activity.startLatitude}
                     startLongitude={activity.startLongitude}
                     mapPolylines={[mapPolyline]}
+                    polylineColors={["#FF0000","#0000FF"]}
                     location={this.state.chartLocation}
+                    totalActivities={1}
+                    mapHeight={"400px"}
                 />
                 <ElevationChart
                     streams={streams}
