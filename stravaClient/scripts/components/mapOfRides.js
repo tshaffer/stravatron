@@ -23,10 +23,14 @@ class MapOfRides extends Component {
 
         this.setState({activityIds: activityIds});
 
-        this.props.loadDetailedActivity(activityIds[0]);
+        activityIds.forEach( (activityId) => {
+            this.props.loadDetailedActivity(activityId);
+        });
     }
 
     render() {
+
+        console.log("mapOfRides render invoked");
 
         const defaultJSX = (
             <div>
@@ -39,21 +43,31 @@ class MapOfRides extends Component {
             return defaultJSX;
         }
 
-        const activity = this.props.activities.activitiesById[this.state.activityIds[0]];
+        const firstActivity = this.props.activities.activitiesById[this.state.activityIds[0]];
 
-        let mapPolyline = "";
-        if (activity.map && activity.map.polyline) {
-            mapPolyline = activity.map.polyline;
-        }
+        let mapPolylines = [];
+
+        this.state.activityIds.forEach( (activityId) => {
+            const activity = this.props.activities.activitiesById[activityId];
+            if (!activity.map || !activity.map.polyline || activity.map.polyline == "") {
+                return defaultJSX;
+            }
+            mapPolylines.push(activity.map.polyline);
+        });
+
+        // let mapPolyline = "";
+        // if (activity.map && activity.map.polyline) {
+        //     mapPolyline = activity.map.polyline;
+        // }
 
         return (
             <div>
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
                 <ActivityMap
-                    startLatitude={activity.startLatitude}
-                    startLongitude={activity.startLongitude}
-                    mapPolyline={mapPolyline}
+                    startLatitude={firstActivity.startLatitude}
+                    startLongitude={firstActivity.startLongitude}
+                    mapPolylines={mapPolylines}
                     location={[]}
                 />
             </div>

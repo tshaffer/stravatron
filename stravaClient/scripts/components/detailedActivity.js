@@ -343,7 +343,7 @@ class DetailedActivity extends Component {
                 <ActivityMap
                     startLatitude={activity.startLatitude}
                     startLongitude={activity.startLongitude}
-                    mapPolyline={mapPolyline}
+                    mapPolylines={[mapPolyline]}
                     location={this.state.chartLocation}
                 />
                 <ElevationChart

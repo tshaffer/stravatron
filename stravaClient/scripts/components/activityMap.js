@@ -37,7 +37,7 @@ class ActivityMap extends Component {
             // }
         }
 
-        const pathToDecode = this.props.mapPolyline;
+        const pathToDecode = this.props.mapPolylines[0];
         const ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
 
         var existingBounds = this.activityMap.getBounds();
@@ -95,7 +95,7 @@ class ActivityMap extends Component {
 
     render() {
 
-        if (this.activityGMap && this.props.mapPolyline != "") {
+        if (this.activityGMap && this.props.mapPolylines[0] != "") {
             if (!this.activityMap) {
                 this.initializeMap("activityGMap");
             }
@@ -114,7 +114,7 @@ class ActivityMap extends Component {
 ActivityMap.propTypes = {
     startLatitude: React.PropTypes.number.isRequired,
     startLongitude: React.PropTypes.number.isRequired,
-    mapPolyline: React.PropTypes.string.isRequired,
+    mapPolylines: React.PropTypes.array.isRequired,
     location: React.PropTypes.array.isRequired
 };
 
