@@ -47,27 +47,27 @@ class MapOfRides extends Component {
 
         const firstActivity = this.props.activities.activitiesById[this.state.activityIds[0]];
 
-        let mapPolylines = [];
+        let mapLoaded = true;
 
-        let mapFullyLoaded = true;
+        const strokeColors = ["red", "blue", "purple", "green"];
+        let activityIndex = 0;
+        let activitiesData = [];
+
         this.state.activityIds.forEach( (activityId) => {
             const activity = this.props.activities.activitiesById[activityId];
             if (!activity.map || !activity.map.polyline || activity.map.polyline == "") {
-                mapFullyLoaded = false;
+                mapLoaded = false;
                 return;
             }
-            mapPolylines.push(activity.map.polyline);
+            const activityData =
+                {
+                    polyline: activity.map.polyline,
+                    strokeColor: strokeColors[activityIndex % 4]
+                };
+            activitiesData.push(activityData);
+            activityIndex++;
         });
-        // if (!mapFullyLoaded) {
-        //     return defaultJSX;
-        // }
-
-        console.log("number of lines sent to ActivityMap is ", mapPolylines.length);
-
-        // let mapPolyline = "";
-        // if (activity.map && activity.map.polyline) {
-        //     mapPolyline = activity.map.polyline;
-        // }
+        console.log("number of activities sent to ActivityMap is ", activitiesData.length);
 
         return (
             <div>
@@ -76,8 +76,7 @@ class MapOfRides extends Component {
                 <ActivityMap
                     startLatitude={firstActivity.startLatitude}
                     startLongitude={firstActivity.startLongitude}
-                    mapPolylines={mapPolylines}
-                    polylineColors={["#FF0000","#0000FF"]}
+                    activitiesData={activitiesData}
                     location={[]}
                     totalActivities={this.state.activityIds.length}
                     mapHeight={"760px"}
@@ -99,6 +98,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 MapOfRides.propTypes = {
+    params: React.PropTypes.string.isRequired,
     loadActivityMap: React.PropTypes.func.isRequired,
     activities: React.PropTypes.object.isRequired
 };

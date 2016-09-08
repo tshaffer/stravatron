@@ -330,6 +330,13 @@ class DetailedActivity extends Component {
             mapPolyline = activity.map.polyline;
         }
 
+        const activityData =
+            {
+                polyline: mapPolyline,
+                strokeColor: "red"
+            };
+        const activitiesData = [activityData];
+
         let streams = [];
         if (activity.streams) {
             streams = activity.streams;
@@ -343,8 +350,7 @@ class DetailedActivity extends Component {
                 <ActivityMap
                     startLatitude={activity.startLatitude}
                     startLongitude={activity.startLongitude}
-                    mapPolylines={[mapPolyline]}
-                    polylineColors={["#FF0000","#0000FF"]}
+                    activitiesData={activitiesData}
                     location={this.state.chartLocation}
                     totalActivities={1}
                     mapHeight={"400px"}

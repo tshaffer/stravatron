@@ -41,7 +41,7 @@ class ActivityMap extends Component {
             // }
         }
 
-        const pathToDecode = this.props.mapPolylines[0];
+        const pathToDecode = this.props.activitiesData[0].polyline;
         const ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
 
         var existingBounds = this.activityMap.getBounds();
@@ -58,16 +58,18 @@ class ActivityMap extends Component {
             setTimeout(function () { this.activityMap.fitBounds(bounds); }, 1);
         }
 
-        for (let i = 0; i < this.props.mapPolylines.length; i++) {
+        for (let i = 0; i < this.props.activitiesData.length; i++) {
 
-            const activityPath = this.props.mapPolylines[i];
-            const activityColor = this.props.polylineColors[i];
+            const activityData = this.props.activitiesData[i];
+
+            const activityPath = activityData.polyline;
+            const strokeColor = activityData.strokeColor;
             const activityPathDecoded = window.google.maps.geometry.encoding.decodePath(activityPath);
 
             console.log("draw polyline");
             let polyline = new window.google.maps.Polyline({
                 path: activityPathDecoded,
-                strokeColor: activityColor,
+                strokeColor: strokeColor,
                 strokeOpacity: 1.0,
                 strokeWeight: 2,
                 map: this.activityMap
@@ -109,13 +111,13 @@ class ActivityMap extends Component {
     render() {
 
         // ensure that all map data has loaded
-        console.log("number of lines is ", this.props.mapPolylines.length);
+        console.log("number of lines is ", this.props.activitiesData.length);
         console.log("total activities is ", this.props.totalActivities);
 
         let allDataLoaded = true;
-        if (this.props.mapPolylines.length == this.props.totalActivities) {
-            this.props.mapPolylines.forEach( (mapPolyline) => {
-                if (mapPolyline == "") {
+        if (this.props.activitiesData.length == this.props.totalActivities) {
+            this.props.activitiesData.forEach( (activityData) => {
+                if (activityData.polyline == "") {
                     allDataLoaded = false;
                 }
             });
@@ -146,11 +148,10 @@ class ActivityMap extends Component {
 ActivityMap.propTypes = {
     startLatitude: React.PropTypes.number.isRequired,
     startLongitude: React.PropTypes.number.isRequired,
-    mapPolylines: React.PropTypes.array.isRequired,
-    polylineColors: React.PropTypes.array.isRequired,
     location: React.PropTypes.array.isRequired,
     totalActivities: React.PropTypes.number.isRequired,
-    mapHeight: React.PropTypes.string.isRequired
+    mapHeight: React.PropTypes.string.isRequired,
+    activitiesData: React.PropTypes.array.isRequired
 };
 
 
