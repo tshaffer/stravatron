@@ -101,6 +101,10 @@ class SummaryActivities extends Component {
                 }
             }
         }
+
+        if (selectedActivityIds.length === 0) return;
+
+        hashHistory.push('/mapOfRides/' + selectedActivityIds);
     }
 
     render() {

@@ -16,6 +16,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import App from './components/app';
 import DetailedActivity from './components/detailedActivity';
+import MapOfRides from './components/mapOfRides';
 
 const store = createStore(
     reducers,
@@ -34,6 +35,7 @@ ReactDOM.render(
         <Router history={hashHistory}>
             <Route path="/" component={App} />
             <Route path="/detailedActivity/:id" component={DetailedActivity} />
+            <Route path="/mapOfRides/:ids" component={MapOfRides} />
         </Router>
     </Provider>
     , document.getElementById('content'));
