@@ -23,7 +23,7 @@ class SummaryActivities extends Component {
         return (
             <tr key={activity.id}>
                 <td>
-                    <input type='checkbox'/>
+                    <input type='checkbox' id={activity.id} ref={(c) => { this[activity.id] = c; }}/>
                 </td>
                 <td>
                     {Converters.getDateTime(activity.startDateLocal)}
@@ -89,12 +89,27 @@ class SummaryActivities extends Component {
 
     }
 
+    mapSelectedRides() {
+        console.log("mapSelectedRides invoked");
+
+        let selectedActivityIds = [];
+
+        for (const activityId in this.props.activities.activitiesById) {
+            if (this.props.activities.activitiesById.hasOwnProperty(activityId)) {
+                if (document.getElementById(activityId).checked) {
+                    selectedActivityIds.push(activityId);
+                }
+            }
+        }
+    }
+
     render() {
 
         const summaryActivityRows = this.buildSummaryActivityRows();
 
         return (
             <div id="SummaryActivities">
+                <button type="button" id="btnMapSelectedRides" onClick={() => this.mapSelectedRides()}>Map selected rides</button>
                 <button type="button" id="btnCompareSelectedRides">Compare selected rides</button>
                 <table id="activitiesTable">
                     <thead>
