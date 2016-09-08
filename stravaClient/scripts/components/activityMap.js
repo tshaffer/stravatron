@@ -9,6 +9,10 @@ class ActivityMap extends Component {
         this.mapMarker = null;
     }
 
+    componentDidMount() {
+        console.log("activityMap did mount");
+    }
+
     initializeMap(mapId) {
 
         var myLatlng = new window.google.maps.LatLng(this.props.startLatitude, this.props.startLongitude);
@@ -53,13 +57,32 @@ class ActivityMap extends Component {
         else {
             setTimeout(function () { this.activityMap.fitBounds(bounds); }, 1);
         }
-        let activityPath = new window.google.maps.Polyline({
-            path: ridePathDecoded,
-            strokeColor: "#FF0000",
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-            map: this.activityMap
-        });
+
+        // let activityPath = new window.google.maps.Polyline({
+        //     path: ridePathDecoded,
+        //     strokeColor: "#FF0000",
+        //     strokeOpacity: 1.0,
+        //     strokeWeight: 2,
+        //     map: this.activityMap
+        // });
+
+        // this.props.mapPolylines.forEach( (mapPolyline) => {
+
+        for (let i = 0; i < this.props.mapPolylines.length; i++) {
+
+            const activityPath = this.props.mapPolylines[i];
+            const activityColor = this.props.polylineColors[i];
+            const activityPathDecoded = window.google.maps.geometry.encoding.decodePath(activityPath);
+
+            console.log("draw polyline");
+            let polyline = new window.google.maps.Polyline({
+                path: activityPathDecoded,
+                strokeColor: activityColor,
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+                map: this.activityMap
+            });
+        }
 
         this.drawMarker();
     }
@@ -95,7 +118,23 @@ class ActivityMap extends Component {
 
     render() {
 
-        if (this.activityGMap && this.props.mapPolylines[0] != "") {
+        // ensure that all map data has loaded
+        console.log("number of lines is ", this.props.mapPolylines.length);
+        console.log("total activities is ", this.props.totalActivities);
+
+        let allDataLoaded = true;
+        if (this.props.mapPolylines.length == this.props.totalActivities) {
+            this.props.mapPolylines.forEach( (mapPolyline) => {
+                if (mapPolyline == "") {
+                    allDataLoaded = false;
+                }
+            });
+        }
+        else {
+            allDataLoaded = false;
+        }
+
+        if (this.activityGMap && allDataLoaded) {
             if (!this.activityMap) {
                 this.initializeMap("activityGMap");
             }
@@ -115,7 +154,9 @@ ActivityMap.propTypes = {
     startLatitude: React.PropTypes.number.isRequired,
     startLongitude: React.PropTypes.number.isRequired,
     mapPolylines: React.PropTypes.array.isRequired,
-    location: React.PropTypes.array.isRequired
+    polylineColors: React.PropTypes.array.isRequired,
+    location: React.PropTypes.array.isRequired,
+    totalActivities: React.PropTypes.number.isRequired,
 };
 
 

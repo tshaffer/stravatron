@@ -17,7 +17,9 @@ class MapOfRides extends Component {
     }
 
 
-    componentDidMount() {
+    componentWillMount() {
+
+        console.log("mapOfRides componentWillMount invoked");
 
         const activityIds = this.props.params.ids.split(",");
 
@@ -30,7 +32,7 @@ class MapOfRides extends Component {
 
     render() {
 
-        console.log("mapOfRides render invoked");
+        console.log("mapOfRides render invoked, number of activities is ", this.state.activityIds.length);
 
         const defaultJSX = (
             <div>
@@ -47,13 +49,20 @@ class MapOfRides extends Component {
 
         let mapPolylines = [];
 
+        let mapFullyLoaded = true;
         this.state.activityIds.forEach( (activityId) => {
             const activity = this.props.activities.activitiesById[activityId];
             if (!activity.map || !activity.map.polyline || activity.map.polyline == "") {
-                return defaultJSX;
+                mapFullyLoaded = false;
+                return;
             }
             mapPolylines.push(activity.map.polyline);
         });
+        // if (!mapFullyLoaded) {
+        //     return defaultJSX;
+        // }
+
+        console.log("number of lines sent to ActivityMap is ", mapPolylines.length);
 
         // let mapPolyline = "";
         // if (activity.map && activity.map.polyline) {
@@ -68,7 +77,9 @@ class MapOfRides extends Component {
                     startLatitude={firstActivity.startLatitude}
                     startLongitude={firstActivity.startLongitude}
                     mapPolylines={mapPolylines}
+                    polylineColors={["#FF0000","#0000FF"]}
                     location={[]}
+                    totalActivities={this.state.activityIds.length}
                 />
             </div>
         );
