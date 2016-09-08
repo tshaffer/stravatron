@@ -69,15 +69,15 @@ export function addSegmentEfforts(segmentEfforts) {
 function getAthleteData() {
     
     let athlete = {};
-    // athlete.id = "2843574";
-    // athlete.firstName = "Ted";
-    // athlete.lastName = "Shaffer";
-    // athlete.email = "shaffer_family@yahoo.com";
-
-    athlete.id = "7085811";
-    athlete.firstName = "Lori";
+    athlete.id = "2843574";
+    athlete.firstName = "Ted";
     athlete.lastName = "Shaffer";
-    athlete.email = "loriashaffer@gmail.com";
+    athlete.email = "shaffer_family@yahoo.com";
+
+    // athlete.id = "7085811";
+    // athlete.firstName = "Lori";
+    // athlete.lastName = "Shaffer";
+    // athlete.email = "loriashaffer@gmail.com";
 
     return athlete;
 }
@@ -85,8 +85,8 @@ function getAthleteData() {
 function getResponseData() {
 
     let responseData = {};
-    // responseData.accessToken = "fb8085cc4c7f3633533e875eae3dc1e04cef06e8";
-    responseData.accessToken = "29ef6b106ea16378e27f6031c60a79a4d445d489";
+    responseData.accessToken = "fb8085cc4c7f3633533e875eae3dc1e04cef06e8";          // pa
+    // responseData.accessToken = "29ef6b106ea16378e27f6031c60a79a4d445d489";       // ma
     responseData.athlete = getAthleteData();
 
     return responseData;
@@ -276,8 +276,8 @@ export function loadDetailedActivity(activityId) {
 
             // retrieve all efforts for each of the segments in this activity
             let fetchAllEffortsPromises = [];
-            // const athleteId = "2843574";
-            const athleteId = "7085811";
+            const athleteId = "2843574";            // pa
+            // const athleteId = "7085811";         // ma
             segmentIds.forEach((segmentId) => {
                 fetchAllEffortsPromises.push(fetchAllEfforts(athleteId, segmentId));
             });
