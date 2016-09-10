@@ -17,7 +17,6 @@ function addEffortsForSegment(segmentId, effortsForSegment) {
     };
 }
 
-
 export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
 export function addActivities(activities) {
 
@@ -332,14 +331,23 @@ export function loadSummaryActivities() {
     };
 }
 
-export function listStarredSegments() {
+export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
+export function SetBaseMapSegments(baseMapSegments) {
+
+    return {
+        type: SET_BASE_MAP_SEGMENTS,
+        baseMapSegments
+    };
+}
+
+export function retrieveBaseMapSegments() {
 
     let baseMapSegmentIds = [];
     let baseMapSegments = [];
 
     return function(dispatch, getState) {
 
-        console.log("actions/index.js::listStarredSegments invoked");
+        console.log("actions/index.js::retrieveBaseMapSegments invoked");
         fetchStravaData("segments/starred").then((starredSegments)=> {
 
             // retrieve the starred segments for the chosen locale
@@ -367,12 +375,16 @@ export function listStarredSegments() {
                     let baseMapSegment = {
                         id: baseSegment.id,
                         name: baseSegment.name,
-                        polyline: baseSegment.map.polyline
+                        polyline: baseSegment.map.polyline,
+                        startLatitude: baseSegment.start_latitude,
+                        startLongitude: baseSegment.start_longitude
                     };
                     baseMapSegments.push(baseMapSegment);
                 });
 
-                debugger;
+                // add to redux
+                dispatch(SetBaseMapSegments(baseMapSegments));
+
             });
         });
     };
