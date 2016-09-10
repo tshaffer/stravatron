@@ -89,6 +89,14 @@ class SummaryActivities extends Component {
 
     }
 
+    mapStarredSegments() {
+
+        console.log("mapStarredSegments invoked");
+
+        hashHistory.push('/mapStarredSegments');
+
+    }
+
     mapSelectedRides() {
         console.log("mapSelectedRides invoked");
 
@@ -113,6 +121,7 @@ class SummaryActivities extends Component {
 
         return (
             <div id="SummaryActivities">
+                <button type="button" id="btnMapStarredSegments" onClick={() => this.mapStarredSegments()}>Map of starred segments</button>
                 <button type="button" id="btnMapSelectedRides" onClick={() => this.mapSelectedRides()}>Map selected rides</button>
                 <button type="button" id="btnCompareSelectedRides">Compare selected rides</button>
                 <table id="activitiesTable">

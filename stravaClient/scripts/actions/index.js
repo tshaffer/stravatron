@@ -332,3 +332,49 @@ export function loadSummaryActivities() {
     };
 }
 
+export function listStarredSegments() {
+
+    let baseMapSegmentIds = [];
+    let baseMapSegments = [];
+
+    return function(dispatch, getState) {
+
+        console.log("actions/index.js::listStarredSegments invoked");
+        fetchStravaData("segments/starred").then((starredSegments)=> {
+
+            // retrieve the starred segments for the chosen locale
+            starredSegments.forEach( (segment) => {
+                // console.log(segment.name + " in " + segment.city);
+
+                // only retrieve segment id's for the appropriate cities
+                if (segment.city === "Santa Cruz" || segment.city === "Felton") {
+                    console.log("relevant segment ", segment.name, " has id: " + segment.id);
+
+                    baseMapSegmentIds.push(segment.id);
+                }
+            });
+
+            // get the detailed segment data for each of the starred segments
+            let fetchSegmentPromises = [];
+            baseMapSegmentIds.forEach( (segmentId) => {
+                fetchSegmentPromises.push(fetchSegment(segmentId));
+            });
+
+            // wait until all data has been received
+            Promise.all(fetchSegmentPromises).then(baseSegments => {
+
+                baseSegments.forEach( (baseSegment) => {
+                    let baseMapSegment = {
+                        id: baseSegment.id,
+                        name: baseSegment.name,
+                        polyline: baseSegment.map.polyline
+                    };
+                    baseMapSegments.push(baseMapSegment);
+                });
+
+                debugger;
+            });
+        });
+    };
+
+}
