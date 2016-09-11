@@ -27,6 +27,36 @@ class ActivityMap extends Component {
             zoom: 13 // starting zoom
         });
 
+        debugger;
+        const pathToDecode = this.props.activitiesData[0].polyline;
+        const ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
+
+        let coordinates = [];
+        ridePathDecoded.forEach( (location) => {
+            let longitude = location.lng();
+            let latitude = location.lat();
+            let lngLat = [ longitude, latitude ];
+            coordinates.push(lngLat);
+        });
+
+        const fixedCoordinates = [
+            [-122.05525000000002, 37.00222],
+            [-122.05459, 37.002250000000004],
+            [-122.05329, 37.002250000000004],
+            [-122.05259000000001, 37.00217],
+            [-122.05243000000002, 37.00213],
+            [-122.05210000000001, 37.002100000000006],
+            [-122.05204, 37.002210000000005],
+            [-122.05195, 37.002190000000006],
+            [-122.05167000000002, 37.00238],
+            [-122.05168, 37.00251],
+            [-122.05219000000001, 37.002880000000005],
+            [-122.05283000000001, 37.00311],
+            [-122.05299000000001, 37.003150000000005],
+            [-122.05335000000001, 37.003350000000005],
+            [-122.05362000000001, 37.00363]
+        ];
+
         this.activityMap.on('load', function () {
 
             self.activityMap.addSource("points", {
@@ -37,24 +67,7 @@ class ActivityMap extends Component {
                         "type": "Feature",
                         "geometry": {
                             "type": "LineString",
-                            "coordinates": [
-                                [-122.05525000000002, 37.00222],
-                                [-122.05459, 37.002250000000004],
-                                [-122.05329, 37.002250000000004],
-                                [-122.05259000000001, 37.00217],
-                                [-122.05243000000002, 37.00213],
-                                [-122.05210000000001, 37.002100000000006],
-                                [-122.05204, 37.002210000000005],
-                                [-122.05195, 37.002190000000006],
-                                [-122.05167000000002, 37.00238],
-                                [-122.05168, 37.00251],
-                                [-122.05219000000001, 37.002880000000005],
-                                [-122.05283000000001, 37.00311],
-                                [-122.05299000000001, 37.003150000000005],
-                                [-122.05335000000001, 37.003350000000005],
-                                [-122.05362000000001, 37.00363]
-
-                            ]
+                            "coordinates": coordinates,
                         },
                         "properties": {
                             "title": "Poop"
@@ -78,7 +91,7 @@ class ActivityMap extends Component {
                     "text-anchor": "top"
                 }
             });
-            
+
             self.activityMap.addLayer({
                 "id": "points",
                 "type": "line",
