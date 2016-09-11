@@ -342,6 +342,14 @@ class DetailedActivity extends Component {
             streams = activity.streams;
         }
 
+        // <ElevationChart
+        //     streams={streams}
+        //     onLocationChanged = {this.handleChartLocationChange.bind(this)}
+        // />
+        // {segmentEffortsTable}
+
+        // mapHeight={"400px"}
+
         return (
             <div>
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
@@ -353,14 +361,9 @@ class DetailedActivity extends Component {
                     activitiesData={activitiesData}
                     location={this.state.chartLocation}
                     totalActivities={1}
-                    mapHeight={"400px"}
-                />
-                <ElevationChart
-                    streams={streams}
-                    onLocationChanged = {this.handleChartLocationChange.bind(this)}
+                    mapHeight={"760px"}
                 />
 
-                {segmentEffortsTable}
             </div>
         );
     }
