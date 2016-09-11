@@ -19,12 +19,47 @@ class ActivityMap extends Component {
 
         var self = this;
 
+        let minLongitude = 9999;
+        let maxLongitude = -9999;
+        let minLatitude = 9999;
+        let maxLatitude = -9999;
+
+        for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
+            let pathToDecode = self.props.activitiesData[segmentIndex].polyline;
+            let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
+            ridePathDecoded.forEach((location) => {
+                let longitude = location.lng();
+                let latitude = location.lat();
+
+                if (longitude > maxLongitude) maxLongitude = longitude;
+                if (longitude < minLongitude) minLongitude = longitude;
+
+                if (latitude > maxLatitude) maxLatitude = latitude;
+                if (latitude < minLatitude) minLatitude = latitude;
+
+            });
+        }
+
+        const sw = new window.mapboxgl.LngLat(-122.08476000000002, 36.95910000000001);
+        const ne = new window.mapboxgl.LngLat(-122.04053, 37.028940000000006);
+        const lngLatBounds = new window.mapboxgl.LngLatBounds(sw, ne);
+
+        // lngLatBounds = new window.mapboxgl.LngLatBounds(
+        //     new window.mapboxgl.LngLat(minLongitude, minLatitude),
+        //     new window.mapboxgl.LngLat(maxLongitude, maxLatitude)
+        // );
+
+        const longitudeCenter = (minLongitude + maxLongitude) / 2.0;
+        const latitudeCenter = (minLatitude + maxLatitude) / 2.0;
+
         window.mapboxgl.accessToken = 'pk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXN2cjR4dXIwMjgwMm9wZ282cmk0aTgzIn0.9EtSUOr_ofLcwCDLM6FUHw';
         this.activityMap = new window.mapboxgl.Map({
             container: 'mapBoxMap', // container id
             style: 'mapbox://styles/tedshaffer/cisvr76by00122xodeod1qclj',
-            center: [-122.061, 37.007], // starting position
-            zoom: 13 // starting zoom
+            // center: [-122.061, 37.007], // starting position
+            center: [longitudeCenter, latitudeCenter],
+            zoom: 11, // starting zoom,
+            // maxBounds: lngLatBounds
         });
 
 
@@ -70,12 +105,16 @@ class ActivityMap extends Component {
                     "source": sourceName,
                     "layout": {
                         "symbol-placement": "line",
-                        // "icon-image": "{icon}-15",
                         "text-field": "{title}",
-                        "text-size": 8,
+                        "text-size": 10,
                         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
                         "text-offset": [0, 0],
-                        "text-anchor": "top"
+                        "text-anchor": "top",
+                        "text-allow-overlap": true,
+                        "text-ignore-placement": true
+                    },
+                    "paint": {
+                        "text-halo-width": 2
                     }
                 });
 
