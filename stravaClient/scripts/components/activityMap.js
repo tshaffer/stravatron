@@ -17,7 +17,8 @@ class ActivityMap extends Component {
 
         var myLatlng = new window.google.maps.LatLng(this.props.startLatitude, this.props.startLongitude);
         var myOptions = {
-            zoom: 14,
+            // zoom: 14,
+            zoom: 13,
             center: myLatlng,
             mapTypeId: window.google.maps.MapTypeId.ROADMAP
         };
@@ -34,7 +35,7 @@ class ActivityMap extends Component {
             this.activityMap = new window.google.maps.Map(document.getElementById(mapId), myOptions);
         }
         else {
-            this.activityMap.setZoom(14);
+            this.activityMap.setZoom(10);
             this.activityMap.setCenter(myLatlng);
             // if (activityPath != undefined) {
             //     activityPath.setMap(null);
@@ -51,12 +52,12 @@ class ActivityMap extends Component {
             bounds.extend(location);
         });
 
-        if (createNewMap) {
-            this.activityMap.fitBounds(bounds);
-        }
-        else {
-            setTimeout(function () { this.activityMap.fitBounds(bounds); }, 1);
-        }
+        // if (createNewMap) {
+        //     this.activityMap.fitBounds(bounds);
+        // }
+        // else {
+        //     setTimeout(function () { this.activityMap.fitBounds(bounds); }, 1);
+        // }
 
         for (let i = 0; i < this.props.activitiesData.length; i++) {
 
