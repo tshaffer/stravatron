@@ -28,9 +28,15 @@ class ActivityMap extends Component {
         });
 
 
+        let segmentIndex = 0;
+
         this.activityMap.on('load', function () {
 
-            let pathToDecode = self.props.activitiesData[0].polyline;
+            let sourceName = "segment" + segmentIndex.toString();
+            let labelLayerName = "title" + segmentIndex.toString();
+            let lineLayerName = "points" + segmentIndex.toString();
+
+            let pathToDecode = self.props.activitiesData[segmentIndex].polyline;
             let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
 
             let coordinates = [];
@@ -41,7 +47,7 @@ class ActivityMap extends Component {
                 coordinates.push(lngLat);
             });
 
-            self.activityMap.addSource("points", {
+            self.activityMap.addSource(sourceName, {
                 "type": "geojson",
                 "data": {
                     "type": "FeatureCollection",
@@ -52,16 +58,16 @@ class ActivityMap extends Component {
                             "coordinates": coordinates,
                         },
                         "properties": {
-                            "title": "Poop"
+                            "title": self.props.activitiesData[segmentIndex].name
                         }
                     }]
                 }
             });
 
             self.activityMap.addLayer({
-                "id": "title",
+                "id": labelLayerName,
                 "type": "symbol",
-                "source": "points",
+                "source": sourceName,
                 "layout": {
                     "symbol-placement": "line",
                     // "icon-image": "{icon}-15",
@@ -74,9 +80,9 @@ class ActivityMap extends Component {
             });
 
             self.activityMap.addLayer({
-                "id": "points",
+                "id": lineLayerName,
                 "type": "line",
-                "source": "points",
+                "source": sourceName,
                 "layout": {
                     "line-join": "round",
                     "line-cap": "round",

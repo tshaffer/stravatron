@@ -48,6 +48,7 @@ class MapStarredSegments extends Component {
         this.props.baseMapSegments.forEach( baseMapSegment => {
             const mapSegmentData =
                 {
+                    name: baseMapSegment.name,
                     polyline: baseMapSegment.polyline,
                     strokeColor: 'black'
                 };
