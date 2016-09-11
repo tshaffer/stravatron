@@ -28,70 +28,71 @@ class ActivityMap extends Component {
         });
 
 
-        let segmentIndex = 0;
-
         this.activityMap.on('load', function () {
 
-            let sourceName = "segment" + segmentIndex.toString();
-            let labelLayerName = "title" + segmentIndex.toString();
-            let lineLayerName = "points" + segmentIndex.toString();
+            for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
-            let pathToDecode = self.props.activitiesData[segmentIndex].polyline;
-            let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
+                let sourceName = "segment" + segmentIndex.toString();
+                let labelLayerName = "title" + segmentIndex.toString();
+                let lineLayerName = "points" + segmentIndex.toString();
 
-            let coordinates = [];
-            ridePathDecoded.forEach( (location) => {
-                let longitude = location.lng();
-                let latitude = location.lat();
-                let lngLat = [ longitude, latitude ];
-                coordinates.push(lngLat);
-            });
+                let pathToDecode = self.props.activitiesData[segmentIndex].polyline;
+                let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
 
-            self.activityMap.addSource(sourceName, {
-                "type": "geojson",
-                "data": {
-                    "type": "FeatureCollection",
-                    "features": [{
-                        "type": "Feature",
-                        "geometry": {
-                            "type": "LineString",
-                            "coordinates": coordinates,
-                        },
-                        "properties": {
-                            "title": self.props.activitiesData[segmentIndex].name
-                        }
-                    }]
-                }
-            });
+                let coordinates = [];
+                ridePathDecoded.forEach((location) => {
+                    let longitude = location.lng();
+                    let latitude = location.lat();
+                    let lngLat = [longitude, latitude];
+                    coordinates.push(lngLat);
+                });
 
-            self.activityMap.addLayer({
-                "id": labelLayerName,
-                "type": "symbol",
-                "source": sourceName,
-                "layout": {
-                    "symbol-placement": "line",
-                    // "icon-image": "{icon}-15",
-                    "text-field": "{title}",
-                    "text-size": 8,
-                    "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                    "text-offset": [0, 0],
-                    "text-anchor": "top"
-                }
-            });
+                self.activityMap.addSource(sourceName, {
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": [{
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "LineString",
+                                "coordinates": coordinates,
+                            },
+                            "properties": {
+                                "title": self.props.activitiesData[segmentIndex].name
+                            }
+                        }]
+                    }
+                });
 
-            self.activityMap.addLayer({
-                "id": lineLayerName,
-                "type": "line",
-                "source": sourceName,
-                "layout": {
-                    "line-join": "round",
-                    "line-cap": "round",
-                },
-                "paint": {
-                    "line-color": "#888",
-                    "line-width": 2
-                }
-            });
+                self.activityMap.addLayer({
+                    "id": labelLayerName,
+                    "type": "symbol",
+                    "source": sourceName,
+                    "layout": {
+                        "symbol-placement": "line",
+                        // "icon-image": "{icon}-15",
+                        "text-field": "{title}",
+                        "text-size": 8,
+                        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                        "text-offset": [0, 0],
+                        "text-anchor": "top"
+                    }
+                });
+
+                self.activityMap.addLayer({
+                    "id": lineLayerName,
+                    "type": "line",
+                    "source": sourceName,
+                    "layout": {
+                        "line-join": "round",
+                        "line-cap": "round",
+                    },
+                    "paint": {
+                        "line-color": "#888",
+                        "line-width": 2
+                    }
+                });
+            }
         });
 
         // var myLatlng = new window.google.maps.LatLng(this.props.startLatitude, this.props.startLongitude);
