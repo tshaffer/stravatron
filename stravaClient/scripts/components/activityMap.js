@@ -40,14 +40,14 @@ class ActivityMap extends Component {
             });
         }
 
-        const sw = new window.mapboxgl.LngLat(-122.08476000000002, 36.95910000000001);
-        const ne = new window.mapboxgl.LngLat(-122.04053, 37.028940000000006);
-        const lngLatBounds = new window.mapboxgl.LngLatBounds(sw, ne);
-
-        // lngLatBounds = new window.mapboxgl.LngLatBounds(
-        //     new window.mapboxgl.LngLat(minLongitude, minLatitude),
-        //     new window.mapboxgl.LngLat(maxLongitude, maxLatitude)
-        // );
+        // Setting the bounds of the map isn't working
+        // const sw = new window.mapboxgl.LngLat(-122.08476000000002, 37.028940000000006);
+        // const ne = new window.mapboxgl.LngLat(-122.04053, 36.95910000000001);
+        // const lngLatBounds = new window.mapboxgl.LngLatBounds(sw, ne);
+        // // lngLatBounds = new window.mapboxgl.LngLatBounds(
+        // //     new window.mapboxgl.LngLat(minLongitude, minLatitude),
+        // //     new window.mapboxgl.LngLat(maxLongitude, maxLatitude)
+        // // );
 
         const longitudeCenter = (minLongitude + maxLongitude) / 2.0;
         const latitudeCenter = (minLatitude + maxLatitude) / 2.0;
@@ -56,7 +56,6 @@ class ActivityMap extends Component {
         this.activityMap = new window.mapboxgl.Map({
             container: 'mapBoxMap', // container id
             style: 'mapbox://styles/tedshaffer/cisvr76by00122xodeod1qclj',
-            // center: [-122.061, 37.007], // starting position
             center: [longitudeCenter, latitudeCenter],
             zoom: 11, // starting zoom,
             // maxBounds: lngLatBounds
@@ -127,7 +126,7 @@ class ActivityMap extends Component {
                         "line-cap": "round",
                     },
                     "paint": {
-                        "line-color": "#888",
+                        "line-color": "red",
                         "line-width": 2
                     }
                 });
