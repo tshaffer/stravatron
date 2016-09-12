@@ -55,12 +55,12 @@ class ActivityMap extends Component {
         window.mapboxgl.accessToken = 'pk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXN2cjR4dXIwMjgwMm9wZ282cmk0aTgzIn0.9EtSUOr_ofLcwCDLM6FUHw';
         this.activityMap = new window.mapboxgl.Map({
             container: 'mapBoxMap', // container id
-            style: 'mapbox://styles/tedshaffer/cisvr76by00122xodeod1qclj',
+            // style: 'mapbox://styles/tedshaffer/cisvr76by00122xodeod1qclj',
+            style: 'mapbox://styles/tedshaffer/cisz745f6003p2wn0kcdy6vay',
             center: [longitudeCenter, latitudeCenter],
             zoom: 11, // starting zoom,
             // maxBounds: lngLatBounds
         });
-
 
         this.activityMap.on('load', function () {
 
@@ -98,19 +98,23 @@ class ActivityMap extends Component {
                     }
                 });
 
+                // "symbol-placement": "line",
+                // "text-anchor": "top",
+
                 self.activityMap.addLayer({
                     "id": labelLayerName,
                     "type": "symbol",
                     "source": sourceName,
                     "layout": {
-                        "symbol-placement": "line",
+                        "symbol-placement": "point",
                         "text-field": "{title}",
                         "text-size": 10,
                         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
                         "text-offset": [0, 0],
-                        "text-anchor": "top",
+                        "text-anchor": "left",
                         "text-allow-overlap": true,
-                        "text-ignore-placement": true
+                        "text-ignore-placement": true,
+                        "text-max-angle": 360
                     },
                     "paint": {
                         "text-halo-width": 2
