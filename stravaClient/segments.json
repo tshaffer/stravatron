@@ -1,0 +1,38 @@
+{
+  "version": 8,
+  "name": "Santa Cruz",
+  "segments": [
+    {
+      "id": "643126",
+      "name": "Inzane Gray",
+      "origin": "first",
+      "layout": {
+        "symbol-placement": "point",
+        "text-field": "{title}",
+        "text-size": 10,
+        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+        "text-offset": [0, 0],
+        "text-anchor": "left",
+        "text-allow-overlap": true,
+        "text-ignore-placement": true,
+        "text-max-angle": 360
+      }
+    },
+    {
+      "id": "2011017",
+      "name": "High Street Deli",
+      "origin": "first",
+      "layout": {
+        "symbol-placement": "point",
+        "text-field": "{title}",
+        "text-size": 10,
+        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+        "text-offset": [0, 0],
+        "text-anchor": "left",
+        "text-allow-overlap": true,
+        "text-ignore-placement": true,
+        "text-max-angle": 360
+      }
+    }
+  ]
+}
