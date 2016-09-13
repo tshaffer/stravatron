@@ -101,7 +101,16 @@ class ActivityMap extends Component {
                 });
 
                 // "symbol-placement": "line",
+                // One of point, line
+
                 // "text-anchor": "top",
+                // One of center, left, right, top, bottom, top-left, top-right, bottom-left, bottom-right
+
+                // text-offset
+                // Optional array.  Units in ems. Defaults to 0,0. Requires text-field.
+                //     Offset distance of text from its anchor. Positive values indicate right and down, while negative values indicate left and up.
+
+                let textSize = 12;
 
                 self.activityMap.addLayer({
                     "id": labelLayerName,
@@ -110,7 +119,7 @@ class ActivityMap extends Component {
                     "layout": {
                         "symbol-placement": "point",
                         "text-field": "{title}",
-                        "text-size": 10,
+                        "text-size": textSize,
                         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
                         "text-offset": [0, 0],
                         "text-anchor": "left",
