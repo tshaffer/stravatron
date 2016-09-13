@@ -13,6 +13,8 @@ class ActivityMap extends Component {
 
     componentDidMount() {
         console.log("activityMap did mount");
+
+        // this.forceUpdate();
     }
 
     initializeMap(mapId) {

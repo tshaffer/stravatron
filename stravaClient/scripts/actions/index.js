@@ -2,6 +2,7 @@
  * Created by tedshaffer on 8/24/16.
  */
 const https = require('https');
+const fs = require('fs');
 
 import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
@@ -327,6 +328,30 @@ export function loadSummaryActivities() {
             });
 
             dispatch(addActivities(activities));
+        });
+    };
+}
+
+export const SET_CUSTOM_MAP_SEGMENTS = 'SET_CUSTOM_MAP_SEGMENTS';
+export function SetCustomMapSegments(customMapSegments) {
+
+    return {
+        type: SET_CUSTOM_MAP_SEGMENTS,
+        customMapSegments
+    };
+}
+
+
+export function retrieveCustomSegmentData() {
+
+    return function(dispatch, getState) {
+        var self;
+        fs.readFile('segments.json', (err, data) => {
+
+            // check err and do something with it.
+
+            const customSegmentsData = JSON.parse(data);
+            dispatch(SetCustomMapSegments(customSegmentsData));
         });
     };
 }

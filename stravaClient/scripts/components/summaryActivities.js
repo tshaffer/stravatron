@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { retrieveBaseMapSegments, retrieveCustomSegmentData } from '../actions/index';
 
 import { hashHistory } from 'react-router';
 
 import * as Converters from '../utilities/converters';
 
 class SummaryActivities extends Component {
+
+    componentWillMount() {
+        this.props.retrieveBaseMapSegments();
+        this.props.retrieveCustomSegmentData();
+    }
 
     showDetails(activityId) {
         console.log("showDetails() invoked for activityId ", activityId);
@@ -147,9 +156,16 @@ class SummaryActivities extends Component {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({retrieveBaseMapSegments, retrieveCustomSegmentData},
+        dispatch);
+}
+
 SummaryActivities.propTypes = {
     activities: React.PropTypes.object.isRequired,
-    loadDetailedActivity: React.PropTypes.func.isRequired
+    loadDetailedActivity: React.PropTypes.func.isRequired,
+    retrieveBaseMapSegments: React.PropTypes.func.isRequired,
+    retrieveCustomSegmentData: React.PropTypes.func.isRequired
 };
 
-export default SummaryActivities;
+export default connect(null, mapDispatchToProps)(SummaryActivities);
