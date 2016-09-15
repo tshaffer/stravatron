@@ -14,7 +14,14 @@ class ActivityMap extends Component {
     componentDidMount() {
         console.log("activityMap did mount");
 
-        // this.forceUpdate();
+        this.forceUpdate();
+    }
+
+    updateLayoutProperties(zoom) {
+
+        for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
+
+        }
     }
 
     initializeMap(mapId) {
@@ -64,7 +71,42 @@ class ActivityMap extends Component {
             // maxBounds: lngLatBounds
         });
 
+        this.activityMap.on('zoomend', () => {
+            console.log("zoom end");
+            console.log("current zoom is:", self.activityMap.getZoom().toString());
+        });
+
+        this.activityMap.on('zoomstart', () => {
+            console.log("zoomstart");
+            console.log("current zoom is:", self.activityMap.getZoom().toString());
+        });
+
+        this.activityMap.on('zoom', () => {
+            console.log("zoom");
+            console.log("current zoom is:", self.activityMap.getZoom().toString());
+
+            const currentZoom = self.activityMap.getZoom();
+            let targetTextSize = 10;
+            let textOffset = [0, 0];
+
+            if (currentZoom < 12.5) {
+                targetTextSize = 8;
+                textOffset = [-2, 2.5];
+            }
+            else if (currentZoom < 13.5) {
+                targetTextSize = 10;
+            }
+            else if (currentZoom < 14.5) {
+                targetTextSize = 12;
+            }
+
+            self.activityMap.setLayoutProperty("title0", "text-size", targetTextSize);
+            self.activityMap.setLayoutProperty("title0", "text-offset", textOffset);
+        });
+
         this.activityMap.on('load', function () {
+
+            console.log("current zoom is:", self.activityMap.getZoom().toString());
 
             for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
@@ -83,6 +125,34 @@ class ActivityMap extends Component {
                     coordinates.push(lngLat);
                 });
 
+                // "symbol-placement": "line",
+                // One of point, line
+
+                // "text-anchor": "top",
+                // One of center, left, right, top, bottom, top-left, top-right, bottom-left, bottom-right
+
+                // text-offset
+                // Optional array.  Units in ems. Defaults to 0,0. Requires text-field.
+                //     Offset distance of text from its anchor. Positive values indicate right and down, while negative values indicate left and up.
+
+                const segmentData = self.props.activitiesData[segmentIndex];
+
+                let segmentName = segmentData.segmentData.name;
+                let textSize = null;
+                let textAnchor = null;
+                let textOffset = null;
+
+                if (segmentData.segmentData.layoutSettingsByZoom) {
+                    textSize = segmentData.segmentData.layoutSettingsByZoom[0]["text-size"];
+                    textAnchor = segmentData.segmentData.layoutSettingsByZoom[0]["text-anchor"];
+                    textOffset = segmentData.segmentData.layoutSettingsByZoom[0]["text-offset"];
+                }
+                else {
+                    textSize = segmentData.segmentData.textSize;
+                    textAnchor = segmentData.segmentData.textAnchor;
+                    textOffset = segmentData.segmentData.textOffset;
+                }
+
                 self.activityMap.addSource(sourceName, {
                     "type": "geojson",
                     "data": {
@@ -94,23 +164,11 @@ class ActivityMap extends Component {
                                 "coordinates": coordinates,
                             },
                             "properties": {
-                                "title": self.props.activitiesData[segmentIndex].name
+                                "title": segmentName
                             }
                         }]
                     }
                 });
-
-                // "symbol-placement": "line",
-                // One of point, line
-
-                // "text-anchor": "top",
-                // One of center, left, right, top, bottom, top-left, top-right, bottom-left, bottom-right
-
-                // text-offset
-                // Optional array.  Units in ems. Defaults to 0,0. Requires text-field.
-                //     Offset distance of text from its anchor. Positive values indicate right and down, while negative values indicate left and up.
-
-                let textSize = 12;
 
                 self.activityMap.addLayer({
                     "id": labelLayerName,
@@ -121,14 +179,11 @@ class ActivityMap extends Component {
                         "text-field": "{title}",
                         "text-size": textSize,
                         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                        "text-offset": [0, 0],
-                        "text-anchor": "left",
+                        "text-offset": textOffset,
+                        "text-anchor": textAnchor,
                         "text-allow-overlap": true,
                         "text-ignore-placement": true,
                         "text-max-angle": 360
-                    },
-                    "paint": {
-                        "text-halo-width": 2
                     }
                 });
 

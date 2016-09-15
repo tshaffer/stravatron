@@ -17,32 +17,49 @@ class MapStarredSegments extends Component {
             </div>
         );
 
-        if (this.props.baseMapSegments.length > 0 && this.props.customMapSegments.length > 0) {
+        if (self.props.baseMapSegments.length > 0 && self.props.customMapSegments.length > 0) {
 
             let mapSegmentsData = [];
 
-            this.props.baseMapSegments.forEach(baseMapSegment => {
+            self.props.baseMapSegments.forEach(baseMapSegment => {
 
-                let label = baseMapSegment.name;
+                let defaultSegmentData =
+                    {
+                        textAnchor: "left",
+                        textSize: 10,
+                        textOffset: [0,0]
+                    };
 
-                // find entry in segmentsData that matches this baseMapSegment
-                self.props.customMapSegments.forEach( (segmentData) => {
-                    if (segmentData.id === baseMapSegment.id.toString()) {
-                        console.log("found matching segment ", baseMapSegment.name);
-                        console.log("modified name is: ", segmentData.name);
-                        label = segmentData.name;
+                defaultSegmentData.name = baseMapSegment.name;
+
+                // look for entry in segmentsData that matches this baseMapSegment
+                let customSegmentData = null;
+                self.props.customMapSegments.forEach( (customMapSegmentData) => {
+                    if (customMapSegmentData.id === baseMapSegment.id.toString()) {
+                        customSegmentData = customMapSegmentData;
+                        return;
                     }
                 });
 
-                const mapSegmentData =
+                let segmentData = {};
+                if (customSegmentData) {
+                    segmentData = customSegmentData;
+                }
+                else {
+                    segmentData = defaultSegmentData;
+                }
+
+                let mapSegmentData =
                     {
-                        name: label,
+                        segmentData,
                         polyline: baseMapSegment.polyline,
                         strokeColor: 'black'
                     };
-                mapSegmentsData.push(mapSegmentData);
 
+                mapSegmentsData.push(mapSegmentData);
             });
+
+            debugger;
 
             return (
                 <div>
