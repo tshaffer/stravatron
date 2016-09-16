@@ -59,8 +59,6 @@ class MapStarredSegments extends Component {
                 mapSegmentsData.push(mapSegmentData);
             });
 
-            debugger;
-
             return (
                 <div>
                     <Link to="/">Back</Link>

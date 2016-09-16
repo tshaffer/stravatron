@@ -19,7 +19,36 @@ class ActivityMap extends Component {
 
     updateLayoutProperties(zoom) {
 
-        for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
+        var self = this;
+
+        for (let segmentIndex = 0; segmentIndex < this.props.activitiesData.length; segmentIndex++) {
+
+            let labelLayerName = "title" + segmentIndex.toString();
+
+            let textSize = null;
+
+            const segmentData = self.props.activitiesData[segmentIndex];
+            if (segmentData.segmentData.layoutSettingsByZoom) {
+
+                segmentData.segmentData.layoutSettingsByZoom.forEach( layoutSettingByZoom => {
+
+                    if (zoom >= layoutSettingByZoom.minZoom && zoom <= layoutSettingByZoom.maxZoom) {
+                        textSize = layoutSettingByZoom["text-size"];
+                        self.activityMap.setLayoutProperty(labelLayerName, "text-size", textSize);
+                    }
+                });
+            }
+            // else - if the settings don't change by zoom, don't need to do anything
+
+            // if (segmentData.segmentData.layoutSettingsByZoom) {
+            //     textSize = segmentData.segmentData.layoutSettingsByZoom[0]["text-size"];
+            // }
+            // else {
+            //     textSize = segmentData.segmentData.textSize;
+            // }
+
+            // self.activityMap.setLayoutProperty(labelLayerName, "text-size", textSize);
+            // self.activityMap.setLayoutProperty("title0", "text-offset", textOffset);
 
         }
     }
@@ -86,22 +115,25 @@ class ActivityMap extends Component {
             console.log("current zoom is:", self.activityMap.getZoom().toString());
 
             const currentZoom = self.activityMap.getZoom();
-            let targetTextSize = 10;
-            let textOffset = [0, 0];
+            // let targetTextSize = 10;
+            // let textOffset = [0, 0];
+            //
+            // if (currentZoom < 12.5) {
+            //     targetTextSize = 8;
+            //     textOffset = [-2, 2.5];
+            // }
+            // else if (currentZoom < 13.5) {
+            //     targetTextSize = 10;
+            // }
+            // else if (currentZoom < 14.5) {
+            //     targetTextSize = 12;
+            // }
+            //
+            // self.activityMap.setLayoutProperty("title0", "text-size", targetTextSize);
+            // self.activityMap.setLayoutProperty("title0", "text-offset", textOffset);
 
-            if (currentZoom < 12.5) {
-                targetTextSize = 8;
-                textOffset = [-2, 2.5];
-            }
-            else if (currentZoom < 13.5) {
-                targetTextSize = 10;
-            }
-            else if (currentZoom < 14.5) {
-                targetTextSize = 12;
-            }
+            self.updateLayoutProperties(currentZoom);
 
-            self.activityMap.setLayoutProperty("title0", "text-size", targetTextSize);
-            self.activityMap.setLayoutProperty("title0", "text-offset", textOffset);
         });
 
         this.activityMap.on('load', function () {
