@@ -17,39 +17,55 @@ class ActivityMap extends Component {
         this.forceUpdate();
     }
 
+    updateSegmentLayoutProperties(segmentIndex, zoom) {
+
+        var self = this;
+
+        let labelLayerName = "title" + segmentIndex.toString();
+
+        // set text-size programmatically according to my scientific formula
+        // y = mx + b
+        // m = 2, b = -12
+        // x = zoom, y = textSize
+        let textSize = (2 * zoom) - 12;
+        this.activityMap.setLayoutProperty(labelLayerName, "text-size", textSize);
+
+        // y = mx + b
+        // for first text-offset value
+        //      m = -1.25
+        //      b = 15.35
+
+        // for second text-offset value
+        //      m = 1.25
+        //      b = -11.65
+        // const v1 = (-1.25 * zoom) + 12.15;
+        const v1 = (-1.25 * zoom) + 12.15;
+        const v2 = (1.25 * zoom) - 11.65;
+        const textOffset = [v1, v2];
+        this.activityMap.setLayoutProperty(labelLayerName, "text-offset", textOffset);
+
+        // let textOffset = null;
+        //
+        // const segmentData = this.props.activitiesData[segmentIndex];
+        // if (segmentData.segmentData.layoutSettingsByZoom) {
+        //
+        //     segmentData.segmentData.layoutSettingsByZoom.forEach( layoutSettingByZoom => {
+        //
+        //         if (zoom >= layoutSettingByZoom.minZoom && zoom <= layoutSettingByZoom.maxZoom) {
+        //             textOffset = layoutSettingByZoom["text-offset"];
+        //         }
+        //         self.activityMap.setLayoutProperty(labelLayerName, "text-offset", textOffset);
+        //     });
+        // }
+        // else - if the settings don't change by zoom, don't need to make any further changes
+    }
+
     updateLayoutProperties(zoom) {
 
         var self = this;
 
         for (let segmentIndex = 0; segmentIndex < this.props.activitiesData.length; segmentIndex++) {
-
-            let labelLayerName = "title" + segmentIndex.toString();
-
-            let textSize = null;
-
-            const segmentData = self.props.activitiesData[segmentIndex];
-            if (segmentData.segmentData.layoutSettingsByZoom) {
-
-                segmentData.segmentData.layoutSettingsByZoom.forEach( layoutSettingByZoom => {
-
-                    if (zoom >= layoutSettingByZoom.minZoom && zoom <= layoutSettingByZoom.maxZoom) {
-                        textSize = layoutSettingByZoom["text-size"];
-                        self.activityMap.setLayoutProperty(labelLayerName, "text-size", textSize);
-                    }
-                });
-            }
-            // else - if the settings don't change by zoom, don't need to do anything
-
-            // if (segmentData.segmentData.layoutSettingsByZoom) {
-            //     textSize = segmentData.segmentData.layoutSettingsByZoom[0]["text-size"];
-            // }
-            // else {
-            //     textSize = segmentData.segmentData.textSize;
-            // }
-
-            // self.activityMap.setLayoutProperty(labelLayerName, "text-size", textSize);
-            // self.activityMap.setLayoutProperty("title0", "text-offset", textOffset);
-
+            this.updateSegmentLayoutProperties(segmentIndex, zoom);
         }
     }
 
@@ -100,40 +116,10 @@ class ActivityMap extends Component {
             // maxBounds: lngLatBounds
         });
 
-        this.activityMap.on('zoomend', () => {
-            console.log("zoom end");
-            console.log("current zoom is:", self.activityMap.getZoom().toString());
-        });
-
-        this.activityMap.on('zoomstart', () => {
-            console.log("zoomstart");
-            console.log("current zoom is:", self.activityMap.getZoom().toString());
-        });
-
         this.activityMap.on('zoom', () => {
             console.log("zoom");
             console.log("current zoom is:", self.activityMap.getZoom().toString());
-
-            const currentZoom = self.activityMap.getZoom();
-            // let targetTextSize = 10;
-            // let textOffset = [0, 0];
-            //
-            // if (currentZoom < 12.5) {
-            //     targetTextSize = 8;
-            //     textOffset = [-2, 2.5];
-            // }
-            // else if (currentZoom < 13.5) {
-            //     targetTextSize = 10;
-            // }
-            // else if (currentZoom < 14.5) {
-            //     targetTextSize = 12;
-            // }
-            //
-            // self.activityMap.setLayoutProperty("title0", "text-size", targetTextSize);
-            // self.activityMap.setLayoutProperty("title0", "text-offset", textOffset);
-
-            self.updateLayoutProperties(currentZoom);
-
+            self.updateLayoutProperties(self.activityMap.getZoom());
         });
 
         this.activityMap.on('load', function () {

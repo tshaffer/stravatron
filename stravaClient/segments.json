@@ -11,8 +11,8 @@
           "minZoom": 0,
           "maxZoom": 11.0,
           "text-offset": [
-            0,
-            0
+            -1.6,
+            2.1
           ],
           "text-anchor": "bottom-right",
           "text-size": 10,
@@ -30,8 +30,8 @@
           "minZoom": 11.0,
           "maxZoom": 12.0,
           "text-offset": [
-            0,
-            0
+            -2.0,
+            2.5
           ],
           "text-anchor": "bottom-right",
           "text-size": 20,
@@ -49,8 +49,8 @@
           "minZoom": 12.0,
           "maxZoom": 19.0,
           "text-offset": [
-            0,
-            0
+            -1.6,
+            2.1
           ],
           "text-anchor": "bottom-right",
           "text-size": 40,
