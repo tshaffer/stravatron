@@ -67,6 +67,214 @@
       ]
     },
     {
+      "id": "646814",
+      "name": "Cross Over",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "669926",
+      "name": "Power Bar",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "719768",
+      "name": "Eucalyptus connector",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "888774",
+      "name": "Old Cabin",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "923771",
+      "name": "Mailboxes/Fenceline",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "1467740",
+      "name": "to Twin Gates",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "1479930",
+      "name": "Pipeline",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "1566612",
+      "name": "Leafy Flow",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "1589335",
+      "name": "Bike Path",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "2198833",
+      "name": "17 Turns",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "3869044",
+      "name": "Emma",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "6049419",
+      "name": "Broncos",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
+      "id": "6806556",
+      "name": "Human Beansauce",
+      "origin": "first",
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            0,
+            0
+          ],
+          "text-anchor": "left"
+        }
+      ]
+    },
+    {
       "id": "2011017",
       "name": "High Street Deli",
       "origin": "first",
