@@ -385,6 +385,9 @@ export function retrieveBaseMapSegments() {
 
                     baseMapSegmentIds.push(segment.id);
                 }
+                else {
+                    console.log("reject segment ", segment.name);
+                }
             });
 
             // get the detailed segment data for each of the starred segments

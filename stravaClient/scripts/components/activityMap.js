@@ -44,6 +44,8 @@ class ActivityMap extends Component {
         const textOffset = [v1, v2];
         this.activityMap.setLayoutProperty(labelLayerName, "text-offset", textOffset);
 
+        console.log("text offset for segment with index ", segmentIndex, " is ", textOffset);
+
         // let textOffset = null;
         //
         // const segmentData = this.props.activitiesData[segmentIndex];
@@ -156,6 +158,9 @@ class ActivityMap extends Component {
                 const segmentData = self.props.activitiesData[segmentIndex];
 
                 let segmentName = segmentData.segmentData.name;
+
+                console.log(segmentName, " is index ", segmentIndex);
+
                 let textSize = null;
                 let textAnchor = null;
                 let textOffset = null;
@@ -204,6 +209,8 @@ class ActivityMap extends Component {
                         "text-max-angle": 360
                     }
                 });
+
+                console.log("text anchor for segment with index ", segmentIndex, " is ", textAnchor);
 
                 self.activityMap.addLayer({
                     "id": lineLayerName,
