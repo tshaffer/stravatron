@@ -13,8 +13,6 @@ class ActivityMap extends Component {
 
     componentDidMount() {
         console.log("activityMap did mount");
-
-        this.forceUpdate();
     }
 
     updateSegmentLayoutProperties(segment, segmentIndex, zoom) {
@@ -23,11 +21,6 @@ class ActivityMap extends Component {
 
         let labelLayerName = "title" + segmentIndex.toString();
 
-        // set text-size programmatically according to my scientific formula
-        // y = mx + b
-        // m = 2, b = -12
-        // x = zoom, y = textSize
-        // let textSize = (2 * zoom) - 12;
         let textSize = (2 * zoom) - 14;
         this.activityMap.setLayoutProperty(labelLayerName, "text-size", textSize);
 
@@ -40,6 +33,10 @@ class ActivityMap extends Component {
         this.activityMap.setLayoutProperty(labelLayerName, "text-offset", textOffset);
 
         console.log("text offset for segment with index ", segmentIndex, " is ", textOffset);
+
+        // if (segmentIndex == 0 || segmentIndex == 3) {
+        //     this.activityMap.setLayoutProperty(labelLayerName, "visibility", "none");
+        // }
 
         // let textOffset = null;
         //
@@ -321,7 +318,21 @@ class ActivityMap extends Component {
     //
     render() {
 
-        // ensure that all map data has loaded
+        var self = this;
+
+        return (
+            <div id="mapBoxMap" ref={(c) => {
+                self.mapBoxMap = c;
+                console.log("ref time:", self.props.activitiesData.length.toString());
+                self.loadAndRenderMap();
+            }}/>
+        );
+    }
+
+    loadAndRenderMap() {
+
+        if (this.activityMap) return;
+
         console.log("number of lines is ", this.props.activitiesData.length);
         console.log("total activities is ", this.props.totalActivities);
 
@@ -344,17 +355,7 @@ class ActivityMap extends Component {
             if (!this.activityMap) {
                 this.initializeMap("mapBoxMap");
             }
-
-            // if (this.props.location && this.props.location.length > 0) {
-            //     this.drawMarker();
-            // }
         }
-
-        // <div id="activityGMap" ref={(c) => { this.activityGMap = c; }}/>
-
-        return (
-            <div id="mapBoxMap" ref={(c) => { this.mapBoxMap = c; }}/>
-        );
     }
 }
 
