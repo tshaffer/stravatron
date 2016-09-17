@@ -6,6 +6,19 @@
       "id": "643126",
       "name": "Inzane Gray",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 12.15
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": -11.65
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "minZoom": 0,
@@ -67,9 +80,51 @@
       ]
     },
     {
+      "id": "1589335",
+      "name": "Bike Path",
+      "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
+      "layoutSettingsByZoom": [
+        {
+          "text-field": "{title}",
+          "text-size": 10,
+          "text-offset": [
+            3.5,
+            0
+          ],
+          "text-anchor": "top"
+        }
+      ]
+    },
+    {
       "id": "646814",
       "name": "Cross Over",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -86,6 +141,19 @@
       "id": "669926",
       "name": "Power Bar",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -102,6 +170,19 @@
       "id": "719768",
       "name": "Eucalyptus",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -118,6 +199,19 @@
       "id": "888774",
       "name": "Old Cabin",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -134,6 +228,19 @@
       "id": "923771",
       "name": "Mailboxes/Fenceline",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 14.25
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": -7.75
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -150,6 +257,19 @@
       "id": "1467740",
       "name": "Twin Gates",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -166,6 +286,19 @@
       "id": "1479930",
       "name": "Pipeline",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -182,6 +315,19 @@
       "id": "1566612",
       "name": "Leafy",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -195,25 +341,22 @@
       ]
     },
     {
-      "id": "1589335",
-      "name": "Bike Path",
-      "origin": "first",
-      "layoutSettingsByZoom": [
-        {
-          "text-field": "{title}",
-          "text-size": 10,
-          "text-offset": [
-            3.5,
-            0
-          ],
-          "text-anchor": "top"
-        }
-      ]
-    },
-    {
       "id": "2198833",
       "name": "17 Turns",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -230,6 +373,19 @@
       "id": "3869044",
       "name": "Emma",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -246,6 +402,19 @@
       "id": "6049419",
       "name": "Broncos",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 11.25
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": -15.75
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -262,6 +431,19 @@
       "id": "6806556",
       "name": "Human Beansauce",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -278,6 +460,19 @@
       "id": "826449",
       "name": "UConn",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "text-field": "{title}",
@@ -294,6 +489,19 @@
       "id": "2011017",
       "name": "420",
       "origin": "first",
+      "offsetLineCoefficients":
+      {
+        "xOffset":
+        {
+          "m": -1.25,
+          "b": 0
+        },
+        "yOffset":
+        {
+          "m": 1.25,
+          "b": 0
+        }
+      },
       "layoutSettingsByZoom": [
         {
           "minZoom": 0,

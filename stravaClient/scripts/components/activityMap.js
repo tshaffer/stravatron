@@ -17,7 +17,7 @@ class ActivityMap extends Component {
         this.forceUpdate();
     }
 
-    updateSegmentLayoutProperties(segmentIndex, zoom) {
+    updateSegmentLayoutProperties(segment, segmentIndex, zoom) {
 
         var self = this;
 
@@ -30,18 +30,12 @@ class ActivityMap extends Component {
         let textSize = (2 * zoom) - 12;
         this.activityMap.setLayoutProperty(labelLayerName, "text-size", textSize);
 
-        // y = mx + b
-        // for first text-offset value
-        //      m = -1.25
-        //      b = 15.35
+        const xOffsetCoefficients = segment.segmentData.offsetLineCoefficients.xOffset;
+        const yOffsetCoefficients = segment.segmentData.offsetLineCoefficients.yOffset;
 
-        // for second text-offset value
-        //      m = 1.25
-        //      b = -11.65
-        // const v1 = (-1.25 * zoom) + 12.15;
-        const v1 = (-1.25 * zoom) + 12.15;
-        const v2 = (1.25 * zoom) - 11.65;
-        const textOffset = [v1, v2];
+        const xOffset = (xOffsetCoefficients.m * zoom) + xOffsetCoefficients.b;
+        const yOffset = (yOffsetCoefficients.m * zoom) + yOffsetCoefficients.b;
+        const textOffset = [xOffset, yOffset];
         this.activityMap.setLayoutProperty(labelLayerName, "text-offset", textOffset);
 
         console.log("text offset for segment with index ", segmentIndex, " is ", textOffset);
@@ -67,7 +61,8 @@ class ActivityMap extends Component {
         var self = this;
 
         for (let segmentIndex = 0; segmentIndex < this.props.activitiesData.length; segmentIndex++) {
-            this.updateSegmentLayoutProperties(segmentIndex, zoom);
+            const segment = this.props.activitiesData[segmentIndex];
+            this.updateSegmentLayoutProperties(segment, segmentIndex, zoom);
         }
     }
 
