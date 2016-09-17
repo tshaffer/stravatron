@@ -188,10 +188,10 @@
           "text-field": "{title}",
           "text-size": 8,
           "text-offset": [
-            0,
+            -0.3,
             0
           ],
-          "text-anchor": "left"
+          "text-anchor": "right"
         }
       ]
     },
@@ -478,10 +478,10 @@
           "text-field": "{title}",
           "text-size": 8,
           "text-offset": [
-            0,
+            -0.2,
             0
           ],
-          "text-anchor": "bottom-right"
+          "text-anchor": "bottom"
         }
       ]
     },
