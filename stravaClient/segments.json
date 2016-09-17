@@ -88,12 +88,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 17.25
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -117,12 +117,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -146,12 +146,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -175,12 +175,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -204,12 +204,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -262,12 +262,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -291,12 +291,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -320,12 +320,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 14.95
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -15.15
         }
       },
       "layoutSettingsByZoom": [
@@ -333,8 +333,8 @@
           "text-field": "{title}",
           "text-size": 10,
           "text-offset": [
-            0,
-            0
+            1.2,
+            -1.4
           ],
           "text-anchor": "left"
         }
@@ -349,12 +349,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -378,12 +378,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -15.25
         }
       },
       "layoutSettingsByZoom": [
@@ -436,12 +436,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -465,12 +465,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
@@ -494,12 +494,12 @@
         "xOffset":
         {
           "m": -1.25,
-          "b": 0
+          "b": 13.75
         },
         "yOffset":
         {
           "m": 1.25,
-          "b": 0
+          "b": -13.75
         }
       },
       "layoutSettingsByZoom": [
