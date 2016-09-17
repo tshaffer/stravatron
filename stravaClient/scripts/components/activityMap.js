@@ -27,7 +27,8 @@ class ActivityMap extends Component {
         // y = mx + b
         // m = 2, b = -12
         // x = zoom, y = textSize
-        let textSize = (2 * zoom) - 12;
+        // let textSize = (2 * zoom) - 12;
+        let textSize = (2 * zoom) - 14;
         this.activityMap.setLayoutProperty(labelLayerName, "text-size", textSize);
 
         const xOffsetCoefficients = segment.segmentData.offsetLineCoefficients.xOffset;
@@ -201,6 +202,8 @@ class ActivityMap extends Component {
                         "text-anchor": textAnchor,
                         "text-allow-overlap": true,
                         "text-ignore-placement": true,
+                        "text-max-width": 4,
+                        "text-line-height": 0.9,
                         "text-max-angle": 360
                     }
                 });
