@@ -71,6 +71,14 @@ class ActivityMap extends Component {
 
         this.geoJSONCoordinates.push(
             {
+                title: segmentName + "-0",
+                x: segmentCoordinates[0][1],
+                y: segmentCoordinates[0][0]
+            }
+        );
+
+        this.geoJSONCoordinates.push(
+            {
                 title: segmentName,
                 line: segmentCoordinates
             }
