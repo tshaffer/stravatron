@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+const fs = require('fs');
+const GeoJSON = require('geojson');
 
 class ActivityMap extends Component {
 
@@ -62,6 +63,39 @@ class ActivityMap extends Component {
             const segment = this.props.activitiesData[segmentIndex];
             this.updateSegmentLayoutProperties(segment, segmentIndex, zoom);
         }
+    }
+
+    writeGeoJSONSegment(segmentName, segmentCoordinates) {
+
+        let segmentGeometry = [];
+
+        // add point at start of segment
+        const pointPropValue = "Start of " + segmentName;
+        segmentGeometry[0] =
+        {
+            x: segmentCoordinates[0][1],
+            y: segmentCoordinates[0][0],
+            title: pointPropValue,
+            location: pointPropValue
+        };
+
+        // line segments
+        segmentGeometry[1] =
+        {
+            line: segmentCoordinates,
+            title: segmentName,
+            segment: segmentName
+        };
+
+        const geoJSON = GeoJSON.parse(segmentGeometry, {'Point': ['x', 'y'], 'LineString': 'line'});
+        const geoJSONAsStr = JSON.stringify(geoJSON, null, '\t');
+        const fileName = segmentName + ".geojson";
+        console.log("save file ", fileName);
+        fs.writeFile(fileName, geoJSONAsStr, (err) => {
+            if (err) debugger;
+            console.log(fileName, " write complete");
+        });
+
     }
 
     initializeMap(mapId) {
@@ -153,6 +187,7 @@ class ActivityMap extends Component {
                 let segmentName = segmentData.segmentData.name;
 
                 console.log(segmentName, " is index ", segmentIndex);
+                // self.writeGeoJSONSegment(segmentName, coordinates);
 
                 let textSize = null;
                 let textAnchor = null;
@@ -316,19 +351,6 @@ class ActivityMap extends Component {
     //     this.mapMarker = new window.google.maps.Circle(markerOptions);
     // }
     //
-    render() {
-
-        var self = this;
-
-        return (
-            <div id="mapBoxMap" ref={(c) => {
-                self.mapBoxMap = c;
-                console.log("ref time:", self.props.activitiesData.length.toString());
-                self.loadAndRenderMap();
-            }}/>
-        );
-    }
-
     loadAndRenderMap() {
 
         if (this.activityMap) return;
@@ -357,6 +379,19 @@ class ActivityMap extends Component {
             }
         }
     }
+
+    render() {
+
+        var self = this;
+
+        return (
+            <div id="mapBoxMap" ref={(c) => {
+                self.mapBoxMap = c;
+                console.log("ref time:", self.props.activitiesData.length.toString());
+                self.loadAndRenderMap();
+            }}/>
+        );
+    }
 }
 
 ActivityMap.propTypes = {
@@ -370,3 +405,6 @@ ActivityMap.propTypes = {
 
 
 export default ActivityMap;
+
+
+
