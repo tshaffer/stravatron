@@ -10,6 +10,8 @@ class ActivityMap extends Component {
         this.activityMap = null;
 
         this.mapMarker = null;
+
+        this.geoJSONCoordinates = [];
     }
 
     componentDidMount() {
@@ -63,6 +65,28 @@ class ActivityMap extends Component {
             const segment = this.props.activitiesData[segmentIndex];
             this.updateSegmentLayoutProperties(segment, segmentIndex, zoom);
         }
+    }
+
+    addGeoJSONSegment(segmentName, segmentCoordinates) {
+
+        this.geoJSONCoordinates.push(
+            {
+                title: segmentName,
+                line: segmentCoordinates
+            }
+        );
+    }
+
+    writeGeoJSONSegments() {
+
+        const geoJSON = GeoJSON.parse(this.geoJSONCoordinates, {'Point': ['x', 'y'], 'LineString': 'line'});
+        const geoJSONAsStr = JSON.stringify(geoJSON, null, '\t');
+        const fileName = "segments.geojson";
+        console.log("save file ", fileName);
+        fs.writeFile(fileName, geoJSONAsStr, (err) => {
+            if (err) debugger;
+            console.log(fileName, " write complete");
+        });
     }
 
     writeGeoJSONSegment(segmentName, segmentCoordinates) {
@@ -188,6 +212,7 @@ class ActivityMap extends Component {
 
                 console.log(segmentName, " is index ", segmentIndex);
                 // self.writeGeoJSONSegment(segmentName, coordinates);
+                self.addGeoJSONSegment(segmentName, coordinates);
 
                 let textSize = null;
                 let textAnchor = null;
@@ -256,6 +281,8 @@ class ActivityMap extends Component {
                     }
                 });
             }
+
+            self.writeGeoJSONSegments();
         });
 
         // var myLatlng = new window.google.maps.LatLng(this.props.startLatitude, this.props.startLongitude);
