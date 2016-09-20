@@ -8,145 +8,10 @@ class ActivityMap extends Component {
         super(props);
 
         this.activityMap = null;
-
-        this.mapMarker = null;
-
-        this.geoJSONCoordinates = [];
     }
 
     componentDidMount() {
         console.log("activityMap did mount");
-    }
-
-    updateSegmentLayoutProperties(segment, segmentIndex, zoom) {
-
-        var self = this;
-
-        let labelLayerName = "title" + segmentIndex.toString();
-
-        let textSize = (2 * zoom) - 14;
-        this.activityMap.setLayoutProperty(labelLayerName, "text-size", textSize);
-
-        const xOffsetCoefficients = segment.segmentData.offsetLineCoefficients.xOffset;
-        const yOffsetCoefficients = segment.segmentData.offsetLineCoefficients.yOffset;
-
-        const xOffset = (xOffsetCoefficients.m * zoom) + xOffsetCoefficients.b;
-        const yOffset = (yOffsetCoefficients.m * zoom) + yOffsetCoefficients.b;
-        const textOffset = [xOffset, yOffset];
-        this.activityMap.setLayoutProperty(labelLayerName, "text-offset", textOffset);
-
-        console.log("text offset for segment with index ", segmentIndex, " is ", textOffset);
-
-        // if (segmentIndex == 0 || segmentIndex == 3) {
-        //     this.activityMap.setLayoutProperty(labelLayerName, "visibility", "none");
-        // }
-
-        // let textOffset = null;
-        //
-        // const segmentData = this.props.activitiesData[segmentIndex];
-        // if (segmentData.segmentData.layoutSettingsByZoom) {
-        //
-        //     segmentData.segmentData.layoutSettingsByZoom.forEach( layoutSettingByZoom => {
-        //
-        //         if (zoom >= layoutSettingByZoom.minZoom && zoom <= layoutSettingByZoom.maxZoom) {
-        //             textOffset = layoutSettingByZoom["text-offset"];
-        //         }
-        //         self.activityMap.setLayoutProperty(labelLayerName, "text-offset", textOffset);
-        //     });
-        // }
-        // else - if the settings don't change by zoom, don't need to make any further changes
-    }
-
-    updateLayoutProperties(zoom) {
-
-        var self = this;
-
-        for (let segmentIndex = 0; segmentIndex < this.props.activitiesData.length; segmentIndex++) {
-            const segment = this.props.activitiesData[segmentIndex];
-            this.updateSegmentLayoutProperties(segment, segmentIndex, zoom);
-        }
-    }
-
-    addGeoJSONSegment(segmentName, segmentCoordinates) {
-
-        const segmentPointInterval = 10;
-        const numCoordinates = segmentCoordinates.length;
-
-        let coordinateIndex = 0;
-        while (coordinateIndex < numCoordinates) {
-
-            this.geoJSONCoordinates.push(
-                {
-                    title: segmentName + "-" + coordinateIndex.toString(),
-                    x: segmentCoordinates[coordinateIndex][1],
-                    y: segmentCoordinates[coordinateIndex][0]
-                }
-            );
-
-            coordinateIndex += segmentPointInterval;
-        }
-
-        if (numCoordinates % segmentPointInterval != 0) {
-            this.geoJSONCoordinates.push(
-                {
-                    title: segmentName + "-" + coordinateIndex.toString(),
-                    x: segmentCoordinates[numCoordinates - 1][1],
-                    y: segmentCoordinates[numCoordinates - 1][0]
-                }
-            );
-        }
-
-        this.geoJSONCoordinates.push(
-            {
-                title: segmentName,
-                line: segmentCoordinates
-            }
-        );
-    }
-
-    writeGeoJSONSegments() {
-
-        const geoJSON = GeoJSON.parse(this.geoJSONCoordinates, {'Point': ['x', 'y'], 'LineString': 'line'});
-        const geoJSONAsStr = JSON.stringify(geoJSON, null, '\t');
-        const fileName = "segments.geojson";
-        console.log("save file ", fileName);
-        fs.writeFile(fileName, geoJSONAsStr, (err) => {
-            if (err) debugger;
-            console.log(fileName, " write complete");
-        });
-    }
-
-    writeGeoJSONSegment(segmentName, segmentCoordinates) {
-
-        let segmentGeometry = [];
-
-        // add point at start of segment
-        const pointPropValue = "Start of " + segmentName;
-        segmentGeometry[0] =
-        {
-            x: segmentCoordinates[0][1],
-            y: segmentCoordinates[0][0],
-            title: pointPropValue,
-            location: pointPropValue
-        };
-
-        // line segments
-        segmentGeometry[1] =
-        {
-            line: segmentCoordinates,
-            title: segmentName,
-            segment: segmentName
-        };
-
-        const geoJSON = GeoJSON.parse(segmentGeometry, {'Point': ['x', 'y'], 'LineString': 'line'});
-        const geoJSONAsStr = JSON.stringify(geoJSON, null, '\t');
-        const fileName = segmentName + ".geojson";
-        console.log("save file ", fileName);
-        fs.writeFile(fileName, geoJSONAsStr, (err) => {
-            if (err) debugger;
-            console.log(fileName, " write complete");
-        });
-
     }
 
     initializeMap(mapId) {
@@ -190,16 +55,10 @@ class ActivityMap extends Component {
         this.activityMap = new window.mapboxgl.Map({
             container: 'mapBoxMap', // container id
             // style: 'mapbox://styles/tedshaffer/cisvr76by00122xodeod1qclj',
-            style: 'mapbox://styles/tedshaffer/cisz745f6003p2wn0kcdy6vay',
+            style: 'mapbox://styles/tedshaffer/citagbl4b000h2iqbkgub0t26',
             center: [longitudeCenter, latitudeCenter],
             zoom: 11, // starting zoom,
             // maxBounds: lngLatBounds
-        });
-
-        this.activityMap.on('zoom', () => {
-            console.log("zoom");
-            console.log("current zoom is:", self.activityMap.getZoom().toString());
-            self.updateLayoutProperties(self.activityMap.getZoom());
         });
 
         this.activityMap.on('load', function () {
@@ -209,7 +68,6 @@ class ActivityMap extends Component {
             for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
                 let sourceName = "segment" + segmentIndex.toString();
-                let labelLayerName = "title" + segmentIndex.toString();
                 let lineLayerName = "points" + segmentIndex.toString();
 
                 let pathToDecode = self.props.activitiesData[segmentIndex].polyline;
@@ -223,38 +81,7 @@ class ActivityMap extends Component {
                     coordinates.push(lngLat);
                 });
 
-                // "symbol-placement": "line",
-                // One of point, line
-
-                // "text-anchor": "top",
-                // One of center, left, right, top, bottom, top-left, top-right, bottom-left, bottom-right
-
-                // text-offset
-                // Optional array.  Units in ems. Defaults to 0,0. Requires text-field.
-                //     Offset distance of text from its anchor. Positive values indicate right and down, while negative values indicate left and up.
-
                 const segmentData = self.props.activitiesData[segmentIndex];
-
-                let segmentName = segmentData.segmentData.name;
-
-                console.log(segmentName, " is index ", segmentIndex);
-                // self.writeGeoJSONSegment(segmentName, coordinates);
-                // self.addGeoJSONSegment(segmentName, coordinates);
-
-                let textSize = null;
-                let textAnchor = null;
-                let textOffset = null;
-
-                if (segmentData.segmentData.layoutSettingsByZoom) {
-                    textSize = segmentData.segmentData.layoutSettingsByZoom[0]["text-size"];
-                    textAnchor = segmentData.segmentData.layoutSettingsByZoom[0]["text-anchor"];
-                    textOffset = segmentData.segmentData.layoutSettingsByZoom[0]["text-offset"];
-                }
-                else {
-                    textSize = segmentData.segmentData.textSize;
-                    textAnchor = segmentData.segmentData.textAnchor;
-                    textOffset = segmentData.segmentData.textOffset;
-                }
 
                 self.activityMap.addSource(sourceName, {
                     "type": "geojson",
@@ -267,32 +94,11 @@ class ActivityMap extends Component {
                                 "coordinates": coordinates,
                             },
                             "properties": {
-                                "title": segmentName
+                                "title": "segment" + segmentIndex.toString()
                             }
                         }]
                     }
                 });
-
-                self.activityMap.addLayer({
-                    "id": labelLayerName,
-                    "type": "symbol",
-                    "source": sourceName,
-                    "layout": {
-                        "symbol-placement": "point",
-                        "text-field": "{title}",
-                        "text-size": textSize,
-                        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                        "text-offset": textOffset,
-                        "text-anchor": textAnchor,
-                        "text-allow-overlap": true,
-                        "text-ignore-placement": true,
-                        "text-max-width": 4,
-                        "text-line-height": 0.9,
-                        "text-max-angle": 360
-                    }
-                });
-
-                console.log("text anchor for segment with index ", segmentIndex, " is ", textAnchor);
 
                 self.activityMap.addLayer({
                     "id": lineLayerName,
@@ -308,103 +114,9 @@ class ActivityMap extends Component {
                     }
                 });
             }
-
-            // self.writeGeoJSONSegments();
         });
-
-        // var myLatlng = new window.google.maps.LatLng(this.props.startLatitude, this.props.startLongitude);
-        // var myOptions = {
-        //     // zoom: 14,
-        //     zoom: 13,
-        //     center: myLatlng,
-        //     mapTypeId: window.google.maps.MapTypeId.ROADMAP
-        // };
-        //
-        // var createNewMap;
-        // if (!this.activityMap) {
-        //     createNewMap = true;
-        // }
-        // else {
-        //     createNewMap = false;
-        // }
-        //
-        // if (createNewMap) {
-        //     this.activityMap = new window.google.maps.Map(document.getElementById(mapId), myOptions);
-        // }
-        // else {
-        //     this.activityMap.setZoom(10);
-        //     this.activityMap.setCenter(myLatlng);
-        //     // if (activityPath != undefined) {
-        //     //     activityPath.setMap(null);
-        //     // }
-        // }
-
-        // const pathToDecode = this.props.activitiesData[0].polyline;
-        // const ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
-
-        // var existingBounds = this.activityMap.getBounds();
-
-        // var bounds = new window.google.maps.LatLngBounds();
-        // ridePathDecoded.forEach( (location) => {
-        //     bounds.extend(location);
-        // });
-
-        // if (createNewMap) {
-        //     this.activityMap.fitBounds(bounds);
-        // }
-        // else {
-        //     setTimeout(function () { this.activityMap.fitBounds(bounds); }, 1);
-        // }
-
-        // for (let i = 0; i < this.props.activitiesData.length; i++) {
-        //
-        //     const activityData = this.props.activitiesData[i];
-        //
-        //     const activityPath = activityData.polyline;
-        //     const strokeColor = activityData.strokeColor;
-        //     const activityPathDecoded = window.google.maps.geometry.encoding.decodePath(activityPath);
-        //
-        //     console.log("draw polyline");
-        //     let polyline = new window.google.maps.Polyline({
-        //         path: activityPathDecoded,
-        //         strokeColor: strokeColor,
-        //         strokeOpacity: 1.0,
-        //         strokeWeight: 2,
-        //         map: this.activityMap
-        //     });
-        // }
-
-        // this.drawMarker();
     }
 
-    // drawMarker() {
-    //
-    //     if (!this.props.location || this.props.location.length == 0) return;
-    //
-    //     const markerLocation = new window.google.maps.LatLng(this.props.location[0], this.props.location[1]);
-    //
-    //     // erase old marker, if it existed
-    //     if (this.mapMarker != null) {
-    //         this.mapMarker.setMap(null);
-    //     }
-    //
-    //     // draw marker at specified location
-    //     var markerOptions = {
-    //         strokeColor: '#FFFFFF',
-    //         strokeOpacity: 1,
-    //         strokeWeight: 2,
-    //         fillColor: '#00FF00',
-    //         fillOpacity: 1,
-    //         map: this.activityMap,
-    //         center: markerLocation,
-    //         radius: 50,
-    //         editable: false,
-    //         draggable: false
-    //     };
-    //
-    //     this.mapMarker = new window.google.maps.Circle(markerOptions);
-    // }
-    //
     loadAndRenderMap() {
 
         if (this.activityMap) return;
