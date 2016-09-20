@@ -69,13 +69,32 @@ class ActivityMap extends Component {
 
     addGeoJSONSegment(segmentName, segmentCoordinates) {
 
-        this.geoJSONCoordinates.push(
-            {
-                title: segmentName + "-0",
-                x: segmentCoordinates[0][1],
-                y: segmentCoordinates[0][0]
-            }
-        );
+        const segmentPointInterval = 10;
+        const numCoordinates = segmentCoordinates.length;
+
+        let coordinateIndex = 0;
+        while (coordinateIndex < numCoordinates) {
+
+            this.geoJSONCoordinates.push(
+                {
+                    title: segmentName + "-" + coordinateIndex.toString(),
+                    x: segmentCoordinates[coordinateIndex][1],
+                    y: segmentCoordinates[coordinateIndex][0]
+                }
+            );
+
+            coordinateIndex += segmentPointInterval;
+        }
+
+        if (numCoordinates % segmentPointInterval != 0) {
+            this.geoJSONCoordinates.push(
+                {
+                    title: segmentName + "-" + coordinateIndex.toString(),
+                    x: segmentCoordinates[numCoordinates - 1][1],
+                    y: segmentCoordinates[numCoordinates - 1][0]
+                }
+            );
+        }
 
         this.geoJSONCoordinates.push(
             {
@@ -220,7 +239,7 @@ class ActivityMap extends Component {
 
                 console.log(segmentName, " is index ", segmentIndex);
                 // self.writeGeoJSONSegment(segmentName, coordinates);
-                self.addGeoJSONSegment(segmentName, coordinates);
+                // self.addGeoJSONSegment(segmentName, coordinates);
 
                 let textSize = null;
                 let textAnchor = null;
@@ -290,7 +309,7 @@ class ActivityMap extends Component {
                 });
             }
 
-            self.writeGeoJSONSegments();
+            // self.writeGeoJSONSegments();
         });
 
         // var myLatlng = new window.google.maps.LatLng(this.props.startLatitude, this.props.startLongitude);
