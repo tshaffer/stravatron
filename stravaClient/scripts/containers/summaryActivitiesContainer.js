@@ -24,6 +24,14 @@ class SummaryActivitiesContainer extends Component {
         hashHistory.push('/detailedActivity/' + activityId);
     }
 
+    handleMapStarredSegments() {
+        hashHistory.push('/mapStarredSegments');
+    }
+
+    handleMapSelectedRides(selectedActivityIds) {
+        hashHistory.push('/mapOfRides/' + selectedActivityIds);
+    }
+
     render() {
         return (
             <div>
@@ -31,6 +39,8 @@ class SummaryActivitiesContainer extends Component {
                     activities={this.props.activities}
                     loadDetailedActivity={this.props.loadDetailedActivity}
                     onShowDetailedMap={this.handleShowDetailedMap.bind(this)}
+                    onMapStarredSegments={this.handleMapStarredSegments.bind(this)}
+                    onMapSelectedRides={this.handleMapSelectedRides.bind(this)}
                 />
             </div>
         );

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import { hashHistory } from 'react-router';
-
 import * as Converters from '../utilities/converters';
 
 class SummaryActivities extends Component {
@@ -11,6 +9,28 @@ class SummaryActivities extends Component {
 
     handleShowDetailedMap(activityId) {
         this.props.onShowDetailedMap(activityId);
+    }
+
+    handleMapStarredSegments() {
+        this.props.onMapStarredSegments();
+    }
+
+    handleMapSelectedRides() {
+        console.log("mapSelectedRides invoked");
+
+        let selectedActivityIds = [];
+
+        for (const activityId in this.props.activities.activitiesById) {
+            if (this.props.activities.activitiesById.hasOwnProperty(activityId)) {
+                if (document.getElementById(activityId).checked) {
+                    selectedActivityIds.push(activityId);
+                }
+            }
+        }
+
+        if (selectedActivityIds.length === 0) return;
+
+        this.props.onMapSelectedRides(selectedActivityIds);
     }
 
     buildSummaryActivityRow(activity) {
@@ -86,40 +106,14 @@ class SummaryActivities extends Component {
 
     }
 
-    mapStarredSegments() {
-
-        console.log("mapStarredSegments invoked");
-
-        hashHistory.push('/mapStarredSegments');
-
-    }
-
-    mapSelectedRides() {
-        console.log("mapSelectedRides invoked");
-
-        let selectedActivityIds = [];
-
-        for (const activityId in this.props.activities.activitiesById) {
-            if (this.props.activities.activitiesById.hasOwnProperty(activityId)) {
-                if (document.getElementById(activityId).checked) {
-                    selectedActivityIds.push(activityId);
-                }
-            }
-        }
-
-        if (selectedActivityIds.length === 0) return;
-
-        hashHistory.push('/mapOfRides/' + selectedActivityIds);
-    }
-
     render() {
 
         const summaryActivityRows = this.buildSummaryActivityRows();
 
         return (
             <div id="SummaryActivities">
-                <button type="button" id="btnMapStarredSegments" onClick={() => this.mapStarredSegments()}>Map of starred segments</button>
-                <button type="button" id="btnMapSelectedRides" onClick={() => this.mapSelectedRides()}>Map selected rides</button>
+                <button type="button" id="btnMapStarredSegments" onClick={() => this.handleMapStarredSegments()}>Map of starred segments</button>
+                <button type="button" id="btnMapSelectedRides" onClick={() => this.handleMapSelectedRides()}>Map selected rides</button>
                 <button type="button" id="btnCompareSelectedRides">Compare selected rides</button>
                 <table id="activitiesTable">
                     <thead>
@@ -146,8 +140,9 @@ class SummaryActivities extends Component {
 
 SummaryActivities.propTypes = {
     activities: React.PropTypes.object.isRequired,
-    loadDetailedActivity: React.PropTypes.func.isRequired,
-    onShowDetailedMap: React.PropTypes.func.isRequired
+    onShowDetailedMap: React.PropTypes.func.isRequired,
+    onMapStarredSegments: React.PropTypes.func.isRequired,
+    onMapSelectedRides: React.PropTypes.func.isRequired
 };
 
 export default SummaryActivities;
