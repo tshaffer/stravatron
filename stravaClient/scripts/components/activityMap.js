@@ -70,7 +70,9 @@ class ActivityMap extends Component {
                 let sourceName = "segment" + segmentIndex.toString();
                 let lineLayerName = "points" + segmentIndex.toString();
 
-                let pathToDecode = self.props.activitiesData[segmentIndex].polyline;
+                const segmentData = self.props.activitiesData[segmentIndex];
+
+                let pathToDecode = segmentData.polyline;
                 let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
 
                 let coordinates = [];
@@ -80,8 +82,6 @@ class ActivityMap extends Component {
                     let lngLat = [longitude, latitude];
                     coordinates.push(lngLat);
                 });
-
-                const segmentData = self.props.activitiesData[segmentIndex];
 
                 self.activityMap.addSource(sourceName, {
                     "type": "geojson",
@@ -109,7 +109,7 @@ class ActivityMap extends Component {
                         "line-cap": "round",
                     },
                     "paint": {
-                        "line-color": "red",
+                        "line-color": segmentData.strokeColor,
                         "line-width": 2
                     }
                 });

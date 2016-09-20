@@ -98,7 +98,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 MapOfRides.propTypes = {
-    params: React.PropTypes.string.isRequired,
+    params: React.PropTypes.object.isRequired,
     loadActivityMap: React.PropTypes.func.isRequired,
     activities: React.PropTypes.object.isRequired
 };
