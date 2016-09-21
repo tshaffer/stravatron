@@ -39,31 +39,39 @@ class ActivityMap extends Component {
             });
         }
 
-        // Setting the bounds of the map isn't working
-        // const sw = new window.mapboxgl.LngLat(-122.08476000000002, 37.028940000000006);
-        // const ne = new window.mapboxgl.LngLat(-122.04053, 36.95910000000001);
-        // const lngLatBounds = new window.mapboxgl.LngLatBounds(sw, ne);
-        // // lngLatBounds = new window.mapboxgl.LngLatBounds(
-        // //     new window.mapboxgl.LngLat(minLongitude, minLatitude),
-        // //     new window.mapboxgl.LngLat(maxLongitude, maxLatitude)
-        // // );
-
         const longitudeCenter = (minLongitude + maxLongitude) / 2.0;
         const latitudeCenter = (minLatitude + maxLatitude) / 2.0;
 
         window.mapboxgl.accessToken = 'pk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXN2cjR4dXIwMjgwMm9wZ282cmk0aTgzIn0.9EtSUOr_ofLcwCDLM6FUHw';
         this.activityMap = new window.mapboxgl.Map({
             container: 'mapBoxMap', // container id
-            // style: 'mapbox://styles/tedshaffer/cisvr76by00122xodeod1qclj',
             style: 'mapbox://styles/tedshaffer/citagbl4b000h2iqbkgub0t26',
-            center: [longitudeCenter, latitudeCenter],
-            zoom: 11, // starting zoom,
-            // maxBounds: lngLatBounds
+            // center: [longitudeCenter, latitudeCenter],
+            // zoom: 11, // starting zoom,
+        });
+
+        this.activityMap.addControl(new window.mapboxgl.Navigation());
+
+        this.activityMap.on('zoom', function() {
+            console.log("current zoom is:", self.activityMap.getZoom().toString());
+
         });
 
         this.activityMap.on('load', function () {
 
-            console.log("current zoom is:", self.activityMap.getZoom().toString());
+            self.activityMap.fitBounds([[
+                minLongitude,
+                minLatitude
+            ], [
+                maxLongitude,
+                maxLatitude
+            ]]);
+
+            console.log("initial zoom is:", self.activityMap.getZoom().toString());
+            // let zoom = self.activityMap.getZoom();
+            // zoom = zoom - 1.0;
+            // self.activityMap.setZoom(zoom);
+            // console.log("set zoom to ", zoom.toString());
 
             for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
@@ -153,7 +161,6 @@ class ActivityMap extends Component {
         return (
             <div id="mapBoxMap" ref={(c) => {
                 self.mapBoxMap = c;
-                console.log("ref time:", self.props.activitiesData.length.toString());
                 self.loadAndRenderMap();
             }}/>
         );
