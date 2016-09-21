@@ -322,6 +322,11 @@ export function loadSummaryActivities() {
 
             let activities = [];
 
+            if (!(stravaSummaryActivities instanceof Array)) {
+                console.log("stravaSummaryActivities not array");
+                return;
+            }
+
             stravaSummaryActivities.forEach( (stravaActivity) => {
                 const summaryActivity = new Activity(stravaActivity);
                 activities.push(summaryActivity);
@@ -374,6 +379,11 @@ export function retrieveBaseMapSegments() {
 
         console.log("actions/index.js::retrieveBaseMapSegments invoked");
         fetchStravaData("segments/starred").then((starredSegments)=> {
+
+            if (!(starredSegments instanceof Array)) {
+                console.log("starredSegments not array");
+                return;
+            }
 
             // retrieve the starred segments for the chosen locale
             starredSegments.forEach( (segment) => {
