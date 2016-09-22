@@ -72,11 +72,11 @@ class ActivityMap extends Component {
 
             self.activityMap.fitBounds([minBounds, maxBounds]);
 
-            console.log("fitBounds");
-            console.log(minBounds);
-            console.log(maxBounds);
-            
-            console.log("initial zoom is:", self.activityMap.getZoom().toString());
+            // console.log("fitBounds");
+            // console.log(minBounds);
+            // console.log(maxBounds);
+            //
+            // console.log("initial zoom is:", self.activityMap.getZoom().toString());
 
             for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
@@ -127,6 +127,25 @@ class ActivityMap extends Component {
                     }
                 });
             }
+
+// create a GeoJSON point to serve as a starting point
+            self.markerPoint = {
+                "type": "Point",
+                "coordinates": [longitudeCenter, latitudeCenter]
+            };
+            self.activityMap.addSource('markerLocation', { type: 'geojson', data: self.markerPoint });
+
+            self.activityMap.addLayer({
+                "id": "markerCircle",
+                "type": "circle",
+                "source": "markerLocation",
+                "paint": {
+                    "circle-radius": 8,
+                    "circle-color": "red",
+                    "circle-opacity": 0.8
+                }
+            });
+
         });
     }
 
@@ -159,9 +178,20 @@ class ActivityMap extends Component {
         }
     }
 
+    setMarkerPosition() {
+        const source = this.activityMap.getSource('markerLocation');
+        this.markerPoint.coordinates[0] = this.props.location[1];
+        this.markerPoint.coordinates[1] = this.props.location[0];
+        source.setData(this.markerPoint);
+    }
+
     render() {
 
         var self = this;
+
+        if (this.activityMap && this.props.location && this.props.location.length > 0) {
+            this.setMarkerPosition();
+        }
 
         return (
             <div id="mapBoxMap" ref={(c) => {
