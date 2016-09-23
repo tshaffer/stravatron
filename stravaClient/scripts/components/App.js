@@ -4,7 +4,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import SummaryActivitiesContainer from '../containers/summaryActivitiesContainer';
 
+import * as mysql from '../services/mysqlServices';
+
 export default class App extends Component {
+
+    componentWillMount() {
+        mysql.initDB();
+    }
 
     componentDidMount() {
         
