@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { hashHistory } from 'react-router';
+
 import { loadDetailedActivity } from '../actions/index';
 
 import * as Converters from '../utilities/converters';
@@ -16,14 +18,20 @@ class DetailedActivity extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             chartLocation: []
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
 
-        console.log("detailedActivity.js::componentDidMount invoked");
+        console.log("detailedActivity.js::componentWillMount invoked");
+
+        if (Object.keys(this.props.activities.activitiesById).length == 0) {
+            hashHistory.push('/');
+            return;
+        }
 
         // create a DetailedActivityContainer and move this functionality to that object
         const activityId = this.props.params.id;
@@ -307,6 +315,9 @@ class DetailedActivity extends Component {
         const activityId = this.props.params.id;
 
         const activitiesById = this.props.activities.activitiesById;
+        if (Object.keys(this.props.activities.activitiesById).length == 0) {
+            return <div></div>;
+        }
 
         let activity = null;
         if (activitiesById.hasOwnProperty(activityId)) {
