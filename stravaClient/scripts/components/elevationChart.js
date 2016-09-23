@@ -75,7 +75,7 @@ class ElevationChart extends Component {
 
             dataTable.addRow(row);
 
-            mapDistanceToLocation[Converters.metersToMiles(distance).toString()] = location;
+            mapDistanceToLocation[Converters.metersToMiles(distance).toString()] = Converters.stravatronCoordinateFromLatLng(location[0], location[1]);
         }
 
         var options = {

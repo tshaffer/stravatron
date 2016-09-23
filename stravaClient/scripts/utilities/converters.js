@@ -60,3 +60,10 @@ export function formatDate(date) {
 
     return moment(date).format('YYYY-MM-DD');
 }
+
+export function stravatronCoordinateFromLatLng(lat, lng) {
+    let coordinate = [];
+    coordinate[0] = lng;
+    coordinate[1] = lat;
+    return coordinate;
+}

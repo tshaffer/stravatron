@@ -180,8 +180,7 @@ class ActivityMap extends Component {
 
     setMarkerPosition() {
         const source = this.activityMap.getSource('markerLocation');
-        this.markerPoint.coordinates[0] = this.props.location[1];
-        this.markerPoint.coordinates[1] = this.props.location[0];
+        this.markerPoint.coordinates = this.props.location;
         source.setData(this.markerPoint);
     }
 
