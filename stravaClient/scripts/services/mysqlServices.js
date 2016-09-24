@@ -1,36 +1,75 @@
-/**
- * Created by tedshaffer on 9/23/16.
- */
-var mysql      = require('mysql');
+const mysql = require('mysql');
 
-export function initDB() {
+export default class MysqlServices {
 
-    console.log('create mysql connection');
 
-    // var dbHostName = '127.0.0.1';
-    let dbHostName = 'localhost';
+    constructor() {
+        this.dbHostName = 'localhost';
+    }
 
-    let connection = mysql.createConnection({
-        host: dbHostName,
-        //user: 'ted',
-        //password: 'ted69',
-        user: 'root',
-        password: 'strava69',
-        database: 'stravatron'
-    });
 
-    console.log("connect");
+    initialize() {
+        this.connection = mysql.createConnection({
+            host: this.dbHostName,
+            user: 'root',
+            password: 'strava69',
+            database: 'stravatron'
+        });
 
-    connection.connect();
+        this.connection.connect();
 
-    console.log("invoked connect");
-    connection.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
-        if (err) throw err;
+        const createAthletesPromise = this.createAthletesTable();
+        const createMapsTable = this.createMapsTable();
+        Promise.all([createAthletesPromise, createMapsTable]).then(values => {
+            console.log("create tables complete");
+        });
+    }
 
-        console.log('The solution is: ', rows[0].solution);
-    });
+    createAthletesTable() {
 
-    connection.end();
+        var self = this;
+
+        return new Promise( (resolve, reject) => {
+            self.connection.query(
+                "CREATE TABLE IF NOT EXISTS athletes ("
+                + "athleteId VARCHAR(32) NOT NULL, "
+                + "authorizationKey VARCHAR(64) NOT NULL,"
+                + "firstname VARCHAR(32) NOT NULL, "
+                + "lastname VARCHAR(32) NOT NULL, "
+                + "email VARCHAR(64) NOT NULL, "
+                + "PRIMARY KEY(athleteId))",
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    console.log("create athletes successful");
+                    resolve();
+                }
+            );
+        });
+    }
+
+    createMapsTable() {
+
+        var self = this;
+
+        return new Promise( (resolve, reject) => {
+            self.connection.query(
+                "CREATE TABLE IF NOT EXISTS maps ("
+                + "mapId VARCHAR(32) NOT NULL, "
+                + "name VARCHAR(64) NOT NULL,"
+                + "style VARCHAR(64) NOT NULL, "
+                + "PRIMARY KEY(mapId))",
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    console.log("create maps successful");
+                    resolve();
+                }
+            );
+        });
+    }
+
+
 }
-
-

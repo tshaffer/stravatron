@@ -4,12 +4,17 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import SummaryActivitiesContainer from '../containers/summaryActivitiesContainer';
 
-import * as mysql from '../services/mysqlServices';
+import MysqlServices from '../services/mysqlServices';
 
 export default class App extends Component {
 
+    constructor(props) {
+        super(props);
+        this.mysql = new MysqlServices();
+    }
+
     componentWillMount() {
-        mysql.initDB();
+        this.mysql.initialize();
     }
 
     componentDidMount() {
@@ -23,10 +28,13 @@ export default class App extends Component {
     render() {
 
         return (
-            <MuiThemeProvider>
-                <SummaryActivitiesContainer />
-            </MuiThemeProvider>
+            <div>pizza face</div>
         );
+        // return (
+        //     <MuiThemeProvider>
+        //         <SummaryActivitiesContainer />
+        //     </MuiThemeProvider>
+        // );
     }
 }
 
