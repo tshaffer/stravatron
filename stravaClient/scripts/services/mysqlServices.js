@@ -11,8 +11,8 @@ export default class MysqlServices {
     initialize() {
         this.connection = mysql.createConnection({
             host: this.dbHostName,
-            user: 'root',
-            password: 'strava69',
+            user: 'ted',
+            password: 'hello69',
             database: 'stravatron'
         });
 
