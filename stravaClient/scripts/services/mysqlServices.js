@@ -9,20 +9,19 @@ export default class MysqlServices {
 
 
     initialize() {
-        this.connection = mysql.createConnection({
+        this.db = mysql.createConnection({
             host: this.dbHostName,
             user: 'ted',
             password: 'hello69',
             database: 'stravatron'
         });
 
-        this.connection.connect();
+        this.db.connect();
 
-        const createAthletesPromise = this.createAthletesTable();
-        const createMapsTable = this.createMapsTable();
-        Promise.all([createAthletesPromise, createMapsTable]).then(values => {
-            console.log("create tables complete");
-        });
+        let promises = [];
+        promises.push(this.createAthletesTable());
+        promises.push(this.createMapsTable());
+        return promises;
     }
 
     createAthletesTable() {
@@ -30,10 +29,11 @@ export default class MysqlServices {
         var self = this;
 
         return new Promise( (resolve, reject) => {
-            self.connection.query(
+            self.db.query(
                 "CREATE TABLE IF NOT EXISTS athletes ("
                 + "athleteId VARCHAR(32) NOT NULL, "
-                + "authorizationKey VARCHAR(64) NOT NULL,"
+                + "accessToken VARCHAR(64) NOT NULL,"
+                + "name VARCHAR(32) NOT NULL, "
                 + "firstname VARCHAR(32) NOT NULL, "
                 + "lastname VARCHAR(32) NOT NULL, "
                 + "email VARCHAR(64) NOT NULL, "
@@ -49,12 +49,30 @@ export default class MysqlServices {
         });
     }
 
+    addAthlete(athleteId, accessToken, name, firstname, lastname, email) {
+        return new Promise( (resolve, reject) => {
+            this.db.query(
+                "INSERT INTO athletes (athleteId, accessToken, name, firstname, lastname, email) " +
+                " VALUES (?, ?, ?, ?, ?, ?)",
+                [athleteId.toString(), accessToken, name, firstname, lastname, email],
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log("added athlete successfully:", name);
+                    resolve();
+                }
+            );
+        });
+    }
+
     createMapsTable() {
 
         var self = this;
 
         return new Promise( (resolve, reject) => {
-            self.connection.query(
+            self.db.query(
                 "CREATE TABLE IF NOT EXISTS maps ("
                 + "mapId VARCHAR(32) NOT NULL, "
                 + "name VARCHAR(64) NOT NULL,"
