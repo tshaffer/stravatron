@@ -77,6 +77,43 @@ export default class MysqlServices {
         });
     }
 
+    getAthletes() {
+        return new Promise( (resolve, reject) => {
+            var query = "SELECT * FROM athletes";
+            this.db.query(
+                query,
+                function (err, rows) {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    console.log("return from athletes query - rows length = " + rows.length);
+
+                    if (rows.length == 0) {
+                        console.log("no athletes found");
+                        resolve([]);
+                    }
+                    else {
+                        let athletes = [];
+                        rows.forEach( row => {
+                            // console.log("found athlete");
+                            // console.log(row);
+                            let athlete = {
+                                stravaAthleteId: row.stravaAthleteId,
+                                accessToken: row.accessToken,
+                                name: row.name,
+                                firstname: row.firstname,
+                                lastname: row.lastname,
+                                email: row.email
+                            };
+                            athletes.push(athlete);
+                        });
+                        resolve(athletes);
+                    }
+                });
+        });
+    }
+
     createMapsTable() {
 
         var self = this;

@@ -6,9 +6,7 @@ import MysqlServices from '../services/mysqlServices';
 
 import SummaryActivitiesContainer from '../containers/summaryActivitiesContainer';
 
-// import { loadAthletes } from '../actions/index';
-
-import { setDB } from '../actions/dbActions';
+import { setDB, loadAthletes, loadMaps } from '../actions/dbActions';
 
 class LandingContainer extends Component {
 
@@ -23,6 +21,7 @@ class LandingContainer extends Component {
         promise.then( db => {
 
             self.props.setDB(db);
+            self.props.loadAthletes(self.mysql);
 
             // this.mysql.addAthlete("2843574", "fb8085cc4c7f3633533e875eae3dc1e04cef06e8", "Dad", "Ted", "Shaffer", "shaffer.family@gmail.com");
             // this.mysql.addAthlete("7085811", "29ef6b106ea16378e27f6031c60a79a4d445d489", "Mom", "Lori", "Shaffer", "loriashaffer@gmail.com");
@@ -45,7 +44,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({setDB},
+    return bindActionCreators({setDB, loadAthletes, loadMaps},
         dispatch);
 }
 
