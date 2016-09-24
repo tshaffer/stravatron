@@ -74,15 +74,32 @@ export default class MysqlServices {
         return new Promise( (resolve, reject) => {
             self.db.query(
                 "CREATE TABLE IF NOT EXISTS maps ("
-                + "mapId VARCHAR(32) NOT NULL, "
                 + "name VARCHAR(64) NOT NULL,"
                 + "style VARCHAR(64) NOT NULL, "
-                + "PRIMARY KEY(mapId))",
+                + "PRIMARY KEY(style))",
                 (err) => {
                     if (err) {
                         reject(err);
                     }
                     console.log("create maps successful");
+                    resolve();
+                }
+            );
+        });
+    }
+
+    addMap(name, style) {
+        return new Promise( (resolve, reject) => {
+            this.db.query(
+                "INSERT INTO maps (name, style) " +
+                " VALUES (?, ?)",
+                [name, style],
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log("added map successfully:", name);
                     resolve();
                 }
             );
