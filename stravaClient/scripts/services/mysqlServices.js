@@ -9,19 +9,29 @@ export default class MysqlServices {
 
 
     initialize() {
-        this.db = mysql.createConnection({
-            host: this.dbHostName,
-            user: 'ted',
-            password: 'hello69',
-            database: 'stravatron'
+
+        var self = this;
+
+        return new Promise( (resolve, reject) => {
+            self.db = mysql.createConnection({
+                host: self.dbHostName,
+                user: 'ted',
+                password: 'hello69',
+                database: 'stravatron'
+            });
+
+            self.db.connect();
+
+            let reason = {};
+            let promises = [];
+            let createTablesPromise = self.createAthletesTable();
+            let createMapsPromise = self.createMapsTable();
+            Promise.all([createTablesPromise, createMapsPromise]).then(value => {
+                resolve(self.db);
+            }, reason => {
+                reject(reason);
+            });
         });
-
-        this.db.connect();
-
-        let promises = [];
-        promises.push(this.createAthletesTable());
-        promises.push(this.createMapsTable());
-        return promises;
     }
 
     createAthletesTable() {

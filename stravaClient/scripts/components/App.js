@@ -2,28 +2,9 @@ import React, { Component } from 'react';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import SummaryActivitiesContainer from '../containers/summaryActivitiesContainer';
-
-import MysqlServices from '../services/mysqlServices';
+import LandingContainer from '../containers/landingContainer';
 
 export default class App extends Component {
-
-    constructor(props) {
-        super(props);
-        this.mysql = new MysqlServices();
-    }
-
-    componentWillMount() {
-        var self = this;
-        const promises = this.mysql.initialize();
-        Promise.all(promises).then( response => {
-            this.mysql.addAthlete("2843574", "fb8085cc4c7f3633533e875eae3dc1e04cef06e8", "Dad", "Ted", "Shaffer", "shaffer.family@gmail.com");
-            this.mysql.addAthlete("7085811", "29ef6b106ea16378e27f6031c60a79a4d445d489", "Mom", "Lori", "Shaffer", "loriashaffer@gmail.com");
-            this.mysql.addMap("Santa Cruz", "mapbox://styles/tedshaffer/citagbl4b000h2iqbkgub0t26");
-        }, (err) => {
-            console.log("initialization failure:", err);
-        });
-    }
 
     componentDidMount() {
         
@@ -36,7 +17,9 @@ export default class App extends Component {
     render() {
 
         return (
-            <div>pizza face</div>
+            <MuiThemeProvider>
+                <LandingContainer />
+            </MuiThemeProvider>
         );
         // return (
         //     <MuiThemeProvider>

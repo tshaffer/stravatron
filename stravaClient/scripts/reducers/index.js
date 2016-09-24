@@ -5,6 +5,7 @@ import SegmentsReducer from './reducer_segments';
 import EffortsForSegmentsReducer from './reducer_efforts_for_segments';
 import BaseMapSegmentsReducer from './reducer_base_map_segments';
 import CustomMapSegmentsReducer from './reducer_custom_map_segments';
+import DBReducer from './reducer_db';
 
 const rootReducer = combineReducers({
     activities: ActivitiesReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     segments: SegmentsReducer,
     effortsForSegments: EffortsForSegmentsReducer,
     baseMapSegments: BaseMapSegmentsReducer,
-    customMapSegments: CustomMapSegmentsReducer
+    customMapSegments: CustomMapSegmentsReducer,
+    db: DBReducer
 });
 
 export default rootReducer;

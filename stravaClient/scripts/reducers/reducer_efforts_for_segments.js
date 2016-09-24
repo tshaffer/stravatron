@@ -11,8 +11,6 @@ let newState = null;
 // effortsForSegment
 export default function(state = initialState, action) {
 
-    console.log("reducer_efforts_for_segments: ", action.type);
-
     switch (action.type) {
 
         case ADD_EFFORTS_FOR_SEGMENT: {
