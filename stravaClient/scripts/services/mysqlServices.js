@@ -31,13 +31,13 @@ export default class MysqlServices {
         return new Promise( (resolve, reject) => {
             self.db.query(
                 "CREATE TABLE IF NOT EXISTS athletes ("
-                + "athleteId VARCHAR(32) NOT NULL, "
+                + "stravaAthleteId VARCHAR(32) NOT NULL, "
                 + "accessToken VARCHAR(64) NOT NULL,"
                 + "name VARCHAR(32) NOT NULL, "
                 + "firstname VARCHAR(32) NOT NULL, "
                 + "lastname VARCHAR(32) NOT NULL, "
                 + "email VARCHAR(64) NOT NULL, "
-                + "PRIMARY KEY(athleteId))",
+                + "PRIMARY KEY(stravaAthleteId))",
                 (err) => {
                     if (err) {
                         reject(err);
@@ -49,12 +49,12 @@ export default class MysqlServices {
         });
     }
 
-    addAthlete(athleteId, accessToken, name, firstname, lastname, email) {
+    addAthlete(stravaAthleteId, accessToken, name, firstname, lastname, email) {
         return new Promise( (resolve, reject) => {
             this.db.query(
-                "INSERT INTO athletes (athleteId, accessToken, name, firstname, lastname, email) " +
+                "INSERT INTO athletes (stravaAthleteId, accessToken, name, firstname, lastname, email) " +
                 " VALUES (?, ?, ?, ?, ?, ?)",
-                [athleteId.toString(), accessToken, name, firstname, lastname, email],
+                [stravaAthleteId, accessToken, name, firstname, lastname, email],
                 (err) => {
                     if (err) {
                         console.log(err);
@@ -74,9 +74,10 @@ export default class MysqlServices {
         return new Promise( (resolve, reject) => {
             self.db.query(
                 "CREATE TABLE IF NOT EXISTS maps ("
+                + "id MEDIUMINT NOT NULL AUTO_INCREMENT,"
                 + "name VARCHAR(64) NOT NULL,"
-                + "style VARCHAR(64) NOT NULL, "
-                + "PRIMARY KEY(style))",
+                + "stravaStyle VARCHAR(64) NOT NULL, "
+                + "PRIMARY KEY(id))",
                 (err) => {
                     if (err) {
                         reject(err);
@@ -88,12 +89,12 @@ export default class MysqlServices {
         });
     }
 
-    addMap(name, style) {
+    addMap(name, stravaStyle) {
         return new Promise( (resolve, reject) => {
             this.db.query(
-                "INSERT INTO maps (name, style) " +
+                "INSERT INTO maps (name, stravaStyle) " +
                 " VALUES (?, ?)",
-                [name, style],
+                [name, stravaStyle],
                 (err) => {
                     if (err) {
                         console.log(err);

@@ -316,7 +316,7 @@ class DetailedActivity extends Component {
 
         const activitiesById = this.props.activities.activitiesById;
         if (Object.keys(this.props.activities.activitiesById).length == 0) {
-            return <div></div>;
+            return <div>Pizza</div>;
         }
 
         let activity = null;
