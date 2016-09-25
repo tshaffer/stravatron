@@ -11,6 +11,20 @@ export function guid() {
         s4() + '-' + s4() + s4() + s4();
 }
 
+export function objectPopulated(obj) {
+    if (obj && (Object.keys(obj).length >> 0)) {
+        return true;
+    }
+    return false;
+}
+
+export function arrayPopulated(arr) {
+    if (arr && (arr.length >> 0)) {
+        return true;
+    }
+    return false;
+}
+
 function getKey(obj, keyIndex) {
     return Object.keys(obj)[keyIndex];
 }

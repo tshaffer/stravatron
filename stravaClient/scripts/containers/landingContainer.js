@@ -9,6 +9,8 @@ import Landing from '../components/landing';
 import { setSelectedAthlete } from '../actions/index';
 import { setDB, loadAthletes, loadMaps } from '../actions/dbActions';
 
+import { objectPopulated, arrayPopulated } from '../utilities/utils';
+
 class LandingContainer extends Component {
 
     constructor(props) {
@@ -40,7 +42,11 @@ class LandingContainer extends Component {
     render() {
 
         let selectedAthlete = {};
-        if (this.props.athletes.length > 0) {
+
+        if (objectPopulated(this.props.selectedAthlete)) {
+            selectedAthlete = this.props.selectedAthlete;
+        }
+        else if (arrayPopulated(this.props.athletes)) {
             selectedAthlete = this.props.athletes[0];
         }
 
@@ -59,7 +65,8 @@ class LandingContainer extends Component {
 function mapStateToProps (state) {
     return {
         db: state.db,
-        athletes: state.athletes
+        athletes: state.athletes,
+        selectedAthlete: state.selectedAthlete
     };
 }
 
@@ -71,7 +78,8 @@ function mapDispatchToProps(dispatch) {
 LandingContainer.propTypes = {
     db: React.PropTypes.object.isRequired,
     athletes: React.PropTypes.array.isRequired,
-    setSelectedAthlete: React.PropTypes.func.isRequired
+    setSelectedAthlete: React.PropTypes.func.isRequired,
+    selectedAthlete: React.PropTypes.object.isRequired
 };
 
 
