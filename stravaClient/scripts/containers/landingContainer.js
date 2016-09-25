@@ -27,9 +27,14 @@ class LandingContainer extends Component {
         });
     }
 
-    handleUpdateSelectedAthlete(athlete) {
-        console.log("update athlete");
-        this.props.setSelectedAthlete();
+    handleUpdateSelectedAthlete(selectedAthleteName) {
+        console.log("update athleteName:", selectedAthleteName);
+
+        this.props.athletes.forEach( athlete => {
+            if (athlete.name == selectedAthleteName) {
+                this.props.setSelectedAthlete(athlete);
+            }
+        });
     }
 
     render() {

@@ -9,7 +9,7 @@ class Landing extends Component {
         if (event != undefined) {
             const selectedAthleteName = event.target.value;
             console.log("selected athlete in landing:", selectedAthleteName);
-            // this.props.onUpdateSelectedAthlete(selectedAthlete);
+            this.props.onUpdateSelectedAthlete(selectedAthleteName);
         }
     }
 
