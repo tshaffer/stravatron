@@ -1,9 +1,6 @@
 import { SET_ATHLETES } from '../actions/dbActions';
 
-const initialState =
-    {
-        athletes: []
-    };
+const initialState = [];
 
 export default function(state = initialState, action) {
 
@@ -12,9 +9,7 @@ export default function(state = initialState, action) {
     switch (action.type) {
 
         case SET_ATHLETES: {
-            newState = {
-                athletes: Object.assign( [], action.athletes)
-            };
+            newState = Object.assign( [], action.athletes);
             return newState;
         }
     }
