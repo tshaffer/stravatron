@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import MysqlServices from '../services/mysqlServices';
 
 import SummaryActivitiesContainer from '../containers/summaryActivitiesContainer';
+import Landing from '../components/landing';
 
 import { setDB, loadAthletes, loadMaps } from '../actions/dbActions';
 
@@ -32,32 +33,42 @@ class LandingContainer extends Component {
 
     render() {
 
-        const self = this;
+        // const self = this;
+        //
+        // console.log("number of athletes is:", this.props.athletes.length);
+        //
+        // if (this.props.athletes.length > 0) {
+        //
+        //     let selectOptions = this.props.athletes.map( (athlete) => {
+        //         return (
+        //             <option value={athlete.name} key={athlete.stravaAthleteId}>{athlete.name}</option>
+        //         );
+        //     });
+        //
+        //     const athlete = this.props.athletes[0];
+        //
+        //     let athletesDropDown =
+        //         (<div>
+        //             Select athlete:
+        //             <select value={athlete.name} onChange={this.handleUpdateAthlete.bind(this)}>{selectOptions}</select>
+        //         </div>);
+        //
+        //     return athletesDropDown;
+        //
+        // }
+        // else {
+        //     return <div>Pizza</div>;
+        // }
 
-        console.log("number of athletes is:", this.props.athletes.length);
+        return (
+            <div>
+                <Landing
+                    athletes={this.props.athletes}
+                    onUpdateAthlete={this.handleUpdateAthlete.bind(this)}
 
-        if (this.props.athletes.length > 0) {
-
-            let selectOptions = this.props.athletes.map( (athlete) => {
-                return (
-                    <option value={athlete.name} key={athlete.stravaAthleteId}>{athlete.name}</option>
-                );
-            });
-
-            const athlete = this.props.athletes[0];
-
-            let athletesDropDown =
-                (<div>
-                    Select athlete:
-                    <select value={athlete.name} onChange={this.handleUpdateAthlete.bind(this)}>{selectOptions}</select>
-                </div>);
-
-            return athletesDropDown;
-
-        }
-        else {
-            return <div>Pizza</div>;
-        }
+                />
+            </div>
+        );
     }
 }
 
