@@ -82,5 +82,8 @@ LandingContainer.propTypes = {
     selectedAthlete: React.PropTypes.object.isRequired
 };
 
+// LandingContainer.defaultProps = {
+//     reviews: []
+// }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LandingContainer);
