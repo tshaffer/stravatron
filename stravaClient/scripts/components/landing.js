@@ -19,7 +19,7 @@ class Landing extends Component {
 
         console.log("number of athletes is:", this.props.athletes.length);
 
-        if (this.props.athletes.length > 0) {
+        if (this.props.athletes.length > 0 && this.props.selectedAthlete.name) {
 
             let selectOptions = this.props.athletes.map( (athlete) => {
                 return (
@@ -27,7 +27,7 @@ class Landing extends Component {
                 );
             });
 
-            const athlete = this.props.athletes[0];
+            const athlete = this.props.selectedAthlete;
 
             let athletesDropDown =
                 (<div>
@@ -46,6 +46,7 @@ class Landing extends Component {
 }
 
 Landing.propTypes = {
+    selectedAthlete: React.PropTypes.object.isRequired,
     athletes: React.PropTypes.array.isRequired,
     onUpdateSelectedAthlete: React.PropTypes.func.isRequired
 };

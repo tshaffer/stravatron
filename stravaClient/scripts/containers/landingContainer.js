@@ -39,10 +39,16 @@ class LandingContainer extends Component {
 
     render() {
 
+        let selectedAthlete = {};
+        if (this.props.athletes.length > 0) {
+            selectedAthlete = this.props.athletes[0];
+        }
+
         return (
             <div>
                 <Landing
                     athletes={this.props.athletes}
+                    selectedAthlete={selectedAthlete}
                     onUpdateSelectedAthlete={this.handleUpdateSelectedAthlete.bind(this)}
                 />
             </div>
