@@ -7,6 +7,7 @@ import BaseMapSegmentsReducer from './reducer_base_map_segments';
 import CustomMapSegmentsReducer from './reducer_custom_map_segments';
 import DBReducer from './reducer_db';
 import AthletesReducer from './reducer_athletes';
+import SelectedAthleteReducer from './reducer_selected_athlete';
 
 const rootReducer = combineReducers({
     activities: ActivitiesReducer,
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
     baseMapSegments: BaseMapSegmentsReducer,
     customMapSegments: CustomMapSegmentsReducer,
     db: DBReducer,
-    athletes: AthletesReducer
+    athletes: AthletesReducer,
+    selectedAthlete: SelectedAthleteReducer
 });
 
 export default rootReducer;

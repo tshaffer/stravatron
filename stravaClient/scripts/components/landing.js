@@ -1,16 +1,18 @@
-/**
- * Created by tedshaffer on 9/24/16.
- */
 import React, { Component } from 'react';
+
+import SummaryActivitiesContainer from '../containers/summaryActivitiesContainer';
 
 class Landing extends Component {
 
-    handleUpdateAthlete() {
-        console.log("update athlete in landing");
-        this.props.onUpdateAthlete();
+    handleUpdateSelectedAthlete(event) {
+
+        if (event != undefined) {
+            const selectedAthleteName = event.target.value;
+            console.log("selected athlete in landing:", selectedAthleteName);
+            // this.props.onUpdateSelectedAthlete(selectedAthlete);
+        }
     }
 
-    //
     render() {
 
         const self = this;
@@ -30,14 +32,14 @@ class Landing extends Component {
             let athletesDropDown =
                 (<div>
                     Select athlete:
-                    <select value={athlete.name} onChange={this.handleUpdateAthlete.bind(this)}>{selectOptions}</select>
+                    <select value={athlete.name} onChange={this.handleUpdateSelectedAthlete.bind(this)}>{selectOptions}</select>
                 </div>);
 
             return athletesDropDown;
 
         }
         else {
-            return <div>Pizza</div>;
+            return <div>Loading...</div>;
         }
     }
 
@@ -45,7 +47,7 @@ class Landing extends Component {
 
 Landing.propTypes = {
     athletes: React.PropTypes.array.isRequired,
-    onUpdateAthlete: React.PropTypes.func.isRequired
+    onUpdateSelectedAthlete: React.PropTypes.func.isRequired
 };
 
 export default Landing;

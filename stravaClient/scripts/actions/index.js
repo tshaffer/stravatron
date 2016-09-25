@@ -8,6 +8,13 @@ import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
 
+export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
+export function setSelectedAthlete(athlete) {
+    return {
+        type: SET_SELECTED_ATHLETE,
+        athlete
+    };
+}
 
 export const ADD_EFFORTS_FOR_SEGMENT = 'ADD_EFFORTS_FOR_SEGMENT';
 function addEffortsForSegment(segmentId, effortsForSegment) {
