@@ -13,6 +13,11 @@ class Landing extends Component {
         }
     }
 
+// <button onClick={() =>
+// {
+//     console.log("foo"); debugger; self.props.onShowSummaryActivities.bind(this);
+// }
+
     render() {
 
         const self = this;
@@ -35,7 +40,15 @@ class Landing extends Component {
                     <select value={athlete.name} onChange={this.handleUpdateSelectedAthlete.bind(this)}>{selectOptions}</select>
                 </div>);
 
-            return athletesDropDown;
+
+            return (
+                <div>
+                    {athletesDropDown}
+                    <div>
+                        <button onClick={this.props.onShowSummaryActivities.bind(this)}>Show athlete activities</button>
+                    </div>
+                </div>
+            );
 
         }
         else {
@@ -48,7 +61,8 @@ class Landing extends Component {
 Landing.propTypes = {
     selectedAthlete: React.PropTypes.object.isRequired,
     athletes: React.PropTypes.array.isRequired,
-    onUpdateSelectedAthlete: React.PropTypes.func.isRequired
+    onUpdateSelectedAthlete: React.PropTypes.func.isRequired,
+    onShowSummaryActivities: React.PropTypes.func.isRequired
 };
 
 export default Landing;

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { hashHistory } from 'react-router';
+
 import MysqlServices from '../services/mysqlServices';
 
 import Landing from '../components/landing';
@@ -39,6 +41,11 @@ class LandingContainer extends Component {
         });
     }
 
+    handleShowSummaryActivities() {
+        console.log("fum");
+        hashHistory.push('/summaryActivitiesContainer');
+    }
+
     render() {
 
         let selectedAthlete = {};
@@ -56,6 +63,7 @@ class LandingContainer extends Component {
                     athletes={this.props.athletes}
                     selectedAthlete={selectedAthlete}
                     onUpdateSelectedAthlete={this.handleUpdateSelectedAthlete.bind(this)}
+                    onShowSummaryActivities={this.handleShowSummaryActivities.bind(this)}
                 />
             </div>
         );
