@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { hashHistory } from 'react-router';
 
-import MysqlServices from '../services/mysqlServices';
+import DBServices from '../services/dbServices';
 
 import Landing from '../components/landing';
 
@@ -17,15 +17,15 @@ class LandingContainer extends Component {
 
     constructor(props) {
         super(props);
-        this.mysql = new MysqlServices();
+        this.dbServices = new DBServices();
     }
 
     componentWillMount() {
         var self = this;
-        const promise = this.mysql.initialize();
+        const promise = this.dbServices.initialize();
         promise.then( db => {
             self.props.setDB(db);
-            self.props.loadAthletes(self.mysql);
+            self.props.loadAthletes(self.dbServices);
         }, (err) => {
             console.log("initialization failure:", err);
         });

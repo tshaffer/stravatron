@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 
-export default class MysqlServices {
+export default class DBServices {
 
 
     constructor() {
