@@ -101,23 +101,38 @@ function getAthleteData() {
     return athlete;
 }
 
-function getResponseData() {
+function getResponseData(state = null) {
 
     let responseData = {};
+
+    if (state) {
+        const athlete = state.selectedAthlete;
+        if (athlete) {
+            responseData.athlete = {};
+            responseData.athlete.id = athlete.stravaAthleteId;
+            responseData.athlete.firstname = athlete.firstname;
+            responseData.athlete.lastname = athlete.lastname;
+            responseData.athlete.email = athlete.email;
+            responseData.accessToken = athlete.accessToken;
+            return responseData;
+        }
+    }
+
     responseData.accessToken = "fb8085cc4c7f3633533e875eae3dc1e04cef06e8";          // pa
     // responseData.accessToken = "29ef6b106ea16378e27f6031c60a79a4d445d489";       // ma
     responseData.athlete = getAthleteData();
 
     return responseData;
+
 }
 
-function fetchStravaData(endPoint) {
+function fetchStravaData(endPoint, state) {
 
     console.log("actions/index.js::fetchStravaData from " + endPoint);
 
     return new Promise(function (resolve, reject) {
 
-        const responseData = getResponseData();
+        const responseData = getResponseData(state);
 
         var options = {
             host: 'www.strava.com',
@@ -146,39 +161,39 @@ function fetchStravaData(endPoint) {
     });
 }
 
-function fetchStream(activityId) {
+function fetchStream(activityId, getState) {
 
     return new Promise((resolve) => {
 
         console.log("actions/index.js::fetchStream invoked: ", activityId);
 
-        fetchStravaData('activities/' + activityId + '/streams/time,latlng,distance,altitude,grade_smooth').then( (stravaStreams) => {
+        fetchStravaData('activities/' + activityId + '/streams/time,latlng,distance,altitude,grade_smooth', getState()).then( (stravaStreams) => {
             resolve(stravaStreams);
         });
     });
 }
 
-function fetchAllEfforts(athleteId, segmentId) {
+function fetchAllEfforts(athleteId, segmentId, getState) {
     // return new Promise((resolve, reject) => {
     return new Promise((resolve) => {
 
         console.log("actions/index.js::fetchAllEfforts invoked: ", segmentId);
 
-        fetchStravaData("segments/" + segmentId.toString() + '/all_efforts?athlete_id=' + athleteId.toString()).then( (stravaAllEfforts) => {
+        fetchStravaData("segments/" + segmentId.toString() + '/all_efforts?athlete_id=' + athleteId.toString(), getState()).then( (stravaAllEfforts) => {
             resolve(stravaAllEfforts);
         });
     });
 }
 
 
-function fetchSegment(segmentId) {
+function fetchSegment(segmentId, getState) {
 
     // return new Promise((resolve, reject) => {
     return new Promise((resolve) => {
 
         console.log("actions/index.js::fetchSegment invoked: ", segmentId);
 
-        fetchStravaData("segments/" + segmentId).then( (stravaDetailedSegment)=> {
+        fetchStravaData("segments/" + segmentId, getState()).then( (stravaDetailedSegment)=> {
             resolve(stravaDetailedSegment);
         });
     });
@@ -189,7 +204,7 @@ export function loadActivityMap(activityId) {
     return function(dispatch, getState) {
 
         console.log("actions/index.js::loadActivityMap invoked");
-        fetchStravaData("activities/" + activityId).then((stravaDetailedActivity)=> {
+        fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
             dispatch(addActivityMap(stravaDetailedActivity.id, stravaDetailedActivity.map));
             let s = getState();
         });
@@ -202,11 +217,11 @@ export function loadDetailedActivity(activityId) {
 
         console.log("actions/index.js::loadDetailedActivity invoked");
 
-        fetchStravaData("activities/" + activityId).then((stravaDetailedActivity)=> {
+        fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
 
             // retrieve streams for this activity
             // ** what if all the efforts are retrieved before streams are retrieved? is that a problem?
-            fetchStream(activityId).then((stravaStreams) => {
+            fetchStream(activityId, getState).then((stravaStreams) => {
                 console.log("streams retrieved");
 
                 // stravaStreams is an array of objects
@@ -255,7 +270,7 @@ export function loadDetailedActivity(activityId) {
             const athleteId = "2843574";            // pa
             // const athleteId = "7085811";         // ma
             segmentIds.forEach((segmentId) => {
-                fetchAllEffortsPromises.push(fetchAllEfforts(athleteId, segmentId));
+                fetchAllEffortsPromises.push(fetchAllEfforts(athleteId, segmentId, getState));
             });
 
             let allEffortsList = [];
@@ -294,7 +309,7 @@ export function loadDetailedActivity(activityId) {
 
             let fetchSegmentPromises = [];
             segmentIds.forEach((segmentId) => {
-                fetchSegmentPromises.push(fetchSegment(segmentId));
+                fetchSegmentPromises.push(fetchSegment(segmentId, getState));
             });
 
             let detailedSegmentsAttributes = [];
@@ -321,16 +336,17 @@ export function loadDetailedActivity(activityId) {
 
 export function loadSummaryActivities() {
 
-    return function(dispatch) {
+    return function(dispatch, getState) {
 
         console.log("actions/index.js::loadSummaryActivities invoked");
 
-        fetchStravaData("athlete/activities").then( (stravaSummaryActivities)=> {
+        fetchStravaData("athlete/activities", getState()).then( (stravaSummaryActivities)=> {
 
             let activities = [];
 
             if (!(stravaSummaryActivities instanceof Array)) {
                 console.log("stravaSummaryActivities not array");
+                debugger;
                 return;
             }
 
@@ -385,7 +401,7 @@ export function retrieveBaseMapSegments() {
     return function(dispatch, getState) {
 
         console.log("actions/index.js::retrieveBaseMapSegments invoked");
-        fetchStravaData("segments/starred").then((starredSegments)=> {
+        fetchStravaData("segments/starred", getState()).then((starredSegments)=> {
 
             if (!(starredSegments instanceof Array)) {
                 console.log("starredSegments not array");
@@ -410,7 +426,7 @@ export function retrieveBaseMapSegments() {
             // get the detailed segment data for each of the starred segments
             let fetchSegmentPromises = [];
             baseMapSegmentIds.forEach( (segmentId) => {
-                fetchSegmentPromises.push(fetchSegment(segmentId));
+                fetchSegmentPromises.push(fetchSegment(segmentId, getState));
             });
 
             // wait until all data has been received

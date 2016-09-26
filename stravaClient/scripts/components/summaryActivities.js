@@ -37,6 +37,11 @@ class SummaryActivities extends Component {
 
         var self = this;
 
+        let calories = "";
+        if (activity.kilojoules) {
+            calories = activity.kilojoules.toFixed(0);
+        }
+
         return (
             <tr key={activity.id}>
                 <td>
@@ -61,7 +66,7 @@ class SummaryActivities extends Component {
                     {Converters.metersPerSecondToMilesPerHour(activity.averageSpeed).toFixed(1)} mph
                 </td>
                 <td>
-                    {activity.kilojoules.toFixed(0)}
+                    {calories}
                 </td>
                 <td>
                     <button onClick={() => self.handleShowDetailedMap(activity.id)}>Show details</button>

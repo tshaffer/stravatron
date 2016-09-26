@@ -44,6 +44,12 @@ class DetailedActivity extends Component {
             return <div>pizza</div>;
         }
 
+        let calories = "";
+        if (activity.kilojoules) {
+            calories = activity.kilojoules.toFixed(0);
+        }
+
+
         return (
             <div id="RideSummary">
                 <table className="summaryTable">
@@ -56,7 +62,7 @@ class DetailedActivity extends Component {
                             <td>{Converters.metersToFeet(activity.totalElevationGain).toFixed(0)} ft</td>
                             <td>{Converters.metersToMiles(activity.distance).toFixed(1)} mi</td>
                             <td>{Converters.metersPerSecondToMilesPerHour(activity.averageSpeed).toFixed(1)} mph</td>
-                            <td>{activity.kilojoules.toFixed(0)}</td>
+                            <td>{calories}</td>
                         </tr>
 
                         <tr className="summaryLabels">
