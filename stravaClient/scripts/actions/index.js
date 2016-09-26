@@ -84,23 +84,6 @@ export function addSegmentEfforts(segmentEfforts) {
     };
 }
 
-// hardcoded for now
-function getAthleteData() {
-    
-    let athlete = {};
-    athlete.id = "2843574";
-    athlete.firstName = "Ted";
-    athlete.lastName = "Shaffer";
-    athlete.email = "shaffer_family@yahoo.com";
-
-    // athlete.id = "7085811";
-    // athlete.firstName = "Lori";
-    // athlete.lastName = "Shaffer";
-    // athlete.email = "loriashaffer@gmail.com";
-
-    return athlete;
-}
-
 function getResponseData(state = null) {
 
     let responseData = {};
@@ -118,12 +101,9 @@ function getResponseData(state = null) {
         }
     }
 
-    responseData.accessToken = "fb8085cc4c7f3633533e875eae3dc1e04cef06e8";          // pa
-    // responseData.accessToken = "29ef6b106ea16378e27f6031c60a79a4d445d489";       // ma
-    responseData.athlete = getAthleteData();
+    debugger;
 
-    return responseData;
-
+    return null;
 }
 
 function fetchStravaData(endPoint, state) {
