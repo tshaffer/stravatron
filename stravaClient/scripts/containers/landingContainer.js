@@ -9,7 +9,7 @@ import DBServices from '../services/dbServices';
 import Landing from '../components/landing';
 
 import { setSelectedAthlete } from '../actions/index';
-import { setDB, loadAthletes, loadMaps } from '../actions/dbActions';
+import { loadDBData, loadMaps } from '../actions/dbActions';
 
 import { objectPopulated, arrayPopulated } from '../utilities/utils';
 
@@ -17,15 +17,14 @@ class LandingContainer extends Component {
 
     constructor(props) {
         super(props);
-        this.dbServices = new DBServices();
     }
 
     componentWillMount() {
         var self = this;
-        const promise = this.dbServices.initialize();
-        promise.then( db => {
-            self.props.setDB(db);
-            self.props.loadAthletes(self.dbServices);
+        const dbServices = new DBServices();
+        const promise = dbServices.initialize();
+        promise.then( dbConnection => {
+            self.props.loadDBData(dbServices, dbConnection);
         }, (err) => {
             console.log("initialization failure:", err);
         });
@@ -79,7 +78,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({setDB, loadAthletes, loadMaps, setSelectedAthlete},
+    return bindActionCreators({loadDBData, loadMaps, setSelectedAthlete},
         dispatch);
 }
 

@@ -13,21 +13,21 @@ export default class DBServices {
         var self = this;
 
         return new Promise( (resolve, reject) => {
-            self.db = mysql.createConnection({
+            self.dbConnection = mysql.createConnection({
                 host: self.dbHostName,
                 user: 'ted',
                 password: 'hello69',
                 database: 'stravatron'
             });
 
-            self.db.connect();
+            self.dbConnection.connect();
 
             let reason = {};
             let promises = [];
             let createTablesPromise = self.createAthletesTable();
             let createMapsPromise = self.createMapsTable();
             Promise.all([createTablesPromise, createMapsPromise]).then(value => {
-                resolve(self.db);
+                resolve(self.dbConnection);
             }, reason => {
                 reject(reason);
             });
@@ -39,7 +39,7 @@ export default class DBServices {
         var self = this;
 
         return new Promise( (resolve, reject) => {
-            self.db.query(
+            self.dbConnection.query(
                 "CREATE TABLE IF NOT EXISTS athletes ("
                 + "stravaAthleteId VARCHAR(32) NOT NULL, "
                 + "accessToken VARCHAR(64) NOT NULL,"
@@ -61,7 +61,7 @@ export default class DBServices {
 
     addAthlete(stravaAthleteId, accessToken, name, firstname, lastname, email) {
         return new Promise( (resolve, reject) => {
-            this.db.query(
+            this.dbConnection.query(
                 "INSERT INTO athletes (stravaAthleteId, accessToken, name, firstname, lastname, email) " +
                 " VALUES (?, ?, ?, ?, ?, ?)",
                 [stravaAthleteId, accessToken, name, firstname, lastname, email],
@@ -80,7 +80,7 @@ export default class DBServices {
     getAthletes() {
         return new Promise( (resolve, reject) => {
             var query = "SELECT * FROM athletes";
-            this.db.query(
+            this.dbConnection.query(
                 query,
                 function (err, rows) {
                     if (err) {
@@ -119,7 +119,7 @@ export default class DBServices {
         var self = this;
 
         return new Promise( (resolve, reject) => {
-            self.db.query(
+            self.dbConnection.query(
                 "CREATE TABLE IF NOT EXISTS maps ("
                 + "id MEDIUMINT NOT NULL AUTO_INCREMENT,"
                 + "name VARCHAR(64) NOT NULL,"
@@ -138,7 +138,7 @@ export default class DBServices {
 
     addMap(name, stravaStyle) {
         return new Promise( (resolve, reject) => {
-            this.db.query(
+            this.dbConnection.query(
                 "INSERT INTO maps (name, stravaStyle) " +
                 " VALUES (?, ?)",
                 [name, stravaStyle],

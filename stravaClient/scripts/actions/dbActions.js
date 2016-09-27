@@ -5,10 +5,11 @@ export const SET_DB = 'SET_DB';
 export const SET_ATHLETES = 'SET_ATHLETES';
 export const LOAD_MAPS = 'LOAD_MAPS';
 
-export function setDB(db) {
+function setDB(dbServices, dbConnection) {
     return {
         type: SET_DB,
-        db
+        dbServices,
+        dbConnection
     };
 }
 
@@ -19,7 +20,7 @@ function setAthletes(athletes) {
     };
 }
 
-export function loadAthletes(dbServices) {
+function loadAthletes(dbServices) {
 
     return function (dispatch, getState) {
 
@@ -39,6 +40,13 @@ export function loadAthletes(dbServices) {
         }, err => {
 
         });
+    };
+}
+
+export function loadDBData(dbServices, dbConnection) {
+    return function (dispatch, getState) {
+        dispatch(setDB(dbServices, dbConnection));
+        dispatch(loadAthletes(dbServices));
     };
 }
 

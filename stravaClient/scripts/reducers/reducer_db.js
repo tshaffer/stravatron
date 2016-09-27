@@ -2,7 +2,8 @@ import { SET_DB } from '../actions/dbActions';
 
 const initialState =
     {
-        db: {}
+        dbServices: null,
+        dbConnection: null
     };
 
 export default function(state = initialState, action) {
@@ -13,7 +14,8 @@ export default function(state = initialState, action) {
 
         case SET_DB: {
             newState = {
-                db: Object.assign( {}, action.db)
+                dbServices: Object.assign( {}, action.dbServices),
+                dbConnection: Object.assign( {}, action.dbConnection)
             };
             return newState;
         }
