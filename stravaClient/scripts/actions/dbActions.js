@@ -1,6 +1,8 @@
 /**
  * Created by tedshaffer on 9/24/16.
  */
+import { setSelectedAthlete } from './index';
+
 export const SET_DB = 'SET_DB';
 export const SET_ATHLETES = 'SET_ATHLETES';
 export const LOAD_MAPS = 'LOAD_MAPS';
@@ -43,10 +45,27 @@ function loadAthletes(dbServices) {
     };
 }
 
-export function loadDBData(dbServices, dbConnection) {
+function loadSelectedAthlete(dbServices) {
+
     return function (dispatch, getState) {
+
+        // retrieve selectedAthlete from db
+        let state = getState();
+        const getSelectedAthletePromise = dbServices.getSelectedAthlete();
+        getSelectedAthletePromise.then( selectedAthlete => {
+            console.log(selectedAthlete);
+            dispatch(setSelectedAthlete(selectedAthlete));
+        }, err => {
+
+        });
+    };
+}
+
+export function loadDBData(dbServices, dbConnection) {
+    return function (dispatch) {
         dispatch(setDB(dbServices, dbConnection));
         dispatch(loadAthletes(dbServices));
+        dispatch(loadSelectedAthlete(dbServices));
     };
 }
 

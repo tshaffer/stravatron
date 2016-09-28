@@ -130,22 +130,73 @@ export default class DBServices {
 
                     console.log("create createSelectedAthleteTable successful");
 
-                    self.dbConnection.query(
-                    "INSERT INTO selectedAthlete (stravaAthleteId) " +
-                    " VALUES (?)",
-                        ["2843574"],
-                        (err) => {
-                            if (err) {
-                                console.log(err);
-                                reject(err);
-                            }
-                            console.log("added athlete successfully:", name);
-                            resolve();
-                        });
+                    resolve();
+                    // don't add to the table unless none exist - figure out how to do this.
+                    // self.dbConnection.query(
+                    // "INSERT INTO selectedAthlete (stravaAthleteId) " +
+                    // " VALUES (?)",
+                    //     ["2843574"],
+                    //     (err) => {
+                    //         if (err) {
+                    //             console.log(err);
+                    //             reject(err);
+                    //         }
+                    //         console.log("added athlete successfully:", name);
+                    //         resolve();
+                    //     });
                 });
         });
     }
 
+    getSelectedAthlete() {
+        return new Promise( (resolve, reject) => {
+            var query = "SELECT * FROM athletes JOIN (selectedAthlete) ON (athletes.stravaAthleteId = selectedAthlete.stravaAthleteId)";
+            this.dbConnection.query(
+                query,
+                function (err, rows) {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    console.log("return from getSelectedAthlete query - rows length = " + rows.length);
+
+                    if (rows.length == 0) {
+                        console.log("no athletes found");
+                        resolve([]);
+                    }
+                    else {
+                        let selectedAthlete = {
+                            stravaAthleteId: rows[0].stravaAthleteId,
+                            accessToken: rows[0].accessToken,
+                            name: rows[0].name,
+                            firstname: rows[0].firstname,
+                            lastname: rows[0].lastname,
+                            email: rows[0].email
+                        };
+                        resolve(selectedAthlete);
+                    }
+                });
+        });
+    }
+
+    // https://www.npmjs.com/package/mysql
+    setSelectedAthlete(stravaAthleteId) {
+        return new Promise( (resolve, reject) => {
+            this.dbConnection.query(
+                "UPDATE selectedAthlete SET stravaAthleteId =  (stravaAthleteId) " +
+                " VALUES (?)",
+                [stravaAthleteId],
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log("added athlete successfully:", name);
+                    resolve();
+                }
+            );
+        });
+    }
 
     createMapsTable() {
 

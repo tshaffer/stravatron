@@ -17,11 +17,15 @@ class LandingContainer extends Component {
 
     constructor(props) {
         super(props);
+
+        // TMP HACK
+        this.dbServices = null;
     }
 
     componentWillMount() {
         var self = this;
         const dbServices = new DBServices();
+        this.dbServices = dbServices;
         const promise = dbServices.initialize();
         promise.then( dbConnection => {
             self.props.loadDBData(dbServices, dbConnection);
@@ -31,11 +35,15 @@ class LandingContainer extends Component {
     }
 
     handleUpdateSelectedAthlete(selectedAthleteName) {
+
+        var self = this;
+
         console.log("update athleteName:", selectedAthleteName);
 
         this.props.athletes.forEach( athlete => {
             if (athlete.name == selectedAthleteName) {
-                this.props.setSelectedAthlete(athlete);
+                self.props.setSelectedAthlete(athlete);
+                self.dbServices.setSelectedAthlete(athlete.stravaAthleteId);
             }
         });
     }
