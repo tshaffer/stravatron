@@ -13,11 +13,6 @@ class Landing extends Component {
         }
     }
 
-// <button onClick={() =>
-// {
-//     console.log("foo"); debugger; self.props.onShowSummaryActivities.bind(this);
-// }
-
     render() {
 
         const self = this;

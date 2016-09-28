@@ -41,7 +41,6 @@ class LandingContainer extends Component {
     }
 
     handleShowSummaryActivities() {
-        console.log("fum");
         hashHistory.push('/summaryActivitiesContainer');
     }
 

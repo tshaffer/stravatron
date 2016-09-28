@@ -24,9 +24,10 @@ export default class DBServices {
 
             let reason = {};
             let promises = [];
-            let createTablesPromise = self.createAthletesTable();
+            let createAthletesPromise = self.createAthletesTable();
+            let createSelectedAthletePromise = self.createSelectedAthleteTable();
             let createMapsPromise = self.createMapsTable();
-            Promise.all([createTablesPromise, createMapsPromise]).then(value => {
+            Promise.all([createAthletesPromise, createSelectedAthletePromise, createMapsPromise]).then(value => {
                 resolve(self.dbConnection);
             }, reason => {
                 reject(reason);
@@ -113,6 +114,38 @@ export default class DBServices {
                 });
         });
     }
+
+    createSelectedAthleteTable() {
+
+        var self = this;
+
+        return new Promise( (resolve, reject) => {
+            self.dbConnection.query(
+                "CREATE TABLE IF NOT EXISTS selectedAthlete ("
+                + "stravaAthleteId VARCHAR(32) NOT NULL)",
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    console.log("create createSelectedAthleteTable successful");
+
+                    self.dbConnection.query(
+                    "INSERT INTO selectedAthlete (stravaAthleteId) " +
+                    " VALUES (?)",
+                        ["2843574"],
+                        (err) => {
+                            if (err) {
+                                console.log(err);
+                                reject(err);
+                            }
+                            console.log("added athlete successfully:", name);
+                            resolve();
+                        });
+                });
+        });
+    }
+
 
     createMapsTable() {
 
