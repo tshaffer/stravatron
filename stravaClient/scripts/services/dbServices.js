@@ -183,8 +183,7 @@ export default class DBServices {
     setSelectedAthlete(stravaAthleteId) {
         return new Promise( (resolve, reject) => {
             this.dbConnection.query(
-                "UPDATE selectedAthlete SET stravaAthleteId =  (stravaAthleteId) " +
-                " VALUES (?)",
+                "UPDATE selectedAthlete SET stravaAthleteId =  (?) ",
                 [stravaAthleteId],
                 (err) => {
                     if (err) {
