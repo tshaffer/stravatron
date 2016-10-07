@@ -25,9 +25,10 @@ export default class DBServices {
             let reason = {};
             let promises = [];
             let createAthletesPromise = self.createAthletesTable();
+            let createSummaryActivitiesTablePromise = self.createSummaryActivitiesTable();
             let createSelectedAthletePromise = self.createSelectedAthleteTable();
             let createMapsPromise = self.createMapsTable();
-            Promise.all([createAthletesPromise, createSelectedAthletePromise, createMapsPromise]).then(value => {
+            Promise.all([createAthletesPromise, createSummaryActivitiesTablePromise, createSelectedAthletePromise, createMapsPromise]).then(value => {
                 resolve(self.dbConnection);
             }, reason => {
                 reject(reason);
@@ -54,6 +55,80 @@ export default class DBServices {
                         reject(err);
                     }
                     console.log("create athletes successful");
+                    resolve();
+                }
+            );
+        });
+    }
+
+    createSummaryActivitiesTable() {
+
+        var self = this;
+
+        return new Promise( (resolve, reject) => {
+            self.dbConnection.query(
+                "CREATE TABLE IF NOT EXISTS summaryactivities ("
+                + "activityId VARCHAR(32) NOT NULL, "
+                + "athleteId VARCHAR(32) NOT NULL, "
+                + "name VARCHAR(64) NOT NULL, "
+                + "distance FLOAT NOT NULL, "
+                + "movingTime INT NOT NULL, "
+                + "elapsedTime INT NOT NULL, "
+                + "totalElevationGain INT NOT NULL, "
+                + "startDateTime DATE NOT NULL, "
+                + "averageSpeed FLOAT NOT NULL, "
+                + "maxSpeed FLOAT NOT NULL, "
+                + "startPointLatitude DOUBLE NOT NULL, "
+                + "startPointLongitude DOUBLE NOT NULL, "
+                + "mapSummaryPolyline TEXT NOT NULL, "
+                + "PRIMARY KEY(activityId))",
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    console.log("create athletes successful");
+                    resolve();
+                }
+            );
+        });
+    }
+
+    getSummaryActivities(athleteId) {
+
+        console.log("getSummaryActivities invoked");
+
+        var summaryActivities = {};
+
+        var query = "SELECT * FROM summaryactivities " +
+            "WHERE athleteId=?";
+
+        this.dbConnection.query(
+            query,
+            [athleteId],
+            (err, rows) => {
+
+            }
+        );
+    }
+
+    addSummaryActivity(activity) {
+
+        const a = activity;
+
+        return new Promise( (resolve, reject) => {
+            const startDate = new Date(a.startDateLocal);
+            this.dbConnection.query(
+                "INSERT INTO summaryactivities (activityId, athleteId, name, distance, movingTime, elapsedTime, totalElevationGain, startDateTime," +
+                "averageSpeed, maxSpeed, startPointLatitude, startPointLongitude, mapSummaryPolyline) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [a.id, a.athleteId, a.name, a.distance, a.movingTime, a.elapsedTime, a.totalElevationGain, startDate,
+                    a.averageSpeed, a.maxSpeed, a.startLatitude, a.startLongitude, a.mapSummaryPolyline],
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log("added activity successfully");
                     resolve();
                 }
             );

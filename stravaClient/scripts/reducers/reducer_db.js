@@ -14,7 +14,8 @@ export default function(state = initialState, action) {
 
         case SET_DB: {
             newState = {
-                dbServices: Object.assign( {}, action.dbServices),
+                // dbServices: Object.assign( {}, action.dbServices),
+                dbServices: action.dbServices,
                 dbConnection: Object.assign( {}, action.dbConnection)
             };
             return newState;

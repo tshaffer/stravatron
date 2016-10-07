@@ -12,9 +12,7 @@ export default class Activity {
             this.endLatitudeLongitude = activity.end_latlng;
             this.kilojoules = activity.kilojoules;
             this.city = activity.location_city;
-            // map
-            // activity.map.id
-            // activity.map.summary_polyline
+            this.mapSummaryPolyline = activity.map.summary_polyline;
             this.maxSpeed = activity.max_speed;
             this.movingTime = activity.moving_time;
             this.name = activity.name;

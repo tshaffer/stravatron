@@ -8,6 +8,8 @@ import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
 
+import DBServices from '../services/dbServices';
+
 export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
 export function setSelectedAthlete(athlete) {
     return {
@@ -314,13 +316,80 @@ export function loadDetailedActivity(activityId) {
     };
 }
 
+export function fetchAndUpdateSummaryActivities() {
+
+    return function(dispatch, getState) {
+
+        // get summaryActivities from db for current athlete
+
+        // initialize redux store with these summaryActivities
+
+        // get the timestamp of the most recent activity - retrieve the summary activities with timestamps > than the most recent summary activity
+        let secondsSinceEpochOfLastActivity = 0;      // seconds since epoch
+        fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState).then( (activities)=> {
+            let state = getState();
+            debugger;
+            const dbServices = state.db.dbServices;
+
+            let promises = [];
+            activities.forEach((activity) => {
+                promises.push(dbServices.addSummaryActivity(activity));
+            });
+        });
+
+
+
+        // store these additional summary activities in the db and the store
+    };
+}
+
+function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
+
+    return new Promise((resolve, reject) => {
+
+        var path = "athlete/activities?after=" + secondsSinceEpochOfLastActivity;
+
+        fetchStravaData(path, getState()).then( (stravaSummaryActivities)=> {
+
+            let activities = [];
+
+            if (!(stravaSummaryActivities instanceof Array)) {
+                console.log("stravaSummaryActivities not array");
+                reject("error");
+            }
+
+            stravaSummaryActivities.forEach( (stravaActivity) => {
+                const summaryActivity = new Activity(stravaActivity);
+                activities.push(summaryActivity);
+            });
+
+            resolve(activities);
+        });
+    });
+}
+
 export function loadSummaryActivities() {
 
     return function(dispatch, getState) {
 
         console.log("actions/index.js::loadSummaryActivities invoked");
 
+        // test with after
+        // var d = new Date(year, month, day, hours, minutes, seconds, milliseconds);
+        var d = new Date();
+        d.setMonth(5);
+
+        var n = Math.floor(d.getTime()/1000);
+        var secondsSinceEpoch = n.toString();
+        // var endPoint = "athlete/activities?after=" + secondsSinceEpoch;
+        // var endPoint = "athlete/activities?per_page=1";
+        var endPoint = "athlete/activities?after=" + n;
+        debugger;
+
+        // fetchStravaData(endPoint, getState()).then( (stravaSummaryActivities)=> {
         fetchStravaData("athlete/activities", getState()).then( (stravaSummaryActivities)=> {
+
+            debugger;
 
             let activities = [];
 

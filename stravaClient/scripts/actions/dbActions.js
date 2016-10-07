@@ -22,6 +22,14 @@ function setAthletes(athletes) {
     };
 }
 
+export function loadDBData(dbServices, dbConnection) {
+    return function (dispatch) {
+        dispatch(setDB(dbServices, dbConnection));
+        dispatch(loadAthletes(dbServices));
+        dispatch(loadSelectedAthlete(dbServices));
+    };
+}
+
 function loadAthletes(dbServices) {
 
     return function (dispatch, getState) {
@@ -58,14 +66,6 @@ function loadSelectedAthlete(dbServices) {
         }, err => {
 
         });
-    };
-}
-
-export function loadDBData(dbServices, dbConnection) {
-    return function (dispatch) {
-        dispatch(setDB(dbServices, dbConnection));
-        dispatch(loadAthletes(dbServices));
-        dispatch(loadSelectedAthlete(dbServices));
     };
 }
 

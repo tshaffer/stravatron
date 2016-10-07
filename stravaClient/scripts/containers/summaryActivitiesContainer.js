@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { hashHistory } from 'react-router';
 
-import { loadSummaryActivities, loadDetailedActivity } from '../actions/index';
+import { fetchAndUpdateSummaryActivities } from '../actions/index';
 import { retrieveBaseMapSegments, retrieveCustomSegmentData } from '../actions/index';
 
 import SummaryActivities from '../components/summaryActivities';
@@ -15,7 +15,7 @@ class SummaryActivitiesContainer extends Component {
 
         console.log("app.js::componentWillMount invoked");
 
-        this.props.loadSummaryActivities();
+        this.props.fetchAndUpdateSummaryActivities();
         this.props.retrieveBaseMapSegments();
         this.props.retrieveCustomSegmentData();
     }
@@ -37,7 +37,6 @@ class SummaryActivitiesContainer extends Component {
             <div>
                 <SummaryActivities
                     activities={this.props.activities}
-                    loadDetailedActivity={this.props.loadDetailedActivity}
                     onShowDetailedMap={this.handleShowDetailedMap.bind(this)}
                     onMapStarredSegments={this.handleMapStarredSegments.bind(this)}
                     onMapSelectedRides={this.handleMapSelectedRides.bind(this)}
@@ -54,13 +53,12 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({loadSummaryActivities, loadDetailedActivity, retrieveBaseMapSegments, retrieveCustomSegmentData},
+    return bindActionCreators({fetchAndUpdateSummaryActivities, retrieveBaseMapSegments, retrieveCustomSegmentData},
         dispatch);
 }
 
 SummaryActivitiesContainer.propTypes = {
-    loadSummaryActivities: React.PropTypes.func.isRequired,
-    loadDetailedActivity: React.PropTypes.func.isRequired,
+    fetchAndUpdateSummaryActivities: React.PropTypes.func.isRequired,
     retrieveBaseMapSegments: React.PropTypes.func.isRequired,
     retrieveCustomSegmentData: React.PropTypes.func.isRequired,
     activities: React.PropTypes.object.isRequired
