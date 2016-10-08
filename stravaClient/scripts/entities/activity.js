@@ -20,7 +20,5 @@ export default class Activity {
             this.totalElevationGain = activity.total_elevation_gain;
             this.segmentEffortIds = [];                                 // not present when retrieving summary activities from strava
         }
-
-        console.log(this.name);
     }
 }

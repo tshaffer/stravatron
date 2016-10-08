@@ -537,13 +537,12 @@ export function retrieveBaseMapSegments() {
 
                 // only retrieve segment id's for the appropriate cities
                 if (segment.city === "Santa Cruz" || segment.city === "Felton") {
-                    console.log("relevant segment ", segment.name, " has id: " + segment.id);
-
+                    // console.log("relevant segment ", segment.name, " has id: " + segment.id);
                     baseMapSegmentIds.push(segment.id);
                 }
-                else {
-                    console.log("reject segment ", segment.name);
-                }
+                // else {
+                //     console.log("reject segment ", segment.name);
+                // }
             });
 
             // get the detailed segment data for each of the starred segments

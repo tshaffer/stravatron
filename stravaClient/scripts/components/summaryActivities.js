@@ -91,8 +91,8 @@ class SummaryActivities extends Component {
         // sort by start_date
         activities.sort( (a, b) => {
 
-            const asd = a.startDate;
-            const bsd = b.startDate;
+            const asd = a.startDateLocal.getTime();
+            const bsd = b.startDateLocal.getTime();
 
             if (asd > bsd) {
                 return -1;
