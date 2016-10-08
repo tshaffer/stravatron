@@ -318,24 +318,31 @@ export function loadDetailedActivity(activityId) {
 
 export function fetchAndUpdateSummaryActivities() {
 
+
     return function(dispatch, getState) {
 
+        let state = getState();
+        const dbServices = state.db.dbServices;
+
         // get summaryActivities from db for current athlete
+        const responseData = getResponseData(state);
+        const athleteId = responseData.athlete.id;
+
+        dbServices.getActivities(athleteId).then( (dbActivities) => {
+            debugger;
+        });
 
         // initialize redux store with these summaryActivities
 
         // get the timestamp of the most recent activity - retrieve the summary activities with timestamps > than the most recent summary activity
-        let secondsSinceEpochOfLastActivity = 0;      // seconds since epoch
-        fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState).then( (activities)=> {
-            let state = getState();
-            debugger;
-            const dbServices = state.db.dbServices;
-
-            let promises = [];
-            activities.forEach((activity) => {
-                promises.push(dbServices.addSummaryActivity(activity));
-            });
-        });
+        // let secondsSinceEpochOfLastActivity = 0;      // seconds since epoch
+        // fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState).then( (activities)=> {
+        //
+        //     let promises = [];
+        //     activities.forEach((activity) => {
+        //         promises.push(dbServices.addActivity(activity));
+        //     });
+        // });
 
 
 
@@ -360,6 +367,13 @@ function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
 
             stravaSummaryActivities.forEach( (stravaActivity) => {
                 const summaryActivity = new Activity(stravaActivity);
+
+                if (!summaryActivity.description) {
+                    summaryActivity.description = "";
+                }
+                if (!summaryActivity.kilojoules) {
+                    summaryActivity.kilojoules = 0;
+                }
                 activities.push(summaryActivity);
             });
 

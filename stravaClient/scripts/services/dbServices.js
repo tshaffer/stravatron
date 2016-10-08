@@ -1,7 +1,8 @@
 const mysql = require('mysql');
 
-export default class DBServices {
+import Activity from '../entities/activity';
 
+export default class DBServices {
 
     constructor() {
         this.dbHostName = 'localhost';
@@ -25,10 +26,10 @@ export default class DBServices {
             let reason = {};
             let promises = [];
             let createAthletesPromise = self.createAthletesTable();
-            let createSummaryActivitiesTablePromise = self.createSummaryActivitiesTable();
+            let createActivitiesTablePromise = self.createActivitiesTable();
             let createSelectedAthletePromise = self.createSelectedAthleteTable();
             let createMapsPromise = self.createMapsTable();
-            Promise.all([createAthletesPromise, createSummaryActivitiesTablePromise, createSelectedAthletePromise, createMapsPromise]).then(value => {
+            Promise.all([createAthletesPromise, createActivitiesTablePromise, createSelectedAthletePromise, createMapsPromise]).then(value => {
                 resolve(self.dbConnection);
             }, reason => {
                 reject(reason);
@@ -61,68 +62,60 @@ export default class DBServices {
         });
     }
 
-    createSummaryActivitiesTable() {
+    createActivitiesTable() {
 
         var self = this;
 
         return new Promise( (resolve, reject) => {
             self.dbConnection.query(
-                "CREATE TABLE IF NOT EXISTS summaryactivities ("
-                + "activityId VARCHAR(32) NOT NULL, "
+                "CREATE TABLE IF NOT EXISTS activities ("
+                + "id VARCHAR(32) NOT NULL, "
                 + "athleteId VARCHAR(32) NOT NULL, "
-                + "name VARCHAR(64) NOT NULL, "
-                + "distance FLOAT NOT NULL, "
-                + "movingTime INT NOT NULL, "
-                + "elapsedTime INT NOT NULL, "
-                + "totalElevationGain INT NOT NULL, "
-                + "startDateTime DATE NOT NULL, "
                 + "averageSpeed FLOAT NOT NULL, "
-                + "maxSpeed FLOAT NOT NULL, "
-                + "startPointLatitude DOUBLE NOT NULL, "
-                + "startPointLongitude DOUBLE NOT NULL, "
+                + "description VARCHAR(512) NOT NULL, "
+                + "distance FLOAT NOT NULL, "
+                + "elapsedTime INT NOT NULL, "
+                + "kilojoules FLOAT NOT NULL, "
+                + "city VARCHAR(64) NOT NULL, "
                 + "mapSummaryPolyline TEXT NOT NULL, "
-                + "PRIMARY KEY(activityId))",
+                + "maxSpeed FLOAT NOT NULL, "
+                + "movingTime INT NOT NULL, "
+                + "name VARCHAR(64) NOT NULL, "
+                + "startDateLocal DATE NOT NULL, "
+                + "startLatitude FLOAT NOT NULL, "
+                + "startLongitude FLOAT NOT NULL, "
+                + "endLatitude FLOAT NOT NULL, "
+                + "endLongitude FLOAT NOT NULL, "
+                + "totalElevationGain INT NOT NULL, "
+                + "PRIMARY KEY(id))",
                 (err) => {
                     if (err) {
                         reject(err);
                     }
-                    console.log("create athletes successful");
+                    console.log("create activities successful");
                     resolve();
                 }
             );
         });
     }
 
-    getSummaryActivities(athleteId) {
+    addActivity(activity) {
 
-        console.log("getSummaryActivities invoked");
-
-        var summaryActivities = {};
-
-        var query = "SELECT * FROM summaryactivities " +
-            "WHERE athleteId=?";
-
-        this.dbConnection.query(
-            query,
-            [athleteId],
-            (err, rows) => {
-
-            }
-        );
-    }
-
-    addSummaryActivity(activity) {
-
-        const a = activity;
+        const a = Object.assign({}, activity);
+        a.startDateLocal = new Date(a.startDateLocal);
+        a.startLatitude = activity.startLatitudeLongitude[0];
+        a.startLongitude = activity.startLatitudeLongitude[1];
+        a.endLatitude = activity.endLatitudeLongitude[0];
+        a.endLongitude = activity.endLatitudeLongitude[1];
 
         return new Promise( (resolve, reject) => {
             const startDate = new Date(a.startDateLocal);
             this.dbConnection.query(
-                "INSERT INTO summaryactivities (activityId, athleteId, name, distance, movingTime, elapsedTime, totalElevationGain, startDateTime," +
-                "averageSpeed, maxSpeed, startPointLatitude, startPointLongitude, mapSummaryPolyline) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [a.id, a.athleteId, a.name, a.distance, a.movingTime, a.elapsedTime, a.totalElevationGain, startDate,
-                    a.averageSpeed, a.maxSpeed, a.startLatitude, a.startLongitude, a.mapSummaryPolyline],
+                "INSERT INTO activities (id, athleteId, averageSpeed, description, distance, elapsedTime, kilojoules, city, mapSummaryPolyline, maxSpeed, " +
+                "movingTime, name, startDateLocal, startLatitude, startLongitude, endLatitude, endLongitude, totalElevationGain) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [a.id, a.athleteId, a.averageSpeed, a.description, a.distance, a.elapsedTime, a.kilojoules, a.city, a.mapSummaryPolyline, a.maxSpeed,
+                    a.movingTime, a.name, a.startDateLocal, a.startLatitude, a.startLongitude, a.endLatitude, a.endLongitude, a.totalElevationGain],
                 (err) => {
                     if (err) {
                         console.log(err);
@@ -133,6 +126,57 @@ export default class DBServices {
                 }
             );
         });
+    }
+
+
+    getActivities(athleteId) {
+
+        return new Promise( (resolve, reject) => {
+
+            console.log("getActivities invoked");
+
+            var query = "SELECT * FROM activities " +
+                "WHERE athleteId=?";
+
+            this.dbConnection.query(
+                query,
+                [athleteId],
+                (err, rows) => {
+
+                    let dbActivities = [];
+                    rows.forEach( row => {
+
+                        const dbActivity = {
+                            id: row.id,
+                            athleteId : row.athleteId,
+                            averageSpeed : row.averageSpeed,
+                            city : row.city,
+                            distance : row.distance,
+                            elapsedTime : row.elapsedTime,
+                            endLatitude : row.endLatitude,
+                            endLongitude : row.endLongitude,
+                            kilojoules : row.kilojoules,
+                            mapSummaryPolyline : row.mapSummaryPolyline,
+                            maxSpeed : row.maxSpeed,
+                            movingTime : row.movingTime,
+                            name : row.name,
+                            startDateLocal : row.startDateLocal,
+                            startLatitude : row.startLatitude,
+                            startLongitude : row.startLongitude,
+                            totalElevationGain : row.totalElevationGain,
+                            segmentEffortIds : [],
+                        };
+
+                        dbActivities.push(dbActivity);
+                    });
+
+                    debugger;
+
+                    resolve(dbActivities);
+                }
+            );
+        });
+
     }
 
     addAthlete(stravaAthleteId, accessToken, name, firstname, lastname, email) {

@@ -5,25 +5,22 @@ export default class Activity {
             this.id = activity.id;
             this.athleteId = activity.athlete.id;
             this.averageSpeed = activity.average_speed;
+            this.description = activity.description;                    // not present when retrieving summary activities from strava
             this.distance = activity.distance;
             this.elapsedTime = activity.elapsed_time;
-            this.elevationHigh = activity.elev_high;
-            this.elevationLow = activity.elev_low;
-            this.endLatitudeLongitude = activity.end_latlng;
             this.kilojoules = activity.kilojoules;
-            this.city = activity.location_city;
+            this.city = activity.location_city;                         // deprecated in strava API
             this.mapSummaryPolyline = activity.map.summary_polyline;
             this.maxSpeed = activity.max_speed;
             this.movingTime = activity.moving_time;
             this.name = activity.name;
-            this.startDate = activity.start_date;
             this.startDateLocal = activity.start_date_local;
-            this.startLatitude = activity.start_latitude;
-            this.startLongitude = activity.start_longitude;
-            this.timezone = activity.timezone;
+            this.startLatitudeLongitude = activity.start_latlng;
+            this.endLatitudeLongitude = activity.end_latlng;
             this.totalElevationGain = activity.total_elevation_gain;
-            this.totalPhotoCount = activity.total_photo_count;
-            this.segmentEffortIds = [];
+            this.segmentEffortIds = [];                                 // not present when retrieving summary activities from strava
         }
+
+        console.log(this.name);
     }
 }
