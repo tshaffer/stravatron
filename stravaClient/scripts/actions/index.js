@@ -354,8 +354,20 @@ export function fetchAndUpdateSummaryActivities() {
 
 function fetchStravaActivities(dateOfLastFetchedActivity, dbServices, dispatch, getState) {
 
-    const secondsSinceEpochOfLastActivity = Math.floor(dateOfLastFetchedActivity.getTime() / 1000).toString();
+    // for afterDate, strava only seems to look at the date; that is, it doesn't look at the time
+    // therefore, jump to the next day - the result is that it's possible to lose an activity that occurs on
+    // the same date if the activities happen to fall on a page boundary
+    const afterDate = new Date(dateOfLastFetchedActivity);
+    afterDate.setDate(afterDate.getDate() + 1); // given how strava treats 'afterDate', the following shouldn't make any difference, but ....
+    afterDate.setHours(0);
+    afterDate.setMinutes(0);
+    afterDate.setSeconds(0);
+    afterDate.setMilliseconds(0);
 
+    let secondsSinceEpochOfLastActivity = Math.floor(afterDate.getTime() / 1000);
+    if (secondsSinceEpochOfLastActivity < 0) {
+        secondsSinceEpochOfLastActivity = 0;
+    }
     let stravaActivities = [];
     let addActivitiesPromises = [];
 
@@ -381,7 +393,7 @@ function fetchStravaActivities(dateOfLastFetchedActivity, dbServices, dispatch, 
             console.log("all new activities added to the db");
             // don't think I need to wait to get here, but I'll do it anyway
             if (stravaActivities.length > 0) {
-                fetchStravaActivities(latestDate, dbServices, getState);
+                fetchStravaActivities(latestDate, dbServices, dispatch, getState);
             }
         },reason => {
             console.log(reason);
@@ -407,6 +419,7 @@ function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
             if (!(stravaSummaryActivities instanceof Array)) {
                 console.log("stravaSummaryActivities not array");
                 reject("error");
+                return;
             }
 
             stravaSummaryActivities.forEach( (stravaActivity) => {
@@ -428,6 +441,8 @@ function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
 
 export function loadSummaryActivities() {
 
+    debugger;
+
     return function(dispatch, getState) {
 
         console.log("actions/index.js::loadSummaryActivities invoked");
@@ -439,15 +454,11 @@ export function loadSummaryActivities() {
 
         var n = Math.floor(d.getTime()/1000);
         var secondsSinceEpoch = n.toString();
-        // var endPoint = "athlete/activities?after=" + secondsSinceEpoch;
-        // var endPoint = "athlete/activities?per_page=1";
         var endPoint = "athlete/activities?after=" + n;
-        debugger;
 
         // fetchStravaData(endPoint, getState()).then( (stravaSummaryActivities)=> {
         fetchStravaData("athlete/activities", getState()).then( (stravaSummaryActivities)=> {
 
-            debugger;
 
             let activities = [];
 

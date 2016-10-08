@@ -81,7 +81,7 @@ export default class DBServices {
                 + "maxSpeed FLOAT NOT NULL, "
                 + "movingTime INT NOT NULL, "
                 + "name VARCHAR(64) NOT NULL, "
-                + "startDateLocal DATE NOT NULL, "
+                + "startDateLocal DATETIME NOT NULL, "
                 + "startLatitude FLOAT NOT NULL, "
                 + "startLongitude FLOAT NOT NULL, "
                 + "endLatitude FLOAT NOT NULL, "
