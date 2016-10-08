@@ -354,6 +354,8 @@ export function fetchAndUpdateSummaryActivities() {
 
 function fetchStravaActivities(dateOfLastFetchedActivity, dbServices, dispatch, getState) {
 
+    console.log("fetchStravaActivities, date=", dateOfLastFetchedActivity);
+
     // for afterDate, strava only seems to look at the date; that is, it doesn't look at the time
     // therefore, jump to the next day - the result is that it's possible to lose an activity that occurs on
     // the same date if the activities happen to fall on a page boundary
@@ -430,6 +432,9 @@ function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
                 }
                 if (!summaryActivity.kilojoules) {
                     summaryActivity.kilojoules = 0;
+                }
+                if (!summaryActivity.city) {
+                    summaryActivity.city = "";
                 }
                 activities.push(summaryActivity);
             });
