@@ -347,40 +347,51 @@ export function fetchAndUpdateSummaryActivities() {
             // initialize redux store with these activities
             dispatch(addActivities(activities));
 
-            // fetch any new strava activities (those that are more recent than what's in the database)
-            const secondsSinceEpochOfLastActivity = Math.floor(latestDate.getTime()/1000).toString();
+            fetchStravaActivities(latestDate, dbServices, dispatch, getState);
+        });
+    };
+}
 
-            fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState).then( (stravaActivities)=> {
+function fetchStravaActivities(dateOfLastFetchedActivity, dbServices, dispatch, getState) {
 
-                let addActivitiesPromises = [];
-                stravaActivities.forEach((activity) => {
-                    addActivitiesPromises.push(dbServices.addActivity(activity));
-                });
+    const secondsSinceEpochOfLastActivity = Math.floor(dateOfLastFetchedActivity.getTime() / 1000).toString();
 
-                Promise.all(addActivitiesPromises).then(() => {
-                    console.log("all new activities added to the db");
-                    debugger;
-                });
+    let stravaActivities = [];
+    let addActivitiesPromises = [];
 
-                console.log("add all new activities to the store");
-                dispatch(addActivities(activities));
-            });
+    fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState).then((activitiesFromStrava)=> {
+
+        // track latestDate of those retrieved in case additional requests are required
+        let latestDate = new Date(1970, 0, 0, 0, 0, 0, 0);
+
+        activitiesFromStrava.forEach((stravaActivity) => {
+            stravaActivities.push(stravaActivity);
+            addActivitiesPromises.push(dbServices.addActivity(stravaActivity));
+
+            const activityDate = new Date(stravaActivity.startDateLocal);
+            if (activityDate.getTime() > latestDate.getTime()) {
+                latestDate = activityDate;
+            }
         });
 
-        // get the timestamp of the most recent activity - retrieve the summary activities with timestamps > than the most recent summary activity
-        // let secondsSinceEpochOfLastActivity = 0;      // seconds since epoch
-        // fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState).then( (activities)=> {
-        //
-        //     let promises = [];
-        //     activities.forEach((activity) => {
-        //         promises.push(dbServices.addActivity(activity));
-        //     });
-        // });
+        // add activities to the store
+        dispatch(addActivities(stravaActivities));
 
-
-
-        // store these additional summary activities in the db and the store
-    };
+        Promise.all(addActivitiesPromises).then(() => {
+            console.log("all new activities added to the db");
+            // don't think I need to wait to get here, but I'll do it anyway
+            if (stravaActivities.length > 0) {
+                fetchStravaActivities(latestDate, dbServices, getState);
+            }
+        },reason => {
+            console.log(reason);
+            if (reason.toString().startsWith("Error: ER_DUP_ENTRY")) {
+                if (stravaActivities.length > 0) {
+                    fetchStravaActivities(latestDate, dbServices, dispatch, getState);
+                }
+            }
+        });
+    });
 }
 
 function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
