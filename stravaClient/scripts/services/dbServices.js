@@ -170,8 +170,6 @@ export default class DBServices {
                         dbActivities.push(dbActivity);
                     });
 
-                    debugger;
-
                     resolve(dbActivities);
                 }
             );

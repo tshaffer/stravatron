@@ -318,7 +318,6 @@ export function loadDetailedActivity(activityId) {
 
 export function fetchAndUpdateSummaryActivities() {
 
-
     return function(dispatch, getState) {
 
         let state = getState();
@@ -329,10 +328,44 @@ export function fetchAndUpdateSummaryActivities() {
         const athleteId = responseData.athlete.id;
 
         dbServices.getActivities(athleteId).then( (dbActivities) => {
-            debugger;
-        });
 
-        // initialize redux store with these summaryActivities
+            // convert activities in db format to activities in stravatron format
+            let activities = [];
+            let latestDate = new Date(1970, 0, 0, 0, 0, 0, 0);
+            dbActivities.forEach( (dbActivity) => {
+                let activity = Object.assign(new Activity(), dbActivity);
+                activity.startLatitudeLongitude = [dbActivity.startLatitude, dbActivity.startLongitude];
+                activity.endLatitudeLongitude = [dbActivity.endLatitude, dbActivity.endLongitude];
+                activities.push(activity);
+
+                // get the timestamp of the most recent activity in the database (just fetched activities)
+                if (activity.startDateLocal.getTime() > latestDate.getTime()) {
+                    latestDate = activity.startDateLocal;
+                }
+            });
+
+            // initialize redux store with these activities
+            dispatch(addActivities(activities));
+
+            // fetch any new strava activities (those that are more recent than what's in the database)
+            const secondsSinceEpochOfLastActivity = Math.floor(latestDate.getTime()/1000).toString();
+
+            fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState).then( (stravaActivities)=> {
+
+                let addActivitiesPromises = [];
+                stravaActivities.forEach((activity) => {
+                    addActivitiesPromises.push(dbServices.addActivity(activity));
+                });
+
+                Promise.all(addActivitiesPromises).then(() => {
+                    console.log("all new activities added to the db");
+                    debugger;
+                });
+
+                console.log("add all new activities to the store");
+                dispatch(addActivities(activities));
+            });
+        });
 
         // get the timestamp of the most recent activity - retrieve the summary activities with timestamps > than the most recent summary activity
         // let secondsSinceEpochOfLastActivity = 0;      // seconds since epoch
