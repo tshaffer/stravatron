@@ -64,6 +64,9 @@ export default function(state = initialState, action) {
 
             const activityId = action.activityId;
 
+            console.log(action.activityId);
+            console.log(activityId);
+
             if (activityId in state.activitiesById) {
 
                 let activity = state.activitiesById[activityId];
@@ -82,8 +85,9 @@ export default function(state = initialState, action) {
                 newActivity.calories = detailedActivityAttributes.calories;
                 newActivity.map =
                 {
-                    id: detailedActivityAttributes.map.id,
-                    polyline: detailedActivityAttributes.map.polyline
+                    // id: detailedActivityAttributes.map.id,
+                    id: "69",
+                    polyline: detailedActivityAttributes.mapPolyline
                 };
                 newActivity.streams = detailedActivityAttributes.streams;
 

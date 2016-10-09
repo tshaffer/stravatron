@@ -28,8 +28,9 @@ export default class DBServices {
             let createAthletesPromise = self.createAthletesTable();
             let createActivitiesTablePromise = self.createActivitiesTable();
             let createSelectedAthletePromise = self.createSelectedAthleteTable();
+            let createStreamsTablePromise = self.createStreamsTable();
             let createMapsPromise = self.createMapsTable();
-            Promise.all([createAthletesPromise, createActivitiesTablePromise, createSelectedAthletePromise, createMapsPromise]).then(value => {
+            Promise.all([createAthletesPromise, createActivitiesTablePromise, createSelectedAthletePromise, createStreamsTablePromise, createMapsPromise]).then(value => {
                 resolve(self.dbConnection);
             }, reason => {
                 reject(reason);
@@ -60,6 +61,48 @@ export default class DBServices {
                 }
             );
         });
+    }
+
+    createStreamsTable() {
+
+        var self = this;
+
+        return new Promise( (resolve, reject) => {
+            self.dbConnection.query(
+                "CREATE TABLE IF NOT EXISTS streams ("
+                + "id MEDIUMINT NOT NULL AUTO_INCREMENT, "
+                + "activityId VARCHAR(32) NOT NULL, "
+                + "streamData JSON NOT NULL, "
+                + "PRIMARY KEY(id))",
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    console.log("create streams successful");
+                    resolve();
+                }
+            );
+        });
+    }
+
+    addStream(activityId, streamData) {
+
+        return new Promise( (resolve, reject) => {
+            this.dbConnection.query(
+                "INSERT INTO streams (activityId, streamData) " +
+                " VALUES (?, ?)",
+                [activityId, JSON.stringify(streamData)],
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log("added stream successfully");
+                    resolve();
+                }
+            );
+        });
+
     }
 
     createActivitiesTable() {
@@ -104,7 +147,7 @@ export default class DBServices {
         return new Promise( (resolve, reject) => {
             this.dbConnection.query(
                 "UPDATE activities SET mapPolyline = ? WHERE id=?",
-                [detailedActivityAttributes.map.polyline, stravaDetailedActivityId],
+                [detailedActivityAttributes.mapPolyline, stravaDetailedActivityId],
                 (err) => {
                     if (err) {
                         console.log(err);
