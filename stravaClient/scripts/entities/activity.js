@@ -10,6 +10,9 @@ export default class Activity {
             this.elapsedTime = activity.elapsed_time;
             this.kilojoules = activity.kilojoules;
             this.city = activity.location_city;                         // deprecated in strava API
+            if (activity.map.polyline) {
+                this.mapPolyline = activity.map.polyline;
+            }
             this.mapSummaryPolyline = activity.map.summary_polyline;
             this.maxSpeed = activity.max_speed;
             this.movingTime = activity.moving_time;

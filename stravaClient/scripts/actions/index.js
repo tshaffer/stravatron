@@ -8,7 +8,7 @@ import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
 
-import DBServices from '../services/dbServices';
+// import DBServices from '../services/dbServices';
 
 export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
 export function setSelectedAthlete(athlete) {
@@ -193,11 +193,29 @@ export function loadActivityMap(activityId) {
     };
 }
 
+function retrieveDetailsFromStrava() {
+
+}
+
 export function loadDetailedActivity(activityId) {
 
     return function(dispatch, getState) {
 
         console.log("actions/index.js::loadDetailedActivity invoked");
+
+        let state = getState();
+        const dbServices = state.db.dbServices;
+
+        // check to see if detailed data exists for activity - if not, fetch it.
+        // let state = getState();
+        // debugger;
+        // let activity = state.activities.activitiesById[activityId];
+        // if (!activity.mapPolyline) {
+        //
+        // }
+
+
+
 
         fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
 
@@ -225,7 +243,12 @@ export function loadDetailedActivity(activityId) {
                         "map": stravaDetailedActivity.map,
                         "streams": stravaStreams
                     };
+
+                // add to store
                 dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
+
+                // add to db
+                dbServices.addDetailsToActivity(stravaDetailedActivity.id, detailedActivityAttributes);
             });
 
             let segments = [];

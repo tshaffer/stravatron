@@ -77,6 +77,7 @@ export default class DBServices {
                 + "elapsedTime INT NOT NULL, "
                 + "kilojoules FLOAT NOT NULL, "
                 + "city VARCHAR(64) NOT NULL, "
+                + "mapPolyline TEXT, "
                 + "mapSummaryPolyline TEXT NOT NULL, "
                 + "maxSpeed FLOAT NOT NULL, "
                 + "movingTime INT NOT NULL, "
@@ -93,6 +94,23 @@ export default class DBServices {
                         reject(err);
                     }
                     console.log("create activities successful");
+                    resolve();
+                }
+            );
+        });
+    }
+
+    addDetailsToActivity(stravaDetailedActivityId, detailedActivityAttributes) {
+        return new Promise( (resolve, reject) => {
+            this.dbConnection.query(
+                "UPDATE activities SET mapPolyline = ? WHERE id=?",
+                [detailedActivityAttributes.map.polyline, stravaDetailedActivityId],
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log("added details to activity successfully");
                     resolve();
                 }
             );
@@ -146,7 +164,7 @@ export default class DBServices {
                     let dbActivities = [];
                     rows.forEach( row => {
 
-                        const dbActivity = {
+                        let dbActivity = {
                             id: row.id,
                             athleteId : row.athleteId,
                             averageSpeed : row.averageSpeed,
@@ -166,6 +184,9 @@ export default class DBServices {
                             totalElevationGain : row.totalElevationGain,
                             segmentEffortIds : [],
                         };
+                        if (row.mapPolyline) {
+                            dbActivity.mapPolyline = row.mapPolyline;
+                        }
 
                         dbActivities.push(dbActivity);
                     });
