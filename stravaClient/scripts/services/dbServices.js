@@ -28,9 +28,11 @@ export default class DBServices {
             let createAthletesPromise = self.createAthletesTable();
             let createActivitiesTablePromise = self.createActivitiesTable();
             let createSelectedAthletePromise = self.createSelectedAthleteTable();
+            let createSegmentsPromise = self.createSegmentsTable();
+            let createSegmentEffortsPromise = self.createSegmentEffortsTable();
             let createStreamsTablePromise = self.createStreamsTable();
             let createMapsPromise = self.createMapsTable();
-            Promise.all([createAthletesPromise, createActivitiesTablePromise, createSelectedAthletePromise, createStreamsTablePromise, createMapsPromise]).then(value => {
+            Promise.all([createAthletesPromise, createActivitiesTablePromise, createSelectedAthletePromise, createSegmentsPromise, createSegmentEffortsPromise, createStreamsTablePromise, createMapsPromise]).then(value => {
                 resolve(self.dbConnection);
             }, reason => {
                 reject(reason);
@@ -62,6 +64,113 @@ export default class DBServices {
             );
         });
     }
+
+    createSegmentsTable() {
+
+        var self = this;
+
+        return new Promise( (resolve, reject) => {
+            self.dbConnection.query(
+                "CREATE TABLE IF NOT EXISTS segments ("
+                + "id VARCHAR(32) NOT NULL, "
+                + "averageGrade FLOAT NOT NULL, "
+                + "createdAt DATETIME NULL, "
+                + "distance FLOAT NOT NULL, "
+                + "mapPolyline TEXT NULL, "
+                + "name VARCHAR(64) NOT NULL, "
+                + "starred TINYINT NOT NULL, "
+                + "startLatitude FLOAT NOT NULL, "
+                + "startLongitude FLOAT NOT NULL, "
+                + "endLatitude FLOAT NOT NULL, "
+                + "endLongitude FLOAT NOT NULL, "
+                + "totalElevationGain INT NULL, "
+                + "PRIMARY KEY(id))",
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    console.log("create segments successful");
+                    resolve();
+                }
+            );
+        });
+    }
+
+    addSegment(segment) {
+
+        return new Promise( (resolve, reject) => {
+
+            let startLatitude = segment.startLatitudeLongitude[0];
+            let startLongitude = segment.startLatitudeLongitude[1];
+            let endLatitude = segment.endLatitudeLongitude[0];
+            let endLongitude = segment.endLatitudeLongitude[1];
+
+            const segmentId = segment.id;
+
+            this.dbConnection.query(
+                "INSERT INTO segments (id, averageGrade, distance, name, starred, startLatitude, startLongitude, endLatitude, endLongitude) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [segment.id, segment.averageGrade, segment.distance, segment.name, segment.starred, startLatitude, startLongitude, endLatitude, endLongitude],
+                (err) => {
+                    if (err) {
+                        console.log("segment add failed for segmentId=", segmentId);
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log("added segment successfully for segmentId=", segmentId);
+                    resolve();
+                }
+            );
+        });
+    }
+
+    createSegmentEffortsTable() {
+
+        var self = this;
+
+        return new Promise( (resolve, reject) => {
+            self.dbConnection.query(
+                "CREATE TABLE IF NOT EXISTS segmentEfforts ("
+                + "id VARCHAR(32) NOT NULL, "
+                + "activityId VARCHAR(32) NOT NULL, "
+                + "athleteId VARCHAR(32) NOT NULL, "
+                + "distance FLOAT NOT NULL, "
+                + "movingTime INT NOT NULL, "
+                + "name VARCHAR(64) NOT NULL, "
+                + "segmentId VARCHAR(32) NOT NULL, "
+                + "startDateLocal DATETIME NULL, "
+                + "PRIMARY KEY(id))",
+                (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    console.log("create segmentEfforts successful");
+                    resolve();
+                }
+            );
+        });
+    }
+
+    addSegmentEffort(segmentEffort) {
+
+        return new Promise( (resolve, reject) => {
+
+            this.dbConnection.query(
+                "INSERT INTO segmentEfforts (id, activityId, athleteId, distance, movingTime, name, segmentId, startDateLocal)" +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                [segmentEffort.id, segmentEffort.activityId, segmentEffort.athleteId, segmentEffort.distance, segmentEffort.movingTime, segmentEffort.name, segmentEffort.segmentId, new Date(segmentEffort.startDateLocal)],
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log("added segmentEffort successfully");
+                    resolve();
+                }
+            );
+        });
+    }
+
 
     createStreamsTable() {
 
@@ -170,7 +279,6 @@ export default class DBServices {
         a.endLongitude = activity.endLatitudeLongitude[1];
 
         return new Promise( (resolve, reject) => {
-            const startDate = new Date(a.startDateLocal);
             this.dbConnection.query(
                 "INSERT INTO activities (id, athleteId, averageSpeed, description, distance, elapsedTime, kilojoules, city, mapSummaryPolyline, maxSpeed, " +
                 "movingTime, name, startDateLocal, startLatitude, startLongitude, endLatitude, endLongitude, totalElevationGain) " +

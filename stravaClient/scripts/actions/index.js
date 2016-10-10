@@ -207,7 +207,6 @@ export function loadDetailedActivity(activityId) {
         const dbServices = state.db.dbServices;
 
         // check to see if detailed data exists for activity - if not, fetch it.
-        debugger;
         let activity = state.activities.activitiesById[activityId];
         // I think the following is kind of a hack - how about if (activity.detailsExist())
         if (activity.mapPolyline) {
@@ -298,6 +297,10 @@ export function loadDetailedActivity(activityId) {
 
                     const segmentEffort = new SegmentEffort(stravaSegmentEffort);
                     segmentEfforts.push(segmentEffort);
+
+                    // add segment, segmentEffort to db
+                    const addSegmentPromise = dbServices.addSegment(segment);
+                    const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
                 });
 
                 dispatch(addSegmentEfforts(segmentEfforts));
@@ -340,9 +343,11 @@ export function loadDetailedActivity(activityId) {
                                 if (segmentEfforts.length > 0) {
                                     dispatch(addEffortsForSegment(segmentEfforts[0].segmentId, segmentEfforts));
                                 }
-                                afterState = getState();
                             }
                         });
+
+                        const segmentEffortsAddedState = getState();
+                        debugger;
                     }
                 });
 
@@ -368,6 +373,9 @@ export function loadDetailedActivity(activityId) {
                     });
 
                     dispatch(addDetailedSegmentAttributes(detailedSegmentsAttributes));
+
+                    const segmentsAddedState = getState();
+                    debugger;
                 });
             });
         }
