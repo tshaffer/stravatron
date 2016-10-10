@@ -74,7 +74,6 @@ export default class DBServices {
                 "CREATE TABLE IF NOT EXISTS segments ("
                 + "id VARCHAR(32) NOT NULL, "
                 + "averageGrade FLOAT NOT NULL, "
-                + "createdAt DATETIME NULL, "
                 + "distance FLOAT NOT NULL, "
                 + "mapPolyline TEXT NULL, "
                 + "name VARCHAR(64) NOT NULL, "
@@ -123,6 +122,24 @@ export default class DBServices {
             );
         });
     }
+
+    addDetailsToSegment(segmentId, detailedSegmentAttributes) {
+        return new Promise( (resolve, reject) => {
+            this.dbConnection.query(
+                "UPDATE segments SET mapPolyline = ?, totalElevationGain = ? WHERE id=?",
+                [detailedSegmentAttributes.map.polyline, detailedSegmentAttributes.totalElevationGain, segmentId],
+                (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log("added details to activity successfully");
+                    resolve();
+                }
+            );
+        });
+    }
+
 
     createSegmentEffortsTable() {
 

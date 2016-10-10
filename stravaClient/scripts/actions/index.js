@@ -103,8 +103,6 @@ function getResponseData(state = null) {
         }
     }
 
-    debugger;
-
     return null;
 }
 
@@ -209,7 +207,7 @@ export function loadDetailedActivity(activityId) {
         // check to see if detailed data exists for activity - if not, fetch it.
         let activity = state.activities.activitiesById[activityId];
         // I think the following is kind of a hack - how about if (activity.detailsExist())
-        if (activity.mapPolyline) {
+        if (activity.mapPolyline && activity.mapPolyline != "") {
 
             // add detailed activities to store
             const detailedActivityAttributes =
@@ -332,6 +330,8 @@ export function loadDetailedActivity(activityId) {
                                     const segmentEffort = new SegmentEffort(stravaSegmentEffort);
                                     segmentEfforts.push(segmentEffort);
 
+                                    // add segment effort to the db
+                                    const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
                                 });
 
                                 // add all individual segment efforts to store
@@ -347,7 +347,6 @@ export function loadDetailedActivity(activityId) {
                         });
 
                         const segmentEffortsAddedState = getState();
-                        debugger;
                     }
                 });
 
@@ -361,21 +360,23 @@ export function loadDetailedActivity(activityId) {
                 Promise.all(fetchSegmentPromises).then(segments => {
 
                     segments.forEach(segment => {
-                        detailedSegmentsAttributes.push(
+
+                        const detailedSegmentAttributes =
                             {
                                 "id": segment.id,
                                 "createdAt": segment.created_at,
                                 "totalElevationGain": segment.total_elevation_gain,
                                 "map": segment.map,
                                 "effortCount": segment.effort_count
-                            }
-                        );
+                            };
+                        detailedSegmentsAttributes.push(detailedSegmentAttributes);
+
+                        dbServices.addDetailsToSegment(segment.id, detailedSegmentAttributes);
                     });
 
                     dispatch(addDetailedSegmentAttributes(detailedSegmentsAttributes));
 
                     const segmentsAddedState = getState();
-                    debugger;
                 });
             });
         }
@@ -535,7 +536,6 @@ export function loadSummaryActivities() {
 
             if (!(stravaSummaryActivities instanceof Array)) {
                 console.log("stravaSummaryActivities not array");
-                debugger;
                 return;
             }
 
