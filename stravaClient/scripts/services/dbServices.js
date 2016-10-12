@@ -352,6 +352,33 @@ export default class DBServices {
 
     }
 
+    getStream(activityId) {
+        return new Promise( (resolve, reject) => {
+            this.dbConnection.query(
+                "SELECT streamData FROM streams WHERE activityId = ?",
+                [activityId],
+                function (err, rows) {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    console.log("return from getStream query - rows length = " + rows.length);
+
+                    debugger;
+
+                    if (rows.length > 0) {
+                        const streamDataStr = rows[0].streamData;
+                        const streamData = JSON.parse(streamDataStr);
+                        resolve(streamData);
+                    }
+                    else {
+                        reject("No stream data");
+                    }
+                });
+        });
+    }
+
+
     createActivitiesTable() {
 
         var self = this;

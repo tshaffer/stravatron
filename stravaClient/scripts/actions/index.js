@@ -209,17 +209,6 @@ export function loadDetailedActivity(activityId) {
         // I think the following is kind of a hack - how about if (activity.detailsExist())
         if (activity.mapPolyline && activity.mapPolyline != "") {
 
-            // add detailed activities to store
-            // const detailedActivityAttributes =
-            //     {
-            //         "calories": 0,
-            //         "segmentEfforts": [],                   // need real data here
-            //         "mapPolyline": activity.mapPolyline,
-            //         "streams": []
-            //     };
-            //
-            // dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
-
             // retrieve segment efforts for each segment in this activity
 
             // get segments for activity
@@ -259,15 +248,42 @@ export function loadDetailedActivity(activityId) {
                     }
                 });
 
-                const detailedActivityAttributes =
-                    {
-                        "calories": 0,
-                        "segmentEfforts": segmentEffortsForCurrentActivity,
-                        "mapPolyline": activity.mapPolyline,
-                        "streams": []               // is this right?
-                    };
-                dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
+                const getStreamsPromise = dbServices.getStream(activityId);
+                getStreamsPromise.then( (streamData) => {
 
+                    let streams = [];
+                    let stream = {};
+
+                    stream.type = "distance";
+                    stream.data = streamData.distanceData;
+                    streams.push(stream);
+
+                    stream = {};
+                    stream.type = "altitude";
+                    stream.data = streamData.elevationData;
+                    streams.push(stream);
+
+                    stream = {};
+                    stream.type = "latlng";
+                    stream.data = streamData.locationData;
+                    streams.push(stream);
+
+                    stream = {};
+                    stream.type = "grade_smooth";
+                    stream.data = streamData.gradientData;
+                    streams.push(stream);
+
+                    const detailedActivityAttributes =
+                        {
+                            "calories": 0,
+                            "segmentEfforts": segmentEffortsForCurrentActivity,
+                            "mapPolyline": activity.mapPolyline,
+                            "streams": streams
+                        };
+                    dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
+
+                    state = getState();
+                });
 
                 for (var segmentId in segmentEffortsBySegment) {
                     if (segmentEffortsBySegment.hasOwnProperty(segmentId)) {
@@ -319,6 +335,7 @@ export function loadDetailedActivity(activityId) {
                     let locationData = null;
                     let elevationData = null;
                     let distanceData = null;
+                    let gradientData = null;
                     for (let i = 0; i < stravaStreams.length; i++) {
                         switch (stravaStreams[i].type) {
                             case 'distance':
@@ -330,13 +347,17 @@ export function loadDetailedActivity(activityId) {
                             case 'latlng':
                                 locationData = stravaStreams[i].data;
                                 break;
+                            case "grade_smooth":
+                                gradientData = stravaStreams[i].data;
+                                break;
                         }
                     }
                     const streamData =
                         {
                             locationData,
                             elevationData,
-                            distanceData
+                            distanceData,
+                            gradientData
                         };
                     const addStreamPromise = dbServices.addStream(stravaDetailedActivity.id, streamData);
 
