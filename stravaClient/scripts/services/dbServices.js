@@ -362,10 +362,6 @@ export default class DBServices {
                         reject(err);
                     }
 
-                    console.log("return from getStream query - rows length = " + rows.length);
-
-                    debugger;
-
                     if (rows.length > 0) {
                         const streamDataStr = rows[0].streamData;
                         const streamData = JSON.parse(streamDataStr);

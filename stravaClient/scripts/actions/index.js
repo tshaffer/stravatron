@@ -608,44 +608,6 @@ function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
     });
 }
 
-export function loadSummaryActivities() {
-
-    debugger;
-
-    return function(dispatch, getState) {
-
-        console.log("actions/index.js::loadSummaryActivities invoked");
-
-        // test with after
-        // var d = new Date(year, month, day, hours, minutes, seconds, milliseconds);
-        var d = new Date();
-        d.setMonth(5);
-
-        var n = Math.floor(d.getTime()/1000);
-        var secondsSinceEpoch = n.toString();
-        var endPoint = "athlete/activities?after=" + n;
-
-        // fetchStravaData(endPoint, getState()).then( (stravaSummaryActivities)=> {
-        fetchStravaData("athlete/activities", getState()).then( (stravaSummaryActivities)=> {
-
-
-            let activities = [];
-
-            if (!(stravaSummaryActivities instanceof Array)) {
-                console.log("stravaSummaryActivities not array");
-                return;
-            }
-
-            stravaSummaryActivities.forEach( (stravaActivity) => {
-                const summaryActivity = new Activity(stravaActivity);
-                activities.push(summaryActivity);
-            });
-
-            dispatch(addActivities(activities));
-        });
-    };
-}
-
 export const SET_CUSTOM_MAP_SEGMENTS = 'SET_CUSTOM_MAP_SEGMENTS';
 export function SetCustomMapSegments(customMapSegments) {
 
