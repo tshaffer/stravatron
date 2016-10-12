@@ -220,6 +220,29 @@ export function loadDetailedActivity(activityId) {
 
             dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
 
+            // retrieve segment efforts for each segment in this activity
+
+            // get segments for activity
+            // select segments.* from segments, segmentEfforts where segments.id=segmentEfforts.segmentId and segmentEfforts.activityId='418372199'
+            const getSegmentsForActivityPromise = dbServices.getSegmentsForActivity(activityId);
+            getSegmentsForActivityPromise.then( (segmentsForActivity) => {
+                console.log("getSegmentsForActivityPromise.then");
+            });
+
+            const getSegmentEffortsForActivityPromise = dbServices.getSegmentEffortsForActivity(activityId);
+            getSegmentEffortsForActivityPromise.then( (segmentsEffortsForActivity) => {
+                console.log("getSegmentEffortsForActivityPromise.then");
+                debugger;
+            });
+
+
+            // let getSegmentEffortsPromise = dbServices.getSegmentEfforts(activityId);
+
+            // some of all of these dispatches need to be done
+            // addSegmentEfforts
+            // addSegments
+            // addEffortsForSegments
+            // addDetailedSegmentAttributes - does this really need to be done or can everything be added when addSegmentEfforts is done
         }
         else {
             fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
@@ -298,7 +321,18 @@ export function loadDetailedActivity(activityId) {
 
                     // add segment, segmentEffort to db
                     const addSegmentPromise = dbServices.addSegment(segment);
+                    addSegmentPromise.then( () => {
+                        console.log("segment added successfully:", activityId);
+                    }, (reason) => {
+                        console.log("segment addition failed:", activityId);
+                    });
+
                     const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
+                    addSegmentEffortPromise.then( () => {
+                        console.log("segmentEffort added successfully:", segmentEffort.activityId);
+                    }, (reason) => {
+                        console.log("segmentEffort addition failed:", segmentEffort.activityId);
+                    });
                 });
 
                 dispatch(addSegmentEfforts(segmentEfforts));
@@ -332,6 +366,11 @@ export function loadDetailedActivity(activityId) {
 
                                     // add segment effort to the db
                                     const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
+                                    addSegmentEffortPromise.then( () => {
+                                        console.log("segmentEffort added successfully:", segmentEffort.activityId);
+                                    }, (reason) => {
+                                        console.log("segmentEffort addition failed:", segmentEffort.activityId);
+                                    });
                                 });
 
                                 // add all individual segment efforts to store

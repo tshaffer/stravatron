@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 
 import Activity from '../entities/activity';
+import SegmentEffort from '../entities/segmentEffort';
 
 export default class DBServices {
 
@@ -140,6 +141,89 @@ export default class DBServices {
         });
     }
 
+    getSegmentsForActivity(activityId) {
+
+        var self = this;
+
+        return new Promise((resolve, reject) => {
+
+            console.log("getSegmentsForActivity invoked");
+
+            let segments = [];
+
+            var query = "SELECT segments.* FROM segments, segmentEfforts WHERE segments.id=segmentEfforts.segmentId AND segmentEfforts.activityId=?";
+            self.dbConnection.query(
+                query,
+                [activityId],
+                (err, rows) => {
+
+                    rows.forEach(row => {
+
+                        const { startLatitude, startLongitude, endLatitude, endLongitude } = row;
+
+                        let segment =
+                            {
+                                id: row.id,
+                                averageGrade: row.averageGrade,
+                                distance: row.distance,
+                                mapPolyline: row.mapPolyline,
+                                name: row.name,
+                                starred: row.starred,
+                                startLatitudeLongitude: [startLatitude, startLongitude],
+                                endLatitudeLongitude: [endLatitude, endLongitude],
+                                totalElevationGain: row.totalElevationGain
+                            };
+                        segments.push(segment);
+                    });
+                });
+
+            resolve(segments);
+        });
+    }
+
+    // select segmentEfforts.* from segmentEfforts where segmentEfforts.segmentId in (SELECT segments.id FROM segments, segmentEfforts WHERE (segments.id=segmentEfforts.segmentId AND segmentEfforts.activityId=736756901))
+    getSegmentEffortsForActivity(activityId) {
+
+        var self = this;
+
+        return new Promise((resolve, reject) => {
+
+            console.log("getSegmentEffortsForActivity invoked");
+
+            let segmentEfforts = [];
+
+            var query = "SELECT segmentEfforts.* FROM segmentEfforts where segmentEfforts.segmentId in (SELECT segments.id FROM segments, segmentEfforts WHERE (segments.id=segmentEfforts.segmentId AND segmentEfforts.activityId=?))";
+
+            self.dbConnection.query(
+                query,
+                [activityId],
+                (err, rows) => {
+
+                    rows.forEach(row => {
+
+                        const { activityId, athleteId, distance, id, movingTime, name, segmentId, startDateLocal } = row;
+
+                        let segmentEffort =
+                            {
+                                id,
+                                activityId,
+                                athleteId,
+                                distance,
+                                movingTime,
+                                name,
+                                segmentId,
+                                startDateLocal
+                            };
+                        segmentEfforts.push(segmentEffort);
+                    });
+
+                    resolve(segmentEfforts);
+
+                });
+
+        });
+
+    }
 
     createSegmentEffortsTable() {
 
@@ -188,6 +272,43 @@ export default class DBServices {
         });
     }
 
+    getSegmentEfforts(segmentEffortId) {
+
+        return new Promise((resolve, reject) => {
+
+            console.log("getSegmentEfforts invoked");
+
+            let segmentEfforts = [];
+
+            var query = "SELECT * FROM segmentEfforts " +
+                "WHERE id=?";
+            this.dbConnection.query(
+                query,
+                [segmentEffortId],
+                (err, rows) => {
+
+                    rows.forEach(row => {
+                        let segmentEffort =
+                            {
+                                id: row.id,
+                                activityId: row.activity.id,
+                                athleteId: row.athlete.id,
+                                distance: row.distance,
+                                endIndex: row.end_index,
+                                movingTime: row.moving_time,
+                                name: row.name,
+                                segmentId: row.segment.id,
+                                startDateLocal: row.start_date_local,
+                                startIndex: row.start_index
+
+                            };
+                        segmentEfforts.push(segmentEffort);
+                    });
+                });
+
+            resolve(segmentEfforts);
+        });
+    }
 
     createStreamsTable() {
 
