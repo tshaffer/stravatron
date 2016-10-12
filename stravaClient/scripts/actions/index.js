@@ -223,26 +223,42 @@ export function loadDetailedActivity(activityId) {
             // retrieve segment efforts for each segment in this activity
 
             // get segments for activity
-            // select segments.* from segments, segmentEfforts where segments.id=segmentEfforts.segmentId and segmentEfforts.activityId='418372199'
             const getSegmentsForActivityPromise = dbServices.getSegmentsForActivity(activityId);
             getSegmentsForActivityPromise.then( (segmentsForActivity) => {
                 console.log("getSegmentsForActivityPromise.then");
+                dispatch(addSegments(segmentsForActivity));
             });
 
             const getSegmentEffortsForActivityPromise = dbServices.getSegmentEffortsForActivity(activityId);
             getSegmentEffortsForActivityPromise.then( (segmentsEffortsForActivity) => {
                 console.log("getSegmentEffortsForActivityPromise.then");
-                debugger;
+                dispatch(addSegmentEfforts(segmentsEffortsForActivity));
+
+                // iterate through segmentEffortsForActivity to generate segmentEffortsBySegment
+                // if (segmentEfforts.length > 0) {
+                //     dispatch(addEffortsForSegment(segmentEfforts[0].segmentId, segmentEfforts));
+                // }
+                let segmentEffortsBySegment = {};
+                segmentsEffortsForActivity.forEach( (segmentEffortForActivity) => {
+                    const segmentId = segmentEffortForActivity.segmentId;
+                    const segmentEffort = segmentEffortForActivity;
+
+                    if (!(segmentId in segmentEffortsBySegment)) {
+                        segmentEffortsBySegment[segmentId] = [segmentEffort];
+                    }
+                    else {
+                        let segmentEfforts = segmentEffortsBySegment[segmentId];
+                        segmentEfforts.push(segmentEffort);
+                    }
+                });
+
+                for (var segmentId in segmentEffortsBySegment) {
+                    if (segmentEffortsBySegment.hasOwnProperty(segmentId)) {
+                        const segmentEffortsForSegment = segmentEffortsBySegment[segmentId];
+                        dispatch(addEffortsForSegment(segmentId, segmentEffortsForSegment));
+                    }
+                }
             });
-
-
-            // let getSegmentEffortsPromise = dbServices.getSegmentEfforts(activityId);
-
-            // some of all of these dispatches need to be done
-            // addSegmentEfforts
-            // addSegments
-            // addEffortsForSegments
-            // addDetailedSegmentAttributes - does this really need to be done or can everything be added when addSegmentEfforts is done
         }
         else {
             fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
