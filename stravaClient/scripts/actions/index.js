@@ -210,15 +210,15 @@ export function loadDetailedActivity(activityId) {
         if (activity.mapPolyline && activity.mapPolyline != "") {
 
             // add detailed activities to store
-            const detailedActivityAttributes =
-                {
-                    "calories": 0,
-                    "segmentEfforts": [],
-                    "mapPolyline": activity.mapPolyline,
-                    "streams": []
-                };
-
-            dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
+            // const detailedActivityAttributes =
+            //     {
+            //         "calories": 0,
+            //         "segmentEfforts": [],                   // need real data here
+            //         "mapPolyline": activity.mapPolyline,
+            //         "streams": []
+            //     };
+            //
+            // dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
 
             // retrieve segment efforts for each segment in this activity
 
@@ -231,7 +231,7 @@ export function loadDetailedActivity(activityId) {
 
             const getSegmentEffortsForActivityPromise = dbServices.getSegmentEffortsForActivity(activityId);
             getSegmentEffortsForActivityPromise.then( (segmentsEffortsForActivity) => {
-                console.log("getSegmentEffortsForActivityPromise.then");
+                console.log("dispatch addSegmentEfforts after getSegmentEffortsForActivityPromise.then");
                 dispatch(addSegmentEfforts(segmentsEffortsForActivity));
 
                 // iterate through segmentEffortsForActivity to generate segmentEffortsBySegment
@@ -239,9 +239,16 @@ export function loadDetailedActivity(activityId) {
                 //     dispatch(addEffortsForSegment(segmentEfforts[0].segmentId, segmentEfforts));
                 // }
                 let segmentEffortsBySegment = {};
+                let segmentEffortsForCurrentActivity = [];
+
                 segmentsEffortsForActivity.forEach( (segmentEffortForActivity) => {
                     const segmentId = segmentEffortForActivity.segmentId;
                     const segmentEffort = segmentEffortForActivity;
+
+                    // capture segmentEfforts this selected activity
+                    if (segmentEffort.activityId == activityId) {
+                        segmentEffortsForCurrentActivity.push(segmentEffort);
+                    }
 
                     if (!(segmentId in segmentEffortsBySegment)) {
                         segmentEffortsBySegment[segmentId] = [segmentEffort];
@@ -252,12 +259,26 @@ export function loadDetailedActivity(activityId) {
                     }
                 });
 
+                const detailedActivityAttributes =
+                    {
+                        "calories": 0,
+                        "segmentEfforts": segmentEffortsForCurrentActivity,
+                        "mapPolyline": activity.mapPolyline,
+                        "streams": []               // is this right?
+                    };
+                dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
+
+
                 for (var segmentId in segmentEffortsBySegment) {
                     if (segmentEffortsBySegment.hasOwnProperty(segmentId)) {
                         const segmentEffortsForSegment = segmentEffortsBySegment[segmentId];
+                        console.log("dispatch addEffortsForSegment in loop on segmentEffortsBySegment");
                         dispatch(addEffortsForSegment(segmentId, segmentEffortsForSegment));
                     }
                 }
+
+                console.log("activityId is still:", activityId);
+                state = getState();
             });
         }
         else {
