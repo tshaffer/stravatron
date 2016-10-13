@@ -36,7 +36,8 @@ export default function(state = initialState, action) {
 
                 let segment = newSegmentsById[segmentId];
                 segment.totalElevationGain = detailedSegmentAttributes.totalElevationGain;
-                segment.map = detailedSegmentAttributes.map;
+
+                segment.mapPolyline = detailedSegmentAttributes.map;
             });
 
             newState = {
