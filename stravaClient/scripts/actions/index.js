@@ -255,15 +255,13 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
             streams.push(stream);
 
             const detailedActivityAttributes =
-            {
-                "calories": 0,
-                "segmentEfforts": segmentEffortsForCurrentActivity,
-                "mapPolyline": activity.mapPolyline,
-                "streams": streams
-            };
+                {
+                    "calories": 0,
+                    "segmentEfforts": segmentEffortsForCurrentActivity,
+                    "mapPolyline": activity.mapPolyline,
+                    "streams": streams
+                };
             dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
-
-            state = getState();
         });
 
         for (var segmentId in segmentEffortsBySegment) {
@@ -296,12 +294,12 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
             //      type
             //          string = 'latlng'
             const detailedActivityAttributes =
-            {
-                "calories": stravaDetailedActivity.calories,
-                "segmentEfforts": stravaDetailedActivity.segment_efforts,
-                "mapPolyline": stravaDetailedActivity.map.polyline,
-                "streams": stravaStreams
-            };
+                {
+                    "calories": stravaDetailedActivity.calories,
+                    "segmentEfforts": stravaDetailedActivity.segment_efforts,
+                    "mapPolyline": stravaDetailedActivity.map.polyline,
+                    "streams": stravaStreams
+                };
 
             // add to store
             dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
@@ -331,12 +329,12 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
                 }
             }
             const streamData =
-            {
-                locationData,
-                elevationData,
-                distanceData,
-                gradientData
-            };
+                {
+                    locationData,
+                    elevationData,
+                    distanceData,
+                    gradientData
+                };
             const addStreamPromise = dbServices.addStream(stravaDetailedActivity.id, streamData);
 
         });
@@ -434,11 +432,11 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
             segments.forEach(segment => {
 
                 const detailedSegmentAttributes =
-                {
-                    "id": segment.id,
-                    "totalElevationGain": segment.total_elevation_gain,
-                    "map": segment.map,
-                };
+                    {
+                        "id": segment.id,
+                        "totalElevationGain": segment.total_elevation_gain,
+                        "map": segment.map,
+                    };
                 detailedSegmentsAttributes.push(detailedSegmentAttributes);
 
                 dbServices.addDetailsToSegment(segment.id, detailedSegmentAttributes);
