@@ -343,8 +343,8 @@ class DetailedActivity extends Component {
         const segmentEffortsTable = this.buildSegmentEffortsTable(activity);
 
         let mapPolyline = "";
-        if (activity.map && activity.map.polyline) {
-            mapPolyline = activity.map.polyline;
+        if (activity.mapPolyline) {
+            mapPolyline = activity.mapPolyline;
         }
 
         const activityData =

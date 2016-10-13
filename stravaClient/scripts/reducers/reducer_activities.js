@@ -38,16 +38,12 @@ export default function(state = initialState, action) {
 
                 let activity = state.activitiesById[activityId];
 
-                const map = action.map;
+                const mapPolyline = action.mapPolyline;
 
                 let newActivity = new Activity();
                 newActivity = Object.assign(newActivity, activity);
 
-                newActivity.map =
-                {
-                    id: map.id,
-                    polyline: map.polyline
-                };
+                newActivity.mapPolyline = mapPolyline;
                 newActivitiesById[activityId] = newActivity;
             }
 
@@ -83,12 +79,7 @@ export default function(state = initialState, action) {
 
                 newActivity.segmentEffortIds = segmentEffortIds;
                 newActivity.calories = detailedActivityAttributes.calories;
-                newActivity.map =
-                {
-                    // id: detailedActivityAttributes.map.id,
-                    id: "69",
-                    polyline: detailedActivityAttributes.mapPolyline
-                };
+                newActivity.mapPolyline = detailedActivityAttributes.mapPolyline;
                 newActivity.streams = detailedActivityAttributes.streams;
 
                 newActivitiesById[activityId] = newActivity;

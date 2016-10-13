@@ -55,13 +55,13 @@ class MapOfRides extends Component {
 
         this.state.activityIds.forEach( (activityId) => {
             const activity = this.props.activities.activitiesById[activityId];
-            if (!activity.map || !activity.map.polyline || activity.map.polyline == "") {
+            if (!activity.mapPolyline || activity.mapPolyline == "") {
                 mapLoaded = false;
                 return;
             }
             const activityData =
                 {
-                    polyline: activity.map.polyline,
+                    polyline: activity.mapPolyline,
                     strokeColor: strokeColors[activityIndex % 4]
                 };
             activitiesData.push(activityData);

@@ -38,12 +38,12 @@ export function addActivities(activities) {
 
 
 export const ADD_ACTIVITY_MAP = 'ADD_ACTIVITY_MAP';
-export function addActivityMap(activityId, map) {
+export function addActivityMap(activityId, mapPolyline) {
 
     return {
         type: ADD_ACTIVITY_MAP,
         activityId,
-        map
+        mapPolyline
     };
 }
 
@@ -185,8 +185,7 @@ export function loadActivityMap(activityId) {
 
         console.log("actions/index.js::loadActivityMap invoked");
         fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
-            dispatch(addActivityMap(stravaDetailedActivity.id, stravaDetailedActivity.map));
-            let s = getState();
+            dispatch(addActivityMap(stravaDetailedActivity.id, stravaDetailedActivity.map.polyline));
         });
     };
 }

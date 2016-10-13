@@ -119,7 +119,7 @@ export default class DBServices {
         return new Promise( (resolve, reject) => {
             this.dbConnection.query(
                 "UPDATE segments SET mapPolyline = ?, totalElevationGain = ? WHERE id=?",
-                [detailedSegmentAttributes.map.polyline, detailedSegmentAttributes.totalElevationGain, segmentId],
+                [detailedSegmentAttributes.mapPolyline, detailedSegmentAttributes.totalElevationGain, segmentId],
                 (err) => {
                     if (err) {
                         console.log(err);

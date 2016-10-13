@@ -8,6 +8,6 @@ export default class Segment {
         this.starred = segment.starred;
 
         this.totalElevationGain = null;
-        this.map = null;
+        this.mapPolyline = null;
     }
 }
