@@ -202,8 +202,6 @@ class ActivityMap extends Component {
 }
 
 ActivityMap.propTypes = {
-    startLatitude: React.PropTypes.number.isRequired,
-    startLongitude: React.PropTypes.number.isRequired,
     location: React.PropTypes.array.isRequired,
     totalActivities: React.PropTypes.number.isRequired,
     mapHeight: React.PropTypes.string.isRequired,

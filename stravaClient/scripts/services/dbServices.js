@@ -26,14 +26,14 @@ export default class DBServices {
 
             let reason = {};
             let promises = [];
-            let createAthletesPromise = self.createAthletesTable();
-            let createActivitiesTablePromise = self.createActivitiesTable();
-            let createSelectedAthletePromise = self.createSelectedAthleteTable();
-            let createSegmentsPromise = self.createSegmentsTable();
-            let createSegmentEffortsPromise = self.createSegmentEffortsTable();
-            let createStreamsTablePromise = self.createStreamsTable();
-            let createMapsPromise = self.createMapsTable();
-            Promise.all([createAthletesPromise, createActivitiesTablePromise, createSelectedAthletePromise, createSegmentsPromise, createSegmentEffortsPromise, createStreamsTablePromise, createMapsPromise]).then(value => {
+            promises.push(self.createAthletesTable());
+            promises.push(self.createActivitiesTable());
+            promises.push(self.createSelectedAthleteTable());
+            promises.push(self.createSegmentsTable());
+            promises.push(self.createSegmentEffortsTable());
+            promises.push(self.createStreamsTable());
+            promises.push(self.createMapsTable());
+            Promise.all(promises).then(value => {
                 resolve(self.dbConnection);
             }, reason => {
                 reject(reason);
@@ -79,10 +79,6 @@ export default class DBServices {
                 + "mapPolyline TEXT NULL, "
                 + "name VARCHAR(64) NOT NULL, "
                 + "starred TINYINT NOT NULL, "
-                + "startLatitude FLOAT NOT NULL, "
-                + "startLongitude FLOAT NOT NULL, "
-                + "endLatitude FLOAT NOT NULL, "
-                + "endLongitude FLOAT NOT NULL, "
                 + "totalElevationGain INT NULL, "
                 + "PRIMARY KEY(id))",
                 (err) => {
@@ -100,17 +96,12 @@ export default class DBServices {
 
         return new Promise( (resolve, reject) => {
 
-            let startLatitude = segment.startLatitudeLongitude[0];
-            let startLongitude = segment.startLatitudeLongitude[1];
-            let endLatitude = segment.endLatitudeLongitude[0];
-            let endLongitude = segment.endLatitudeLongitude[1];
-
             const segmentId = segment.id;
 
             this.dbConnection.query(
-                "INSERT INTO segments (id, averageGrade, distance, name, starred, startLatitude, startLongitude, endLatitude, endLongitude) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [segment.id, segment.averageGrade, segment.distance, segment.name, segment.starred, startLatitude, startLongitude, endLatitude, endLongitude],
+                "INSERT INTO segments (id, averageGrade, distance, name, starred) " +
+                " VALUES (?, ?, ?, ?, ?)",
+                [segment.id, segment.averageGrade, segment.distance, segment.name, segment.starred],
                 (err) => {
                     if (err) {
                         console.log("segment add failed for segmentId=", segmentId);
@@ -159,8 +150,6 @@ export default class DBServices {
 
                     rows.forEach(row => {
 
-                        const { startLatitude, startLongitude, endLatitude, endLongitude } = row;
-
                         let segment =
                             {
                                 id: row.id,
@@ -169,8 +158,6 @@ export default class DBServices {
                                 mapPolyline: row.mapPolyline,
                                 name: row.name,
                                 starred: row.starred,
-                                startLatitudeLongitude: [startLatitude, startLongitude],
-                                endLatitudeLongitude: [endLatitude, endLongitude],
                                 totalElevationGain: row.totalElevationGain
                             };
                         segments.push(segment);
@@ -294,12 +281,10 @@ export default class DBServices {
                                 activityId: row.activity.id,
                                 athleteId: row.athlete.id,
                                 distance: row.distance,
-                                endIndex: row.end_index,
                                 movingTime: row.moving_time,
                                 name: row.name,
                                 segmentId: row.segment.id,
                                 startDateLocal: row.start_date_local,
-                                startIndex: row.start_index
 
                             };
                         segmentEfforts.push(segmentEffort);
@@ -396,10 +381,6 @@ export default class DBServices {
                 + "movingTime INT NOT NULL, "
                 + "name VARCHAR(64) NOT NULL, "
                 + "startDateLocal DATETIME NOT NULL, "
-                + "startLatitude FLOAT NOT NULL, "
-                + "startLongitude FLOAT NOT NULL, "
-                + "endLatitude FLOAT NOT NULL, "
-                + "endLongitude FLOAT NOT NULL, "
                 + "totalElevationGain INT NOT NULL, "
                 + "PRIMARY KEY(id))",
                 (err) => {
@@ -434,18 +415,14 @@ export default class DBServices {
 
         const a = Object.assign({}, activity);
         a.startDateLocal = new Date(a.startDateLocal);
-        a.startLatitude = activity.startLatitudeLongitude[0];
-        a.startLongitude = activity.startLatitudeLongitude[1];
-        a.endLatitude = activity.endLatitudeLongitude[0];
-        a.endLongitude = activity.endLatitudeLongitude[1];
 
         return new Promise( (resolve, reject) => {
             this.dbConnection.query(
                 "INSERT INTO activities (id, athleteId, averageSpeed, description, distance, elapsedTime, kilojoules, city, mapSummaryPolyline, maxSpeed, " +
-                "movingTime, name, startDateLocal, startLatitude, startLongitude, endLatitude, endLongitude, totalElevationGain) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "movingTime, name, startDateLocal, totalElevationGain) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [a.id, a.athleteId, a.averageSpeed, a.description, a.distance, a.elapsedTime, a.kilojoules, a.city, a.mapSummaryPolyline, a.maxSpeed,
-                    a.movingTime, a.name, a.startDateLocal, a.startLatitude, a.startLongitude, a.endLatitude, a.endLongitude, a.totalElevationGain],
+                    a.movingTime, a.name, a.startDateLocal, a.totalElevationGain],
                 (err) => {
                     if (err) {
                         console.log(err);
@@ -483,16 +460,12 @@ export default class DBServices {
                             city : row.city,
                             distance : row.distance,
                             elapsedTime : row.elapsedTime,
-                            endLatitude : row.endLatitude,
-                            endLongitude : row.endLongitude,
                             kilojoules : row.kilojoules,
                             mapSummaryPolyline : row.mapSummaryPolyline,
                             maxSpeed : row.maxSpeed,
                             movingTime : row.movingTime,
                             name : row.name,
                             startDateLocal : row.startDateLocal,
-                            startLatitude : row.startLatitude,
-                            startLongitude : row.startLongitude,
                             totalElevationGain : row.totalElevationGain,
                             segmentEffortIds : [],
                         };
@@ -594,6 +567,9 @@ export default class DBServices {
                     //         console.log("added athlete successfully:", name);
                     //         resolve();
                     //     });
+                    // in utility
+                    // INSERT INTO selectedAthlete (stravaAthleteId) VALUES ("2843574")
+
                 });
         });
     }
@@ -686,6 +662,4 @@ export default class DBServices {
             );
         });
     }
-
-
 }

@@ -461,10 +461,8 @@ export function loadDetailedActivity(activityId) {
                         const detailedSegmentAttributes =
                             {
                                 "id": segment.id,
-                                "createdAt": segment.created_at,
                                 "totalElevationGain": segment.total_elevation_gain,
                                 "map": segment.map,
-                                "effortCount": segment.effort_count
                             };
                         detailedSegmentsAttributes.push(detailedSegmentAttributes);
 
@@ -583,6 +581,7 @@ function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
             let activities = [];
 
             if (!(stravaSummaryActivities instanceof Array)) {
+                debugger;
                 console.log("stravaSummaryActivities not array");
                 reject("error");
                 return;

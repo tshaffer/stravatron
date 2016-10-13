@@ -35,10 +35,8 @@ export default function(state = initialState, action) {
                 const segmentId = detailedSegmentAttributes.id;
 
                 let segment = newSegmentsById[segmentId];
-                segment.createdAt = detailedSegmentAttributes.createdAt;
                 segment.totalElevationGain = detailedSegmentAttributes.totalElevationGain;
                 segment.map = detailedSegmentAttributes.map;
-                segment.effortCount = detailedSegmentAttributes.effortCount;
             });
 
             newState = {

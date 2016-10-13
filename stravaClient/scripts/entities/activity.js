@@ -17,9 +17,7 @@ export default class Activity {
             this.maxSpeed = activity.max_speed;
             this.movingTime = activity.moving_time;
             this.name = activity.name;
-            this.startDateLocal = activity.start_date_local;
-            this.startLatitudeLongitude = activity.start_latlng;
-            this.endLatitudeLongitude = activity.end_latlng;
+            this.startDateLocal = new Date(activity.start_date_local);
             this.totalElevationGain = activity.total_elevation_gain;
             this.segmentEffortIds = [];                                 // not present when retrieving summary activities from strava
         }
