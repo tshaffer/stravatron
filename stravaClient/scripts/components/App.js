@@ -21,11 +21,6 @@ export default class App extends Component {
                 <LandingContainer />
             </MuiThemeProvider>
         );
-        // return (
-        //     <MuiThemeProvider>
-        //         <SummaryActivitiesContainer />
-        //     </MuiThemeProvider>
-        // );
     }
 }
 

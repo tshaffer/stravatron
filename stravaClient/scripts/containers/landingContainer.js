@@ -38,8 +38,6 @@ class LandingContainer extends Component {
 
         var self = this;
 
-        console.log("update athleteName:", selectedAthleteName);
-
         this.props.athletes.forEach( athlete => {
             if (athlete.name == selectedAthleteName) {
                 self.props.setSelectedAthlete(athlete);

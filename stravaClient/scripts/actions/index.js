@@ -8,9 +8,18 @@ import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
 
-// import DBServices from '../services/dbServices';
 
 export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
+export const ADD_EFFORTS_FOR_SEGMENT = 'ADD_EFFORTS_FOR_SEGMENT';
+export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
+export const ADD_ACTIVITY_MAP = 'ADD_ACTIVITY_MAP';
+export const ADD_DETAILED_ACTIVITY_ATTRIBUTES = 'ADD_DETAILED_ACTIVITY_ATTRIBUTES';
+export const ADD_SEGMENTS = 'ADD_SEGMENTS';
+export const ADD_DETAILED_SEGMENT_ATTRIBUTES = 'ADD_DETAILED_SEGMENT_ATTRIBUTES';
+export const ADD_SEGMENT_EFFORTS = 'ADD_SEGMENT_EFFORTS';
+export const SET_CUSTOM_MAP_SEGMENTS = 'SET_CUSTOM_MAP_SEGMENTS';
+export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
+
 export function setSelectedAthlete(athlete) {
     return {
         type: SET_SELECTED_ATHLETE,
@@ -18,7 +27,6 @@ export function setSelectedAthlete(athlete) {
     };
 }
 
-export const ADD_EFFORTS_FOR_SEGMENT = 'ADD_EFFORTS_FOR_SEGMENT';
 function addEffortsForSegment(segmentId, effortsForSegment) {
     return {
         type: ADD_EFFORTS_FOR_SEGMENT,
@@ -27,7 +35,6 @@ function addEffortsForSegment(segmentId, effortsForSegment) {
     };
 }
 
-export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
 export function addActivities(activities) {
 
     return {
@@ -37,7 +44,6 @@ export function addActivities(activities) {
 }
 
 
-export const ADD_ACTIVITY_MAP = 'ADD_ACTIVITY_MAP';
 export function addActivityMap(activityId, mapPolyline) {
 
     return {
@@ -48,7 +54,6 @@ export function addActivityMap(activityId, mapPolyline) {
 }
 
 
-export const ADD_DETAILED_ACTIVITY_ATTRIBUTES = 'ADD_DETAILED_ACTIVITY_ATTRIBUTES';
 export function addDetailedActivityAttributes(activityId, detailedActivityAttributes) {
 
     return {
@@ -58,7 +63,6 @@ export function addDetailedActivityAttributes(activityId, detailedActivityAttrib
     };
 }
 
-export const ADD_SEGMENTS = 'ADD_SEGMENTS';
 export function addSegments(segments) {
 
     return {
@@ -67,7 +71,6 @@ export function addSegments(segments) {
     };
 }
 
-export const ADD_DETAILED_SEGMENT_ATTRIBUTES = 'ADD_DETAILED_SEGMENT_ATTRIBUTES';
 export function addDetailedSegmentAttributes(detailedSegmentsAttributes) {
 
     return {
@@ -77,7 +80,6 @@ export function addDetailedSegmentAttributes(detailedSegmentsAttributes) {
 }
 
 
-export const ADD_SEGMENT_EFFORTS = 'ADD_SEGMENT_EFFORTS';
 export function addSegmentEfforts(segmentEfforts) {
 
     return {
@@ -165,7 +167,6 @@ function fetchAllEfforts(athleteId, segmentId, getState) {
     });
 }
 
-
 function fetchSegment(segmentId, getState) {
 
     // return new Promise((resolve, reject) => {
@@ -188,10 +189,6 @@ export function loadActivityMap(activityId) {
             dispatch(addActivityMap(stravaDetailedActivity.id, stravaDetailedActivity.map.polyline));
         });
     };
-}
-
-function retrieveDetailsFromStrava() {
-
 }
 
 export function loadDetailedActivity(activityId) {
@@ -606,7 +603,6 @@ function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
     });
 }
 
-export const SET_CUSTOM_MAP_SEGMENTS = 'SET_CUSTOM_MAP_SEGMENTS';
 export function SetCustomMapSegments(customMapSegments) {
 
     return {
@@ -630,7 +626,6 @@ export function retrieveCustomSegmentData() {
     };
 }
 
-export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
 export function SetBaseMapSegments(baseMapSegments) {
 
     return {
@@ -690,9 +685,7 @@ export function retrieveBaseMapSegments() {
 
                 // add to redux
                 dispatch(SetBaseMapSegments(baseMapSegments));
-
             });
         });
     };
-
 }

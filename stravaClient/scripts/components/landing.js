@@ -17,8 +17,6 @@ class Landing extends Component {
 
         const self = this;
 
-        console.log("number of athletes is:", this.props.athletes.length);
-
         if (this.props.athletes.length > 0 && this.props.selectedAthlete.name) {
 
             let selectOptions = this.props.athletes.map( (athlete) => {

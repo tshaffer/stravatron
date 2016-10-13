@@ -13,8 +13,6 @@ class SummaryActivitiesContainer extends Component {
 
     componentWillMount() {
 
-        console.log("app.js::componentWillMount invoked");
-
         this.props.fetchAndUpdateSummaryActivities();
         this.props.retrieveBaseMapSegments();
         this.props.retrieveCustomSegmentData();

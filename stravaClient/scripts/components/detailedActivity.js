@@ -26,8 +26,6 @@ class DetailedActivity extends Component {
 
     componentWillMount() {
 
-        console.log("detailedActivity.js::componentWillMount invoked");
-
         if (Object.keys(this.props.activities.activitiesById).length == 0) {
             hashHistory.push('/');
             return;
@@ -41,7 +39,7 @@ class DetailedActivity extends Component {
     buildRideSummaryHeader(activity) {
 
         if (!activity) {
-            return <div>pizza</div>;
+            return <div>Loading</div>;
         }
 
         let calories = "";

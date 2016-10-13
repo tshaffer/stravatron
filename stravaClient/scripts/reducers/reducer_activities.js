@@ -6,7 +6,6 @@ const initialState =
         activitiesById: {}
     };
 
-
 let newActivitiesById = null;
 let newState = null;
 
@@ -89,10 +88,7 @@ export default function(state = initialState, action) {
                 activitiesById: newActivitiesById
             };
             return newState;
-
         }
-
-
     }
 
     return state;

@@ -19,8 +19,6 @@ class MapOfRides extends Component {
 
     componentWillMount() {
 
-        console.log("mapOfRides componentWillMount invoked");
-
         const activityIds = this.props.params.ids.split(",");
 
         this.setState({activityIds: activityIds});
@@ -31,8 +29,6 @@ class MapOfRides extends Component {
     }
 
     render() {
-
-        console.log("mapOfRides render invoked, number of activities is ", this.state.activityIds.length);
 
         const defaultJSX = (
             <div>
@@ -67,7 +63,6 @@ class MapOfRides extends Component {
             activitiesData.push(activityData);
             activityIndex++;
         });
-        console.log("number of activities sent to ActivityMap is ", activitiesData.length);
 
         return (
             <div>

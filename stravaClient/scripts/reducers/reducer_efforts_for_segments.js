@@ -8,7 +8,6 @@ const initialState =
 let newEffortsForSegmentsBySegmentId = null;
 let newState = null;
 
-// effortsForSegment
 export default function(state = initialState, action) {
 
     switch (action.type) {
@@ -27,7 +26,6 @@ export default function(state = initialState, action) {
 
             return newState;
         }
-
     }
 
     return state;

@@ -4,9 +4,6 @@ import * as Converters from '../utilities/converters';
 
 class SummaryActivities extends Component {
 
-    componentWillMount() {
-    }
-
     handleShowDetailedMap(activityId) {
         this.props.onShowDetailedMap(activityId);
     }
@@ -16,7 +13,6 @@ class SummaryActivities extends Component {
     }
 
     handleMapSelectedRides() {
-        console.log("mapSelectedRides invoked");
 
         let selectedActivityIds = [];
 
@@ -108,7 +104,6 @@ class SummaryActivities extends Component {
             return summaryActivityRow;
         });
         return summaryActivityRows;
-
     }
 
     render() {
