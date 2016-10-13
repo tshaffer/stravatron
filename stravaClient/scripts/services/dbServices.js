@@ -108,7 +108,6 @@ export default class DBServices {
                         console.log(err);
                         reject(err);
                     }
-                    console.log("added segment successfully for segmentId=", segmentId);
                     resolve();
                 }
             );
@@ -125,7 +124,6 @@ export default class DBServices {
                         console.log(err);
                         reject(err);
                     }
-                    console.log("added details to activity successfully");
                     resolve();
                 }
             );
@@ -137,8 +135,6 @@ export default class DBServices {
         var self = this;
 
         return new Promise((resolve, reject) => {
-
-            console.log("getSegmentsForActivity invoked");
 
             let segments = [];
 
@@ -174,8 +170,6 @@ export default class DBServices {
         var self = this;
 
         return new Promise((resolve, reject) => {
-
-            console.log("getSegmentEffortsForActivity invoked");
 
             let segmentEfforts = [];
 
@@ -232,7 +226,6 @@ export default class DBServices {
                     if (err) {
                         reject(err);
                     }
-                    console.log("create segmentEfforts successful");
                     resolve();
                 }
             );
@@ -252,7 +245,6 @@ export default class DBServices {
                         console.log(err);
                         reject(err);
                     }
-                    console.log("added segmentEffort successfully");
                     resolve();
                 }
             );
@@ -262,8 +254,6 @@ export default class DBServices {
     getSegmentEfforts(segmentEffortId) {
 
         return new Promise((resolve, reject) => {
-
-            console.log("getSegmentEfforts invoked");
 
             let segmentEfforts = [];
 
@@ -310,7 +300,6 @@ export default class DBServices {
                     if (err) {
                         reject(err);
                     }
-                    console.log("create streams successful");
                     resolve();
                 }
             );
@@ -329,7 +318,6 @@ export default class DBServices {
                         console.log(err);
                         reject(err);
                     }
-                    console.log("added stream successfully");
                     resolve();
                 }
             );
@@ -387,7 +375,6 @@ export default class DBServices {
                     if (err) {
                         reject(err);
                     }
-                    console.log("create activities successful");
                     resolve();
                 }
             );
@@ -404,7 +391,6 @@ export default class DBServices {
                         console.log(err);
                         reject(err);
                     }
-                    console.log("added details to activity successfully");
                     resolve();
                 }
             );
@@ -428,7 +414,6 @@ export default class DBServices {
                         console.log(err);
                         reject(err);
                     }
-                    console.log("added activity successfully");
                     resolve();
                 }
             );
@@ -439,8 +424,6 @@ export default class DBServices {
     getActivities(athleteId) {
 
         return new Promise( (resolve, reject) => {
-
-            console.log("getActivities invoked");
 
             var query = "SELECT * FROM activities " +
                 "WHERE athleteId=?";
@@ -494,7 +477,6 @@ export default class DBServices {
                         console.log(err);
                         reject(err);
                     }
-                    console.log("added athlete successfully:", name);
                     resolve();
                 }
             );
@@ -511,8 +493,6 @@ export default class DBServices {
                         reject(err);
                     }
 
-                    console.log("return from athletes query - rows length = " + rows.length);
-
                     if (rows.length == 0) {
                         console.log("no athletes found");
                         resolve([]);
@@ -520,8 +500,6 @@ export default class DBServices {
                     else {
                         let athletes = [];
                         rows.forEach( row => {
-                            // console.log("found athlete");
-                            // console.log(row);
                             let athlete = {
                                 stravaAthleteId: row.stravaAthleteId,
                                 accessToken: row.accessToken,
@@ -550,8 +528,6 @@ export default class DBServices {
                     if (err) {
                         reject(err);
                     }
-
-                    console.log("create createSelectedAthleteTable successful");
 
                     resolve();
                     // don't add to the table unless none exist - figure out how to do this.
@@ -584,8 +560,6 @@ export default class DBServices {
                         reject(err);
                     }
 
-                    console.log("return from getSelectedAthlete query - rows length = " + rows.length);
-
                     if (rows.length == 0) {
                         console.log("no athletes found");
                         resolve([]);
@@ -616,7 +590,6 @@ export default class DBServices {
                         console.log(err);
                         reject(err);
                     }
-                    console.log("added athlete successfully:", name);
                     resolve();
                 }
             );

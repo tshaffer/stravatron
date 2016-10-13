@@ -88,20 +88,20 @@ export function addSegmentEfforts(segmentEfforts) {
     };
 }
 
-function getResponseData(state = null) {
+function getAthleteData(state = null) {
 
-    let responseData = {};
+    let athleteData = {};
 
     if (state) {
         const athlete = state.selectedAthlete;
         if (athlete) {
-            responseData.athlete = {};
-            responseData.athlete.id = athlete.stravaAthleteId;
-            responseData.athlete.firstname = athlete.firstname;
-            responseData.athlete.lastname = athlete.lastname;
-            responseData.athlete.email = athlete.email;
-            responseData.accessToken = athlete.accessToken;
-            return responseData;
+            athleteData.athlete = {};
+            athleteData.athlete.id = athlete.stravaAthleteId;
+            athleteData.athlete.firstname = athlete.firstname;
+            athleteData.athlete.lastname = athlete.lastname;
+            athleteData.athlete.email = athlete.email;
+            athleteData.accessToken = athlete.accessToken;
+            return athleteData;
         }
     }
 
@@ -114,14 +114,14 @@ function fetchStravaData(endPoint, state) {
 
     return new Promise(function (resolve, reject) {
 
-        const responseData = getResponseData(state);
+        const athleteData = getAthleteData(state);
 
         var options = {
             host: 'www.strava.com',
             path: '/api/v3/' + endPoint,
             port: 443,
             headers: {
-                'Authorization': 'Bearer ' + responseData.accessToken
+                'Authorization': 'Bearer ' + athleteData.accessToken
             }
         };
 
@@ -191,285 +191,282 @@ export function loadActivityMap(activityId) {
     };
 }
 
+function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) {
+    // retrieve segments for this activity
+    const getSegmentsForActivityPromise = dbServices.getSegmentsForActivity(activityId);
+    getSegmentsForActivityPromise.then( (segmentsForActivity) => {
+        console.log("getSegmentsForActivityPromise.then");
+        dispatch(addSegments(segmentsForActivity));
+    });
+
+    const getSegmentEffortsForActivityPromise = dbServices.getSegmentEffortsForActivity(activityId);
+    getSegmentEffortsForActivityPromise.then( (segmentsEffortsForActivity) => {
+        console.log("dispatch addSegmentEfforts after getSegmentEffortsForActivityPromise.then");
+        dispatch(addSegmentEfforts(segmentsEffortsForActivity));
+
+        // iterate through segmentEffortsForActivity to generate segmentEffortsBySegment
+        // if (segmentEfforts.length > 0) {
+        //     dispatch(addEffortsForSegment(segmentEfforts[0].segmentId, segmentEfforts));
+        // }
+        let segmentEffortsBySegment = {};
+        let segmentEffortsForCurrentActivity = [];
+
+        segmentsEffortsForActivity.forEach( (segmentEffortForActivity) => {
+            const segmentId = segmentEffortForActivity.segmentId;
+            const segmentEffort = segmentEffortForActivity;
+
+            // capture segmentEfforts this selected activity
+            if (segmentEffort.activityId == activityId) {
+                segmentEffortsForCurrentActivity.push(segmentEffort);
+            }
+
+            if (!(segmentId in segmentEffortsBySegment)) {
+                segmentEffortsBySegment[segmentId] = [segmentEffort];
+            }
+            else {
+                let segmentEfforts = segmentEffortsBySegment[segmentId];
+                segmentEfforts.push(segmentEffort);
+            }
+        });
+
+        const getStreamsPromise = dbServices.getStream(activityId);
+        getStreamsPromise.then( (streamData) => {
+
+            let streams = [];
+            let stream = {};
+
+            stream.type = "distance";
+            stream.data = streamData.distanceData;
+            streams.push(stream);
+
+            stream = {};
+            stream.type = "altitude";
+            stream.data = streamData.elevationData;
+            streams.push(stream);
+
+            stream = {};
+            stream.type = "latlng";
+            stream.data = streamData.locationData;
+            streams.push(stream);
+
+            stream = {};
+            stream.type = "grade_smooth";
+            stream.data = streamData.gradientData;
+            streams.push(stream);
+
+            const detailedActivityAttributes =
+            {
+                "calories": 0,
+                "segmentEfforts": segmentEffortsForCurrentActivity,
+                "mapPolyline": activity.mapPolyline,
+                "streams": streams
+            };
+            dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
+
+            state = getState();
+        });
+
+        for (var segmentId in segmentEffortsBySegment) {
+            if (segmentEffortsBySegment.hasOwnProperty(segmentId)) {
+                const segmentEffortsForSegment = segmentEffortsBySegment[segmentId];
+                console.log("dispatch addEffortsForSegment in loop on segmentEffortsBySegment");
+                dispatch(addEffortsForSegment(segmentId, segmentEffortsForSegment));
+            }
+        }
+    });
+}
+
+function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispatch, getState) {
+    fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
+
+        // retrieve streams for this activity
+        // ** what if all the efforts are retrieved before streams are retrieved? is that a problem?
+        fetchStream(activityId, getState).then((stravaStreams) => {
+
+            // stravaStreams is an array of objects
+            // each object has the following data members
+            //      data
+            //          array of locations
+            //      original_size
+            //          int
+            //      resolution
+            //          string = 'high'
+            //      series_type
+            //          string = 'distance'
+            //      type
+            //          string = 'latlng'
+            const detailedActivityAttributes =
+            {
+                "calories": stravaDetailedActivity.calories,
+                "segmentEfforts": stravaDetailedActivity.segment_efforts,
+                "mapPolyline": stravaDetailedActivity.map.polyline,
+                "streams": stravaStreams
+            };
+
+            // add to store
+            dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
+
+            // add activity details to the db
+            dbServices.addDetailsToActivity(stravaDetailedActivity.id, detailedActivityAttributes);
+
+            // add streams to the db
+            let locationData = null;
+            let elevationData = null;
+            let distanceData = null;
+            let gradientData = null;
+            for (let i = 0; i < stravaStreams.length; i++) {
+                switch (stravaStreams[i].type) {
+                    case 'distance':
+                        distanceData = stravaStreams[i].data;
+                        break;
+                    case 'altitude':
+                        elevationData = stravaStreams[i].data;
+                        break;
+                    case 'latlng':
+                        locationData = stravaStreams[i].data;
+                        break;
+                    case "grade_smooth":
+                        gradientData = stravaStreams[i].data;
+                        break;
+                }
+            }
+            const streamData =
+            {
+                locationData,
+                elevationData,
+                distanceData,
+                gradientData
+            };
+            const addStreamPromise = dbServices.addStream(stravaDetailedActivity.id, streamData);
+
+        });
+
+        let segments = [];
+        let segmentIds = [];
+        let segmentEfforts = [];
+
+        stravaDetailedActivity.segment_efforts.forEach((stravaSegmentEffort) => {
+
+            const segment = new Segment(stravaSegmentEffort.segment);
+            segments.push(segment);
+
+            segmentIds.push(stravaSegmentEffort.segment.id);
+
+            const segmentEffort = new SegmentEffort(stravaSegmentEffort);
+            segmentEfforts.push(segmentEffort);
+
+            // add segment, segmentEffort to db
+            const addSegmentPromise = dbServices.addSegment(segment);
+            addSegmentPromise.then( () => {
+            }, (reason) => {
+                console.log("segment addition failed:", activityId);
+            });
+
+            const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
+            addSegmentEffortPromise.then( () => {
+            }, (reason) => {
+                console.log("segmentEffort addition failed:", segmentEffort.activityId);
+            });
+        });
+
+        dispatch(addSegmentEfforts(segmentEfforts));
+
+        dispatch(addSegments(segments));
+
+        // retrieve all efforts for each of the segments in this activity
+        let fetchAllEffortsPromises = [];
+        const athleteId = "2843574";            // pa
+        // const athleteId = "7085811";         // ma
+        segmentIds.forEach((segmentId) => {
+            fetchAllEffortsPromises.push(fetchAllEfforts(athleteId, segmentId, getState));
+        });
+
+        let allEffortsList = [];
+
+        Promise.all(fetchAllEffortsPromises).then(allEffortsForSegmentsInCurrentActivity => {
+
+            if (allEffortsForSegmentsInCurrentActivity instanceof Array) {
+
+                allEffortsForSegmentsInCurrentActivity.forEach(allEffortsForSegment => {
+                    if (allEffortsForSegment instanceof Array) {
+
+                        // get information about segment as appropriate, presumably from first 'effort for segment'
+
+                        // convert to stravatron segmentEfforts
+                        segmentEfforts = [];
+                        allEffortsForSegment.forEach((stravaSegmentEffort) => {
+                            const segmentEffort = new SegmentEffort(stravaSegmentEffort);
+                            segmentEfforts.push(segmentEffort);
+
+                            // add segment effort to the db
+                            const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
+                            addSegmentEffortPromise.then( () => {
+                            }, (reason) => {
+                                console.log("segmentEffort addition failed:", segmentEffort.activityId);
+                            });
+                        });
+
+                        // add all individual segment efforts to store
+                        let beforeState = getState();
+                        dispatch(addSegmentEfforts(segmentEfforts));
+                        let afterState = getState();
+
+                        // add all efforts for this segment to store
+                        if (segmentEfforts.length > 0) {
+                            dispatch(addEffortsForSegment(segmentEfforts[0].segmentId, segmentEfforts));
+                        }
+                    }
+                });
+
+                const segmentEffortsAddedState = getState();
+            }
+        });
+
+        let fetchSegmentPromises = [];
+        segmentIds.forEach((segmentId) => {
+            fetchSegmentPromises.push(fetchSegment(segmentId, getState));
+        });
+
+        let detailedSegmentsAttributes = [];
+
+        Promise.all(fetchSegmentPromises).then(segments => {
+
+            segments.forEach(segment => {
+
+                const detailedSegmentAttributes =
+                {
+                    "id": segment.id,
+                    "totalElevationGain": segment.total_elevation_gain,
+                    "map": segment.map,
+                };
+                detailedSegmentsAttributes.push(detailedSegmentAttributes);
+
+                dbServices.addDetailsToSegment(segment.id, detailedSegmentAttributes);
+            });
+
+            dispatch(addDetailedSegmentAttributes(detailedSegmentsAttributes));
+
+            const segmentsAddedState = getState();
+        });
+    });
+}
+
 export function loadDetailedActivity(activityId) {
 
     return function(dispatch, getState) {
 
-        console.log("actions/index.js::loadDetailedActivity invoked");
-
         let state = getState();
         const dbServices = state.db.dbServices;
 
+        let activity = getState().activities.activitiesById[activityId];
+
         // check to see if detailed data exists for activity - if not, fetch it.
-        let activity = state.activities.activitiesById[activityId];
         // I think the following is kind of a hack - how about if (activity.detailsExist())
         if (activity.mapPolyline && activity.mapPolyline != "") {
-
-            // retrieve segment efforts for each segment in this activity
-
-            // get segments for activity
-            const getSegmentsForActivityPromise = dbServices.getSegmentsForActivity(activityId);
-            getSegmentsForActivityPromise.then( (segmentsForActivity) => {
-                console.log("getSegmentsForActivityPromise.then");
-                dispatch(addSegments(segmentsForActivity));
-            });
-
-            const getSegmentEffortsForActivityPromise = dbServices.getSegmentEffortsForActivity(activityId);
-            getSegmentEffortsForActivityPromise.then( (segmentsEffortsForActivity) => {
-                console.log("dispatch addSegmentEfforts after getSegmentEffortsForActivityPromise.then");
-                dispatch(addSegmentEfforts(segmentsEffortsForActivity));
-
-                // iterate through segmentEffortsForActivity to generate segmentEffortsBySegment
-                // if (segmentEfforts.length > 0) {
-                //     dispatch(addEffortsForSegment(segmentEfforts[0].segmentId, segmentEfforts));
-                // }
-                let segmentEffortsBySegment = {};
-                let segmentEffortsForCurrentActivity = [];
-
-                segmentsEffortsForActivity.forEach( (segmentEffortForActivity) => {
-                    const segmentId = segmentEffortForActivity.segmentId;
-                    const segmentEffort = segmentEffortForActivity;
-
-                    // capture segmentEfforts this selected activity
-                    if (segmentEffort.activityId == activityId) {
-                        segmentEffortsForCurrentActivity.push(segmentEffort);
-                    }
-
-                    if (!(segmentId in segmentEffortsBySegment)) {
-                        segmentEffortsBySegment[segmentId] = [segmentEffort];
-                    }
-                    else {
-                        let segmentEfforts = segmentEffortsBySegment[segmentId];
-                        segmentEfforts.push(segmentEffort);
-                    }
-                });
-
-                const getStreamsPromise = dbServices.getStream(activityId);
-                getStreamsPromise.then( (streamData) => {
-
-                    let streams = [];
-                    let stream = {};
-
-                    stream.type = "distance";
-                    stream.data = streamData.distanceData;
-                    streams.push(stream);
-
-                    stream = {};
-                    stream.type = "altitude";
-                    stream.data = streamData.elevationData;
-                    streams.push(stream);
-
-                    stream = {};
-                    stream.type = "latlng";
-                    stream.data = streamData.locationData;
-                    streams.push(stream);
-
-                    stream = {};
-                    stream.type = "grade_smooth";
-                    stream.data = streamData.gradientData;
-                    streams.push(stream);
-
-                    const detailedActivityAttributes =
-                        {
-                            "calories": 0,
-                            "segmentEfforts": segmentEffortsForCurrentActivity,
-                            "mapPolyline": activity.mapPolyline,
-                            "streams": streams
-                        };
-                    dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
-
-                    state = getState();
-                });
-
-                for (var segmentId in segmentEffortsBySegment) {
-                    if (segmentEffortsBySegment.hasOwnProperty(segmentId)) {
-                        const segmentEffortsForSegment = segmentEffortsBySegment[segmentId];
-                        console.log("dispatch addEffortsForSegment in loop on segmentEffortsBySegment");
-                        dispatch(addEffortsForSegment(segmentId, segmentEffortsForSegment));
-                    }
-                }
-
-                console.log("activityId is still:", activityId);
-                state = getState();
-            });
+            loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch);
         }
         else {
-            fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
-
-                // retrieve streams for this activity
-                // ** what if all the efforts are retrieved before streams are retrieved? is that a problem?
-                fetchStream(activityId, getState).then((stravaStreams) => {
-                    console.log("streams retrieved");
-
-                    // stravaStreams is an array of objects
-                    // each object has the following data members
-                    //      data
-                    //          array of locations
-                    //      original_size
-                    //          int
-                    //      resolution
-                    //          string = 'high'
-                    //      series_type
-                    //          string = 'distance'
-                    //      type
-                    //          string = 'latlng'
-                    const detailedActivityAttributes =
-                        {
-                            "calories": stravaDetailedActivity.calories,
-                            "segmentEfforts": stravaDetailedActivity.segment_efforts,
-                            "mapPolyline": stravaDetailedActivity.map.polyline,
-                            "streams": stravaStreams
-                        };
-
-                    // add to store
-                    dispatch(addDetailedActivityAttributes(stravaDetailedActivity.id, detailedActivityAttributes));
-
-                    // add activity details to the db
-                    dbServices.addDetailsToActivity(stravaDetailedActivity.id, detailedActivityAttributes);
-
-                    // add streams to the db
-                    let locationData = null;
-                    let elevationData = null;
-                    let distanceData = null;
-                    let gradientData = null;
-                    for (let i = 0; i < stravaStreams.length; i++) {
-                        switch (stravaStreams[i].type) {
-                            case 'distance':
-                                distanceData = stravaStreams[i].data;
-                                break;
-                            case 'altitude':
-                                elevationData = stravaStreams[i].data;
-                                break;
-                            case 'latlng':
-                                locationData = stravaStreams[i].data;
-                                break;
-                            case "grade_smooth":
-                                gradientData = stravaStreams[i].data;
-                                break;
-                        }
-                    }
-                    const streamData =
-                        {
-                            locationData,
-                            elevationData,
-                            distanceData,
-                            gradientData
-                        };
-                    const addStreamPromise = dbServices.addStream(stravaDetailedActivity.id, streamData);
-
-                });
-
-                let segments = [];
-                let segmentIds = [];
-                let segmentEfforts = [];
-
-                stravaDetailedActivity.segment_efforts.forEach((stravaSegmentEffort) => {
-
-                    const segment = new Segment(stravaSegmentEffort.segment);
-                    segments.push(segment);
-
-                    segmentIds.push(stravaSegmentEffort.segment.id);
-
-                    const segmentEffort = new SegmentEffort(stravaSegmentEffort);
-                    segmentEfforts.push(segmentEffort);
-
-                    // add segment, segmentEffort to db
-                    const addSegmentPromise = dbServices.addSegment(segment);
-                    addSegmentPromise.then( () => {
-                        console.log("segment added successfully:", activityId);
-                    }, (reason) => {
-                        console.log("segment addition failed:", activityId);
-                    });
-
-                    const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
-                    addSegmentEffortPromise.then( () => {
-                        console.log("segmentEffort added successfully:", segmentEffort.activityId);
-                    }, (reason) => {
-                        console.log("segmentEffort addition failed:", segmentEffort.activityId);
-                    });
-                });
-
-                dispatch(addSegmentEfforts(segmentEfforts));
-
-                dispatch(addSegments(segments));
-
-                // retrieve all efforts for each of the segments in this activity
-                let fetchAllEffortsPromises = [];
-                const athleteId = "2843574";            // pa
-                // const athleteId = "7085811";         // ma
-                segmentIds.forEach((segmentId) => {
-                    fetchAllEffortsPromises.push(fetchAllEfforts(athleteId, segmentId, getState));
-                });
-
-                let allEffortsList = [];
-
-                Promise.all(fetchAllEffortsPromises).then(allEffortsForSegmentsInCurrentActivity => {
-
-                    if (allEffortsForSegmentsInCurrentActivity instanceof Array) {
-
-                        allEffortsForSegmentsInCurrentActivity.forEach(allEffortsForSegment => {
-                            if (allEffortsForSegment instanceof Array) {
-
-                                // get information about segment as appropriate, presumably from first 'effort for segment'
-
-                                // convert to stravatron segmentEfforts
-                                segmentEfforts = [];
-                                allEffortsForSegment.forEach((stravaSegmentEffort) => {
-                                    const segmentEffort = new SegmentEffort(stravaSegmentEffort);
-                                    segmentEfforts.push(segmentEffort);
-
-                                    // add segment effort to the db
-                                    const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
-                                    addSegmentEffortPromise.then( () => {
-                                        console.log("segmentEffort added successfully:", segmentEffort.activityId);
-                                    }, (reason) => {
-                                        console.log("segmentEffort addition failed:", segmentEffort.activityId);
-                                    });
-                                });
-
-                                // add all individual segment efforts to store
-                                let beforeState = getState();
-                                dispatch(addSegmentEfforts(segmentEfforts));
-                                let afterState = getState();
-
-                                // add all efforts for this segment to store
-                                if (segmentEfforts.length > 0) {
-                                    dispatch(addEffortsForSegment(segmentEfforts[0].segmentId, segmentEfforts));
-                                }
-                            }
-                        });
-
-                        const segmentEffortsAddedState = getState();
-                    }
-                });
-
-                let fetchSegmentPromises = [];
-                segmentIds.forEach((segmentId) => {
-                    fetchSegmentPromises.push(fetchSegment(segmentId, getState));
-                });
-
-                let detailedSegmentsAttributes = [];
-
-                Promise.all(fetchSegmentPromises).then(segments => {
-
-                    segments.forEach(segment => {
-
-                        const detailedSegmentAttributes =
-                            {
-                                "id": segment.id,
-                                "totalElevationGain": segment.total_elevation_gain,
-                                "map": segment.map,
-                            };
-                        detailedSegmentsAttributes.push(detailedSegmentAttributes);
-
-                        dbServices.addDetailsToSegment(segment.id, detailedSegmentAttributes);
-                    });
-
-                    dispatch(addDetailedSegmentAttributes(detailedSegmentsAttributes));
-
-                    const segmentsAddedState = getState();
-                });
-            });
+            loadDetailedActivityFromStrava(activityId, activity, dbServices, dispatch, getState);
         }
     };
 }
@@ -482,8 +479,8 @@ export function fetchAndUpdateSummaryActivities() {
         const dbServices = state.db.dbServices;
 
         // get summaryActivities from db for current athlete
-        const responseData = getResponseData(state);
-        const athleteId = responseData.athlete.id;
+        const athleteData = getAthleteData(state);
+        const athleteId = athleteData.athlete.id;
 
         dbServices.getActivities(athleteId).then( (dbActivities) => {
 
