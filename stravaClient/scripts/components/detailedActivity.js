@@ -24,18 +24,6 @@ class DetailedActivity extends Component {
         };
     }
 
-    componentWillMount() {
-
-        if (Object.keys(this.props.activities.activitiesById).length == 0) {
-            hashHistory.push('/');
-            return;
-        }
-
-        // create a DetailedActivityContainer and move this functionality to that object
-        const activityId = this.props.params.id;
-        this.props.loadDetailedActivity(activityId);
-    }
-
     buildRideSummaryHeader(activity) {
 
         if (!activity) {
@@ -316,7 +304,8 @@ class DetailedActivity extends Component {
 
     render () {
 
-        const activityId = this.props.params.id;
+        // const activityId = this.props.params.id;
+        const activityId = this.props.activityId;
 
         const activitiesById = this.props.activities.activitiesById;
         if (Object.keys(this.props.activities.activitiesById).length == 0) {
@@ -395,8 +384,8 @@ function mapDispatchToProps(dispatch) {
 
 
 DetailedActivity.propTypes = {
+    activityId: React.PropTypes.string.isRequired,
     activities: React.PropTypes.object.isRequired,
-    params: React.PropTypes.object.isRequired,
     loadDetailedActivity: React.PropTypes.func.isRequired,
     segments: React.PropTypes.object.isRequired,
     segmentEfforts: React.PropTypes.object.isRequired,

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import SummaryActivitiesContainer from '../containers/summaryActivitiesContainer';
-
 class Landing extends Component {
 
     handleUpdateSelectedAthlete(event) {

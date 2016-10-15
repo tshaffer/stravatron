@@ -14,7 +14,8 @@ class DetailedActivityContainer extends Component {
         super(props);
 
         this.state = {
-            chartLocation: []
+            chartLocation: [],
+            activityId: ""
         };
     }
 
@@ -26,6 +27,8 @@ class DetailedActivityContainer extends Component {
         }
 
         const activityId = this.props.params.id;
+        this.setState({activityId: activityId});
+
         this.props.loadDetailedActivity(activityId);
     }
 
@@ -33,10 +36,8 @@ class DetailedActivityContainer extends Component {
         return (
             <div>
                 <DetailedActivity
+                    activityId={this.state.activityId}
                     activities={this.props.activities}
-                    onShowDetailedMap={this.handleShowDetailedMap.bind(this)}
-                    onMapStarredSegments={this.handleMapStarredSegments.bind(this)}
-                    onMapSelectedRides={this.handleMapSelectedRides.bind(this)}
                 />
             </div>
         );
@@ -46,9 +47,6 @@ class DetailedActivityContainer extends Component {
 function mapStateToProps (state) {
     return {
         activities: state.activities,
-        segments: state.segments,
-        segmentEfforts: state.segmentEfforts,
-        effortsForSegments: state.effortsForSegments
     };
 }
 
@@ -61,9 +59,6 @@ DetailedActivityContainer.propTypes = {
     activities: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
     loadDetailedActivity: React.PropTypes.func.isRequired,
-    segments: React.PropTypes.object.isRequired,
-    segmentEfforts: React.PropTypes.object.isRequired,
-    effortsForSegments: React.PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailedActivityContainer);

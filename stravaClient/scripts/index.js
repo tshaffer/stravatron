@@ -16,7 +16,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import App from './components/app';
 import SummaryActivitiesContainer from './containers/summaryActivitiesContainer';
-import DetailedActivityContainer from './components/detailedActivity';
+import DetailedActivityContainer from './containers/detailedActivityContainer';
 import MapOfRides from './components/mapOfRides';
 import MapStarredSegments from './components/mapStarredSegments';
 
