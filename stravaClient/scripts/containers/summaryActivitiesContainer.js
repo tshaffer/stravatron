@@ -19,7 +19,7 @@ class SummaryActivitiesContainer extends Component {
     }
 
     handleShowDetailedMap(activityId) {
-        hashHistory.push('/detailedActivity/' + activityId);
+        hashHistory.push('/detailedActivityContainer/' + activityId);
     }
 
     handleMapStarredSegments() {

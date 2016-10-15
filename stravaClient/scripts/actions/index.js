@@ -191,12 +191,16 @@ export function loadActivityMap(activityId) {
     };
 }
 
-function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) {
+function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, getState) {
+
+    let state = null;
+
     // retrieve segments for this activity
     const getSegmentsForActivityPromise = dbServices.getSegmentsForActivity(activityId);
     getSegmentsForActivityPromise.then( (segmentsForActivity) => {
         console.log("getSegmentsForActivityPromise.then");
         dispatch(addSegments(segmentsForActivity));
+        state = getState();
     });
 
     const getSegmentEffortsForActivityPromise = dbServices.getSegmentEffortsForActivity(activityId);
@@ -228,6 +232,7 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
                 segmentEfforts.push(segmentEffort);
             }
         });
+
 
         const getStreamsPromise = dbServices.getStream(activityId);
         getStreamsPromise.then( (streamData) => {
@@ -262,6 +267,8 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
                     "streams": streams
                 };
             dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
+
+            state = getState();
         });
 
         for (var segmentId in segmentEffortsBySegment) {
@@ -271,6 +278,8 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
                 dispatch(addEffortsForSegment(segmentId, segmentEffortsForSegment));
             }
         }
+
+        state = getState();
     });
 }
 
@@ -461,7 +470,7 @@ export function loadDetailedActivity(activityId) {
         // check to see if detailed data exists for activity - if not, fetch it.
         // I think the following is kind of a hack - how about if (activity.detailsExist())
         if (activity.mapPolyline && activity.mapPolyline != "") {
-            loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch);
+            loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, getState);
         }
         else {
             loadDetailedActivityFromStrava(activityId, activity, dbServices, dispatch, getState);

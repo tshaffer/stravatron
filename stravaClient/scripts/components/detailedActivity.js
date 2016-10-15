@@ -363,8 +363,6 @@ class DetailedActivity extends Component {
                 <br/>
                 {rideSummaryHeader}
                 <ActivityMap
-                    startLatitude={activity.startLatitude}
-                    startLongitude={activity.startLongitude}
                     activitiesData={activitiesData}
                     location={this.state.chartLocation}
                     totalActivities={1}

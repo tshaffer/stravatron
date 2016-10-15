@@ -16,7 +16,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import App from './components/app';
 import SummaryActivitiesContainer from './containers/summaryActivitiesContainer';
-import DetailedActivity from './components/detailedActivity';
+import DetailedActivityContainer from './components/detailedActivity';
 import MapOfRides from './components/mapOfRides';
 import MapStarredSegments from './components/mapStarredSegments';
 
@@ -37,7 +37,7 @@ ReactDOM.render(
         <Router history={hashHistory}>
             <Route path="/" component={App} />
             <Route path="/summaryActivitiesContainer" component={SummaryActivitiesContainer} />
-            <Route path="/detailedActivity/:id" component={DetailedActivity} />
+            <Route path="/detailedActivityContainer/:id" component={DetailedActivityContainer} />
             <Route path="/mapOfRides/:ids" component={MapOfRides} />
             <Route path="/mapStarredSegments" component={MapStarredSegments} />
         </Router>

@@ -69,8 +69,6 @@ class MapOfRides extends Component {
                 <Link to="/" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
                 <ActivityMap
-                    startLatitude={firstActivity.startLatitude}
-                    startLongitude={firstActivity.startLongitude}
                     activitiesData={activitiesData}
                     location={[]}
                     totalActivities={this.state.activityIds.length}
