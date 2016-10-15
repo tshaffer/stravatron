@@ -292,24 +292,10 @@ export default class DetailedActivity extends Component {
     render () {
 
         const activityId = this.props.activityId;
+        const activity = this.props.activities.activitiesById[activityId];
 
-        const activitiesById = this.props.activities.activitiesById;
-        if (Object.keys(this.props.activities.activitiesById).length == 0) {
+        if (!activity || this.props.segmentEffortsForActivity.length == 0) {
             return <div>Pizza</div>;
-        }
-
-        let activity = null;
-        if (activitiesById.hasOwnProperty(activityId)) {
-            activity = activitiesById[activityId];
-            if (!activity) {
-                return (
-                    <div>
-                        <Link to="/" id="backFromDetailedActivityButton">Back</Link>
-                        <br/>
-                        Detailed activity for id {activityId} not found.
-                    </div>
-                );
-            }
         }
 
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);

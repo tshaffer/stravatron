@@ -110,8 +110,6 @@ function getAthleteData(state = null) {
 
 function fetchStravaData(endPoint, state) {
 
-    console.log("actions/index.js::fetchStravaData from " + endPoint);
-
     return new Promise(function (resolve, reject) {
 
         const athleteData = getAthleteData(state);
@@ -147,8 +145,6 @@ function fetchStream(activityId, getState) {
 
     return new Promise((resolve) => {
 
-        console.log("actions/index.js::fetchStream invoked: ", activityId);
-
         fetchStravaData('activities/' + activityId + '/streams/time,latlng,distance,altitude,grade_smooth', getState()).then( (stravaStreams) => {
             resolve(stravaStreams);
         });
@@ -158,8 +154,6 @@ function fetchStream(activityId, getState) {
 function fetchAllEfforts(athleteId, segmentId, getState) {
     // return new Promise((resolve, reject) => {
     return new Promise((resolve) => {
-
-        console.log("actions/index.js::fetchAllEfforts invoked: ", segmentId);
 
         fetchStravaData("segments/" + segmentId.toString() + '/all_efforts?athlete_id=' + athleteId.toString(), getState()).then( (stravaAllEfforts) => {
             resolve(stravaAllEfforts);
@@ -172,8 +166,6 @@ function fetchSegment(segmentId, getState) {
     // return new Promise((resolve, reject) => {
     return new Promise((resolve) => {
 
-        console.log("actions/index.js::fetchSegment invoked: ", segmentId);
-
         fetchStravaData("segments/" + segmentId, getState()).then( (stravaDetailedSegment)=> {
             resolve(stravaDetailedSegment);
         });
@@ -184,7 +176,6 @@ export function loadActivityMap(activityId) {
 
     return function(dispatch, getState) {
 
-        console.log("actions/index.js::loadActivityMap invoked");
         fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
             dispatch(addActivityMap(stravaDetailedActivity.id, stravaDetailedActivity.map.polyline));
         });
@@ -198,14 +189,11 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
     // retrieve segments for this activity
     const getSegmentsForActivityPromise = dbServices.getSegmentsForActivity(activityId);
     getSegmentsForActivityPromise.then( (segmentsForActivity) => {
-        console.log("getSegmentsForActivityPromise.then");
         dispatch(addSegments(segmentsForActivity));
-        state = getState();
     });
 
     const getSegmentEffortsForActivityPromise = dbServices.getSegmentEffortsForActivity(activityId);
     getSegmentEffortsForActivityPromise.then( (segmentsEffortsForActivity) => {
-        console.log("dispatch addSegmentEfforts after getSegmentEffortsForActivityPromise.then");
         dispatch(addSegmentEfforts(segmentsEffortsForActivity));
 
         // iterate through segmentEffortsForActivity to generate segmentEffortsBySegment
@@ -267,19 +255,14 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
                     "streams": streams
                 };
             dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
-
-            state = getState();
         });
 
         for (var segmentId in segmentEffortsBySegment) {
             if (segmentEffortsBySegment.hasOwnProperty(segmentId)) {
                 const segmentEffortsForSegment = segmentEffortsBySegment[segmentId];
-                console.log("dispatch addEffortsForSegment in loop on segmentEffortsBySegment");
                 dispatch(addEffortsForSegment(segmentId, segmentEffortsForSegment));
             }
         }
-
-        state = getState();
     });
 }
 
@@ -516,8 +499,6 @@ export function fetchAndUpdateSummaryActivities() {
 
 function fetchStravaActivities(dateOfLastFetchedActivity, dbServices, dispatch, getState) {
 
-    console.log("fetchStravaActivities, date=", dateOfLastFetchedActivity);
-
     // for afterDate, strava only seems to look at the date; that is, it doesn't look at the time
     // therefore, jump to the next day - the result is that it's possible to lose an activity that occurs on
     // the same date if the activities happen to fall on a page boundary
@@ -645,7 +626,6 @@ export function retrieveBaseMapSegments() {
 
     return function(dispatch, getState) {
 
-        console.log("actions/index.js::retrieveBaseMapSegments invoked");
         fetchStravaData("segments/starred", getState()).then((starredSegments)=> {
 
             if (!(starredSegments instanceof Array)) {
