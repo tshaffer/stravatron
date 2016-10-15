@@ -19,7 +19,6 @@ export default class Activity {
             this.name = stravaActivity.name;
             this.startDateLocal = new Date(stravaActivity.start_date_local);
             this.totalElevationGain = stravaActivity.total_elevation_gain;
-            this.segmentEffortIds = [];                                         // not present when retrieving summary activities from strava
         }
     }
 }

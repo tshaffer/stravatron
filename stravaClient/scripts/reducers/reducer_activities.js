@@ -71,12 +71,6 @@ export default function(state = initialState, action) {
                 let newActivity = new Activity();
                 newActivity = Object.assign(newActivity, activity);
 
-                let segmentEffortIds = [];
-                detailedActivityAttributes.segmentEfforts.forEach( (segmentEffort) => {
-                    segmentEffortIds.push(segmentEffort.id);
-                });
-
-                newActivity.segmentEffortIds = segmentEffortIds;
                 newActivity.calories = detailedActivityAttributes.calories;
                 newActivity.mapPolyline = detailedActivityAttributes.mapPolyline;
                 newActivity.streams = detailedActivityAttributes.streams;

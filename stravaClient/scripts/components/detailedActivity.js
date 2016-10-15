@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 
 import { loadDetailedActivity } from '../actions/index';
 
+import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
+
 import * as Converters from '../utilities/converters';
 
 import ActivityMap from './activityMap';
@@ -267,7 +269,9 @@ class DetailedActivity extends Component {
 
     buildSegmentEffortsTable(activity) {
 
-        const segmentEffortRows = this.buildSegmentEffortRows(activity.segmentEffortIds);
+        const segmentEffortIds = getSegmentEffortsForActivity(this.props.segmentEfforts, activity.id);
+
+        const segmentEffortRows = this.buildSegmentEffortRows(segmentEffortIds);
 
         // <th>&Delta; Best Times</th>
         // <th>&#x394;</th>

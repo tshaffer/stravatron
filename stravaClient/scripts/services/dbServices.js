@@ -450,7 +450,6 @@ export default class DBServices {
                             name : row.name,
                             startDateLocal : row.startDateLocal,
                             totalElevationGain : row.totalElevationGain,
-                            segmentEffortIds : [],
                         };
                         if (row.mapPolyline) {
                             dbActivity.mapPolyline = row.mapPolyline;
