@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux';
 import { loadDetailedActivity } from '../actions/index';
 
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
-import { getSegmentEffortIdsForActivity} from '../reducers/reducer_segment_efforts';
 
 import * as Converters from '../utilities/converters';
 
@@ -366,7 +365,6 @@ function mapStateToProps (state, ownProps) {
         segments: state.segments,
         segmentEfforts: state.segmentEfforts,
         effortsForSegments: state.effortsForSegments,
-        segmentEffortIdsForActivity: getSegmentEffortIdsForActivity(state, ownProps.activityId),
         segmentEffortsForActivity: getSegmentEffortsForActivity(state, ownProps.activityId)
     };
 }
