@@ -267,11 +267,9 @@ class DetailedActivity extends Component {
         return segmentEffortRows;
     }
 
-    buildSegmentEffortsTable(activity) {
+    buildSegmentEffortsTable() {
 
-        const segmentEffortIds = getSegmentEffortsForActivity(this.props.segmentEfforts, activity.id);
-
-        const segmentEffortRows = this.buildSegmentEffortRows(segmentEffortIds);
+        const segmentEffortRows = this.buildSegmentEffortRows(this.props.segmentEffortIdsForActivity);
 
         // <th>&Delta; Best Times</th>
         // <th>&#x394;</th>
@@ -328,7 +326,7 @@ class DetailedActivity extends Component {
         }
 
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);
-        const segmentEffortsTable = this.buildSegmentEffortsTable(activity);
+        const segmentEffortsTable = this.buildSegmentEffortsTable();
 
         let mapPolyline = "";
         if (activity.mapPolyline) {
@@ -368,12 +366,13 @@ class DetailedActivity extends Component {
     }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
     return {
         activities: state.activities,
         segments: state.segments,
         segmentEfforts: state.segmentEfforts,
-        effortsForSegments: state.effortsForSegments
+        effortsForSegments: state.effortsForSegments,
+        segmentEffortIdsForActivity: getSegmentEffortsForActivity(state.segmentEfforts, ownProps.activityId)
     };
 }
 
