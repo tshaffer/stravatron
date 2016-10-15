@@ -3,8 +3,6 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { hashHistory } from 'react-router';
-
 import { loadDetailedActivity } from '../actions/index';
 
 import * as Converters from '../utilities/converters';
@@ -304,7 +302,6 @@ class DetailedActivity extends Component {
 
     render () {
 
-        // const activityId = this.props.params.id;
         const activityId = this.props.activityId;
 
         const activitiesById = this.props.activities.activitiesById;
@@ -386,10 +383,10 @@ function mapDispatchToProps(dispatch) {
 DetailedActivity.propTypes = {
     activityId: React.PropTypes.string.isRequired,
     activities: React.PropTypes.object.isRequired,
-    loadDetailedActivity: React.PropTypes.func.isRequired,
     segments: React.PropTypes.object.isRequired,
     segmentEfforts: React.PropTypes.object.isRequired,
-    effortsForSegments: React.PropTypes.object.isRequired
+    effortsForSegments: React.PropTypes.object.isRequired,
+    loadDetailedActivity: React.PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailedActivity);

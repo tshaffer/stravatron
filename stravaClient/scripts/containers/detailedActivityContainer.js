@@ -37,7 +37,6 @@ class DetailedActivityContainer extends Component {
             <div>
                 <DetailedActivity
                     activityId={this.state.activityId}
-                    activities={this.props.activities}
                 />
             </div>
         );
