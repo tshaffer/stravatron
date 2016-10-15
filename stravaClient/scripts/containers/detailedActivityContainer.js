@@ -6,6 +6,8 @@ import { hashHistory } from 'react-router';
 
 import { loadDetailedActivity } from '../actions/index';
 
+import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
+
 import DetailedActivity from '../components/detailedActivity';
 
 class DetailedActivityContainer extends Component {
@@ -37,15 +39,24 @@ class DetailedActivityContainer extends Component {
             <div>
                 <DetailedActivity
                     activityId={this.state.activityId}
+                    activities={this.props.activities}
+                    segments={this.props.segments}
+                    segmentEfforts={this.props.segmentEfforts}
+                    effortsForSegments={this.props.effortsForSegments}
+                    segmentEffortsForActivity={this.props.segmentEffortsForActivity}
                 />
             </div>
         );
     }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
     return {
         activities: state.activities,
+        segments: state.segments,
+        segmentEfforts: state.segmentEfforts,
+        effortsForSegments: state.effortsForSegments,
+        segmentEffortsForActivity: getSegmentEffortsForActivity(state, ownProps.params.id)
     };
 }
 
@@ -58,6 +69,11 @@ DetailedActivityContainer.propTypes = {
     activities: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
     loadDetailedActivity: React.PropTypes.func.isRequired,
+    segments: React.PropTypes.object.isRequired,
+    segmentEfforts: React.PropTypes.object.isRequired,
+    effortsForSegments: React.PropTypes.object.isRequired,
+    segmentEffortsForActivity: React.PropTypes.array.isRequired
+
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailedActivityContainer);

@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
-import { loadDetailedActivity } from '../actions/index';
-
-import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
 
 import * as Converters from '../utilities/converters';
 
@@ -14,7 +8,7 @@ import ElevationChart from './elevationChart';
 
 var moment = require('moment');
 
-class DetailedActivity extends Component {
+export default class DetailedActivity extends Component {
 
     constructor(props) {
         super(props);
@@ -359,30 +353,11 @@ class DetailedActivity extends Component {
     }
 }
 
-function mapStateToProps (state, ownProps) {
-    return {
-        activities: state.activities,
-        segments: state.segments,
-        segmentEfforts: state.segmentEfforts,
-        effortsForSegments: state.effortsForSegments,
-        segmentEffortsForActivity: getSegmentEffortsForActivity(state, ownProps.activityId)
-    };
-}
-
-
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({loadDetailedActivity},
-        dispatch);
-}
-
-
 DetailedActivity.propTypes = {
     activityId: React.PropTypes.string.isRequired,
     activities: React.PropTypes.object.isRequired,
     segments: React.PropTypes.object.isRequired,
     segmentEfforts: React.PropTypes.object.isRequired,
     effortsForSegments: React.PropTypes.object.isRequired,
-    loadDetailedActivity: React.PropTypes.func.isRequired
+    segmentEffortsForActivity: React.PropTypes.array.isRequired,
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(DetailedActivity);
