@@ -39,7 +39,7 @@ export default function(state = initialState, action) {
 //         }
 // );
 
-export const getSegmentEffortsForActivity = (state, activityId) => {
+export const getSegmentEffortIdsForActivity = (state, activityId) => {
 
     let segmentEffortIds = [];
 
@@ -54,4 +54,18 @@ export const getSegmentEffortsForActivity = (state, activityId) => {
     }
 
     return segmentEffortIds;
+};
+
+export const getSegmentEffortsForActivity = (state, activityId) => {
+
+    let segmentEfforts = [];
+
+    for (let segmentEffortId in state.segmentEfforts.segmentEffortsById) {
+        const segmentEffort = state.segmentEfforts.segmentEffortsById[segmentEffortId];
+        if (segmentEffort.activityId == activityId) {
+            segmentEfforts.push(segmentEffort);
+        }
+    }
+
+    return segmentEfforts;
 };

@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { loadDetailedActivity } from '../actions/index';
 
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
+import { getSegmentEffortIdsForActivity} from '../reducers/reducer_segment_efforts';
 
 import * as Converters from '../utilities/converters';
 
@@ -243,21 +244,14 @@ class DetailedActivity extends Component {
         );
     }
 
-    buildSegmentEffortRows(segmentEffortIds) {
+    buildSegmentEffortRows(segmentEfforts) {
 
         const self = this;
 
         let segmentEffort = null;
-        let segmentEfforts = [];
 
-        segmentEffortIds.forEach( (segmentEffortId) => {
-
-            segmentEffort = self.props.segmentEfforts.segmentEffortsById[segmentEffortId];
-
-            if (segmentEffort) {
-                segmentEfforts.push(segmentEffort);
-                self.buildSegmentEffortRow(segmentEffort);
-            }
+        segmentEfforts.forEach( (segmentEffort) => {
+            self.buildSegmentEffortRow(segmentEffort);
         });
 
         let segmentEffortRows = segmentEfforts.map(function(segmentEffort) {
@@ -269,7 +263,7 @@ class DetailedActivity extends Component {
 
     buildSegmentEffortsTable() {
 
-        const segmentEffortRows = this.buildSegmentEffortRows(this.props.segmentEffortIdsForActivity);
+        const segmentEffortRows = this.buildSegmentEffortRows(this.props.segmentEffortsForActivity);
 
         // <th>&Delta; Best Times</th>
         // <th>&#x394;</th>
@@ -372,7 +366,8 @@ function mapStateToProps (state, ownProps) {
         segments: state.segments,
         segmentEfforts: state.segmentEfforts,
         effortsForSegments: state.effortsForSegments,
-        segmentEffortIdsForActivity: getSegmentEffortsForActivity(state.segmentEfforts, ownProps.activityId)
+        segmentEffortIdsForActivity: getSegmentEffortIdsForActivity(state, ownProps.activityId),
+        segmentEffortsForActivity: getSegmentEffortsForActivity(state, ownProps.activityId)
     };
 }
 
