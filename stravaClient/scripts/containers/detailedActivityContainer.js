@@ -6,6 +6,7 @@ import { hashHistory } from 'react-router';
 
 import { loadDetailedActivity } from '../actions/index';
 
+import { getActivity } from '../reducers/reducer_activities';
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
 
 import DetailedActivity from '../components/detailedActivity';
@@ -38,8 +39,7 @@ class DetailedActivityContainer extends Component {
         return (
             <div>
                 <DetailedActivity
-                    activityId={this.state.activityId}
-                    activities={this.props.activities}
+                    activity={this.props.activity}
                     segments={this.props.segments}
                     segmentEfforts={this.props.segmentEfforts}
                     effortsForSegments={this.props.effortsForSegments}
@@ -52,6 +52,7 @@ class DetailedActivityContainer extends Component {
 
 function mapStateToProps (state, ownProps) {
     return {
+        activity: getActivity(state, ownProps.params.id),
         activities: state.activities,
         segments: state.segments,
         segmentEfforts: state.segmentEfforts,
@@ -66,6 +67,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 DetailedActivityContainer.propTypes = {
+    activity: React.PropTypes.object.isRequired,
     activities: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
     loadDetailedActivity: React.PropTypes.func.isRequired,

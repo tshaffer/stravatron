@@ -291,8 +291,7 @@ export default class DetailedActivity extends Component {
 
     render () {
 
-        const activityId = this.props.activityId;
-        const activity = this.props.activities.activitiesById[activityId];
+        const activity = this.props.activity;
 
         if (!activity || this.props.segmentEffortsForActivity.length == 0) {
             return <div>Pizza</div>;
@@ -340,8 +339,7 @@ export default class DetailedActivity extends Component {
 }
 
 DetailedActivity.propTypes = {
-    activityId: React.PropTypes.string.isRequired,
-    activities: React.PropTypes.object.isRequired,
+    activity: React.PropTypes.object.isRequired,
     segments: React.PropTypes.object.isRequired,
     segmentEfforts: React.PropTypes.object.isRequired,
     effortsForSegments: React.PropTypes.object.isRequired,

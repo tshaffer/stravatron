@@ -87,3 +87,8 @@ export default function(state = initialState, action) {
 
     return state;
 }
+
+// Selectors
+export const getActivity = (state, activityId) => {
+    return state.activities.activitiesById[activityId];
+};
