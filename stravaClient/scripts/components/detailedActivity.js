@@ -127,7 +127,7 @@ export default class DetailedActivity extends Component {
         let effortsForSegmentLbl = "none";
         let recentEffortsLbl = "none";
         if (this.props.effortsForSegments) {
-            const effortsForSegment = this.props.effortsForSegments.effortsForSegmentsBySegmentId[segmentId];
+            const effortsForSegment = this.props.effortsForSegments[segmentId];
             if (effortsForSegment) {
                 if (effortsForSegment.length > 0) {
 

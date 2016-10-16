@@ -257,7 +257,7 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
             dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
         });
 
-        for (var segmentId in segmentEffortsBySegment) {
+        for (let segmentId in segmentEffortsBySegment) {
             if (segmentEffortsBySegment.hasOwnProperty(segmentId)) {
                 const segmentEffortsForSegment = segmentEffortsBySegment[segmentId];
                 dispatch(addEffortsForSegment(segmentId, segmentEffortsForSegment));

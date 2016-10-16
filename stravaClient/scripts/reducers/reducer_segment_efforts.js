@@ -44,3 +44,22 @@ export const getSegmentEffortsForActivity = (state, activityId) => {
     
     return segmentEfforts;
 };
+
+export const getEffortsForActivitySegments = (state, activityId) => {
+
+    let effortsForActivitySegments = {};
+
+    for (let segmentEffortId in state.segmentEfforts.segmentEffortsById) {
+        const segmentEffort = state.segmentEfforts.segmentEffortsById[segmentEffortId];
+
+        const segmentId = segmentEffort.segmentId;
+
+        if (!effortsForActivitySegments[segmentId] || !effortsForActivitySegments.hasOwnProperty(segmentId)) {
+            effortsForActivitySegments[segmentId] = [];
+        }
+        let effortsForSegment = effortsForActivitySegments[segmentId];
+        effortsForSegment.push(segmentEffort);
+    }
+
+    return effortsForActivitySegments;
+};
