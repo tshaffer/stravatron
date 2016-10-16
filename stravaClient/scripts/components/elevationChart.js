@@ -109,6 +109,10 @@ class ElevationChart extends Component {
         chart.draw(dataTable, options);
         this.chartDrawn = true;
 
+        // initialize starting location so that marker appears at the beginning of the route
+        var startingLocation = mapDistanceToLocation[dataTable.getValue(0, 0)];
+        this.props.onLocationChanged(startingLocation);
+
         // Add our over/out handlers.
         window.google.visualization.events.addListener(chart, 'onmouseover', chartMouseOver);
         window.google.visualization.events.addListener(chart, 'onmouseout', chartMouseOut);
