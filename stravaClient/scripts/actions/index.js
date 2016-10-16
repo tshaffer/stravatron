@@ -10,7 +10,6 @@ import Activity from '../entities/activity';
 
 
 export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
-export const ADD_EFFORTS_FOR_SEGMENT = 'ADD_EFFORTS_FOR_SEGMENT';
 export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
 export const ADD_ACTIVITY_MAP = 'ADD_ACTIVITY_MAP';
 export const ADD_DETAILED_ACTIVITY_ATTRIBUTES = 'ADD_DETAILED_ACTIVITY_ATTRIBUTES';
@@ -24,14 +23,6 @@ export function setSelectedAthlete(athlete) {
     return {
         type: SET_SELECTED_ATHLETE,
         athlete
-    };
-}
-
-function addEffortsForSegment(segmentId, effortsForSegment) {
-    return {
-        type: ADD_EFFORTS_FOR_SEGMENT,
-        segmentId,
-        effortsForSegment
     };
 }
 
@@ -256,13 +247,6 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
                 };
             dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
         });
-
-        for (let segmentId in segmentEffortsBySegment) {
-            if (segmentEffortsBySegment.hasOwnProperty(segmentId)) {
-                const segmentEffortsForSegment = segmentEffortsBySegment[segmentId];
-                dispatch(addEffortsForSegment(segmentId, segmentEffortsForSegment));
-            }
-        }
     });
 }
 
@@ -400,11 +384,6 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
                         let beforeState = getState();
                         dispatch(addSegmentEfforts(segmentEfforts));
                         let afterState = getState();
-
-                        // add all efforts for this segment to store
-                        if (segmentEfforts.length > 0) {
-                            dispatch(addEffortsForSegment(segmentEfforts[0].segmentId, segmentEfforts));
-                        }
                     }
                 });
 
