@@ -18,6 +18,10 @@ export default class DetailedActivity extends Component {
         };
     }
 
+    componentWillMount() {
+        this.props.onLoadDetailedActivity(this.props.params.id);
+    }
+
     buildRideSummaryHeader(activity) {
 
         if (!activity) {
@@ -28,7 +32,6 @@ export default class DetailedActivity extends Component {
         if (activity.kilojoules) {
             calories = activity.kilojoules.toFixed(0);
         }
-
 
         return (
             <div id="RideSummary">
@@ -294,7 +297,7 @@ export default class DetailedActivity extends Component {
         const activity = this.props.activity;
 
         if (!activity || this.props.segmentEffortsForActivity.length == 0) {
-            return <div>Pizza</div>;
+            return <div>Loading...</div>;
         }
 
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);
@@ -339,9 +342,11 @@ export default class DetailedActivity extends Component {
 }
 
 DetailedActivity.propTypes = {
+    onLoadDetailedActivity: React.PropTypes.func.isRequired,
     activity: React.PropTypes.object.isRequired,
     segments: React.PropTypes.object.isRequired,
     segmentEfforts: React.PropTypes.object.isRequired,
     effortsForSegments: React.PropTypes.object.isRequired,
     segmentEffortsForActivity: React.PropTypes.array.isRequired,
+    params: React.PropTypes.object.isRequired,
 };
