@@ -322,7 +322,7 @@ export default class DetailedActivity extends Component {
 
         return (
             <div>
-                <Link to="/" id="backFromDetailedActivityButton">Back</Link>
+                <Link to="/summaryActivitiesContainer" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
                 {rideSummaryHeader}
                 <ActivityMap

@@ -9,6 +9,9 @@ class ElevationChart extends Component {
         this.state = {
         };
         this.chartDrawn = false;
+
+        console.log("elevationChart::constructor invoked");
+
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -18,7 +21,14 @@ class ElevationChart extends Component {
         return true;
     }
 
+    componentDidMount() {
+        console.log("elevationChart::componentDidMount invoked");
+        console.log("elevationChart::componentDidMount:", this.props.streams.length);
+    }
+
     buildElevationGraph(stream) {
+
+        console.log("elevationChart::buildElevationGraph invoked");
 
         var distances;
         var elevations;
@@ -109,9 +119,10 @@ class ElevationChart extends Component {
         chart.draw(dataTable, options);
         this.chartDrawn = true;
 
+        // can't do this here, as it is a called from the render function, and ends up calling setState
         // initialize starting location so that marker appears at the beginning of the route
-        var startingLocation = mapDistanceToLocation[dataTable.getValue(0, 0)];
-        this.props.onLocationChanged(startingLocation);
+        // var startingLocation = mapDistanceToLocation[dataTable.getValue(0, 0)];
+        // this.props.onLocationChanged(startingLocation);
 
         // Add our over/out handlers.
         window.google.visualization.events.addListener(chart, 'onmouseover', chartMouseOver);
@@ -140,6 +151,8 @@ class ElevationChart extends Component {
     }
 
     render() {
+
+        console.log("elevationChart::render invoked");
 
         if (this.elevationChart && this.props.streams.length > 0) {
             this.buildElevationGraph(this.props.streams);

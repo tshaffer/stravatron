@@ -32,7 +32,7 @@ class MapOfRides extends Component {
 
         const defaultJSX = (
             <div>
-                <Link to="/" id="backFromDetailedActivityButton">Back</Link>
+                <Link to="/">Back</Link>
                 <br/>
             </div>
         );
@@ -66,7 +66,7 @@ class MapOfRides extends Component {
 
         return (
             <div>
-                <Link to="/" id="backFromDetailedActivityButton">Back</Link>
+                <Link to="/summaryActivitiesContainer">Back</Link>
                 <br/>
                 <ActivityMap
                     activitiesData={activitiesData}

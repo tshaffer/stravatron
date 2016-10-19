@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 import * as Converters from '../utilities/converters';
 
@@ -112,6 +113,8 @@ class SummaryActivities extends Component {
 
         return (
             <div id="SummaryActivities">
+                <Link to="/">Back</Link>
+                <br/>
                 <button type="button" id="btnMapStarredSegments" onClick={() => this.handleMapStarredSegments()}>Map of starred segments</button>
                 <button type="button" id="btnMapSelectedRides" onClick={() => this.handleMapSelectedRides()}>Map selected rides</button>
                 <button type="button" id="btnCompareSelectedRides">Compare selected rides</button>
