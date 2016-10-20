@@ -10,14 +10,6 @@ var moment = require('moment');
 
 export default class DetailedActivity extends Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            chartLocation: []
-        };
-    }
-
     componentWillMount() {
         this.props.onLoadDetailedActivity(this.props.params.id);
     }
@@ -288,8 +280,8 @@ export default class DetailedActivity extends Component {
         );
     }
 
-    handleChartLocationChange(chartLocation) {
-        this.setState({ chartLocation: chartLocation });
+    handleSetMapLatitudeLongitude(mapLatitudeLongitude) {
+        this.props.onSetMapLatitudeLongitude(mapLatitudeLongitude);
     }
 
     render () {
@@ -327,13 +319,13 @@ export default class DetailedActivity extends Component {
                 {rideSummaryHeader}
                 <ActivityMap
                     activitiesData={activitiesData}
-                    location={this.state.chartLocation}
                     totalActivities={1}
                     mapHeight={"400px"}
+                    mapLatitudeLongitude={this.props.mapLatitudeLongitude}
                 />
                 <ElevationChart
                     streams={streams}
-                    onLocationChanged = {this.handleChartLocationChange.bind(this)}
+                    onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
                 />
                 {segmentEffortsTable}
             </div>
@@ -343,10 +335,12 @@ export default class DetailedActivity extends Component {
 
 DetailedActivity.propTypes = {
     onLoadDetailedActivity: React.PropTypes.func.isRequired,
+    onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
     activity: React.PropTypes.object.isRequired,
     segments: React.PropTypes.object.isRequired,
     segmentEfforts: React.PropTypes.object.isRequired,
     effortsForSegments: React.PropTypes.object.isRequired,
     segmentEffortsForActivity: React.PropTypes.array.isRequired,
     params: React.PropTypes.object.isRequired,
+    mapLatitudeLongitude: React.PropTypes.array.isRequired
 };

@@ -7,7 +7,7 @@ const fs = require('fs');
 import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
-
+import * as Converters from '../utilities/converters';
 
 export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
 export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
@@ -18,6 +18,7 @@ export const ADD_DETAILED_SEGMENT_ATTRIBUTES = 'ADD_DETAILED_SEGMENT_ATTRIBUTES'
 export const ADD_SEGMENT_EFFORTS = 'ADD_SEGMENT_EFFORTS';
 export const SET_CUSTOM_MAP_SEGMENTS = 'SET_CUSTOM_MAP_SEGMENTS';
 export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
+export const SET_MAP_LATITUDE_LONGITUDE = 'SET_MAP_LATITUDE_LONGITUDE';
 
 export function setSelectedAthlete(athlete) {
     return {
@@ -51,6 +52,14 @@ export function addDetailedActivityAttributes(activityId, detailedActivityAttrib
         type: ADD_DETAILED_ACTIVITY_ATTRIBUTES,
         activityId,
         detailedActivityAttributes
+    };
+}
+
+export function setMapLatitudeLongitude(latitudeLongitude) {
+
+    return {
+        type: SET_MAP_LATITUDE_LONGITUDE,
+        latitudeLongitude
     };
 }
 
@@ -232,6 +241,10 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
             stream.type = "latlng";
             stream.data = streamData.locationData;
             streams.push(stream);
+            const initialLatitudeLongitude = streamData.locationData[0];
+            const latitude = initialLatitudeLongitude[0];
+            const longitude = initialLatitudeLongitude[1];
+            const startingLatitudeLongitude = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
 
             stream = {};
             stream.type = "grade_smooth";
@@ -246,6 +259,8 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
                     "streams": streams
                 };
             dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
+
+            dispatch(setMapLatitudeLongitude(startingLatitudeLongitude));
         });
     });
 }
