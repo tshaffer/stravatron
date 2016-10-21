@@ -68,3 +68,33 @@ th,td
     margin-left: 4px;
     margin-bottom: 4px;
 }
+
+#mapLegend {
+    top: 2px;
+    position: absolute;
+    left: 5px;
+    z-index: 99;
+}
+
+.mapLegendActivityRect
+{
+    margin-top:10px;
+    width: 50px;
+    height: 4px;
+    background: red;
+    display: inline-block;
+}
+
+.mapLegendActivityName
+{
+    margin-left: 8px;
+    display: inline-block;
+}
+
+.blueBackground {
+    background: blue;
+}
+
+.redBackground {
+    background: red;
+}

@@ -107,6 +107,9 @@ class SummaryActivities extends Component {
         return summaryActivityRows;
     }
 
+// <button type="button" id="btnMapStarredSegments" onClick={() => this.handleMapStarredSegments()}>Map of starred segments</button>
+// <button type="button" id="btnCompareSelectedRides">Compare selected rides</button>
+
     render() {
 
         const summaryActivityRows = this.buildSummaryActivityRows();
@@ -115,9 +118,7 @@ class SummaryActivities extends Component {
             <div id="SummaryActivities">
                 <Link to="/">Back</Link>
                 <br/>
-                <button type="button" id="btnMapStarredSegments" onClick={() => this.handleMapStarredSegments()}>Map of starred segments</button>
                 <button type="button" id="btnMapSelectedRides" onClick={() => this.handleMapSelectedRides()}>Map selected rides</button>
-                <button type="button" id="btnCompareSelectedRides">Compare selected rides</button>
                 <table id="activitiesTable">
                     <thead>
                         <tr>

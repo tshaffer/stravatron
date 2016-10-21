@@ -198,12 +198,30 @@ class ActivityMap extends Component {
         if (this.activityMap && this.props.mapLatitudeLongitude && this.props.mapLatitudeLongitude.length > 0) {
             this.setMarkerPosition();
         }
+        // <span>Activity 1</span>
+        // <span>Activity 2</span>
 
         return (
-            <div id="mapBoxMap" ref={(c) => {
-                self.mapBoxMap = c;
-                self.loadAndRenderMap();
-            }}/>
+            <div id="mapBoxMap"
+                ref={(c) => {
+                    self.mapBoxMap = c;
+                    self.loadAndRenderMap();
+                }}>
+                <div id="mapLegend">
+                    <div>
+                        <div className="mapLegendActivityRect blueBackground"/>
+                        <div className="mapLegendActivityName">
+                            activity1
+                        </div>
+                        <br/>
+                        <div className="mapLegendActivityRect redBackground"/>
+                        <div className="mapLegendActivityName">
+                            activity2
+                        </div>
+                        <br/>
+                    </div>
+                </div>
+            </div>
         );
     }
 }
