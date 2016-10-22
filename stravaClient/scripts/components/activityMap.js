@@ -198,8 +198,14 @@ class ActivityMap extends Component {
         if (this.activityMap && this.props.mapLatitudeLongitude && this.props.mapLatitudeLongitude.length > 0) {
             this.setMarkerPosition();
         }
-        // <span>Activity 1</span>
-        // <span>Activity 2</span>
+
+        const redStyle = {
+            background: "red"
+        };
+
+        const blueStyle = {
+            background: "blue"
+        };
 
         return (
             <div id="mapBoxMap"
@@ -209,12 +215,12 @@ class ActivityMap extends Component {
                 }}>
                 <div id="mapLegend">
                     <div>
-                        <div className="mapLegendActivityRect blueBackground"/>
+                        <div className="mapLegendActivityRect" style={blueStyle}/>
                         <div className="mapLegendActivityName">
                             activity1
                         </div>
                         <br/>
-                        <div className="mapLegendActivityRect redBackground"/>
+                        <div className="mapLegendActivityRect" style={redStyle}/>
                         <div className="mapLegendActivityName">
                             activity2
                         </div>
