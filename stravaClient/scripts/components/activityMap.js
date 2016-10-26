@@ -191,6 +191,61 @@ class ActivityMap extends Component {
         source.setData(this.markerPoint);
     }
 
+    buildMapLegend(activitiesData) {
+
+        const redStyle = {
+            background: "red"
+        };
+
+        const blueStyle = {
+            background: "blue"
+        };
+
+        let mapLegend = activitiesData.map((activityData, index) => {
+
+            let colorStyle;
+            if (index == 0) {
+                colorStyle = redStyle;
+            }
+            else {
+                colorStyle = blueStyle;
+            }
+
+            return (
+                <div>
+                    <div className="mapLegendActivityRect" style={colorStyle}/>
+                    <div className="mapLegendActivityName">
+                        {activityData.name}
+                        </div>
+                        <br/>
+                </div>
+            );
+        });
+
+        return (
+            <div>
+                {mapLegend}
+            </div>
+        );
+
+    }
+
+    // const mapLegendJSX =
+    // <div id="mapLegend">
+    //     <div>
+    //         <div className="mapLegendActivityRect" style={blueStyle}/>
+    //         <div className="mapLegendActivityName">
+    //             activity1
+    //         </div>
+    //         <br/>
+    //         <div className="mapLegendActivityRect" style={redStyle}/>
+    //         <div className="mapLegendActivityName">
+    //             activity2
+    //         </div>
+    //         {/*<br/>*/}
+    //     {/*</div>*/}
+    // </div>;
+
     render() {
 
         var self = this;
@@ -207,26 +262,21 @@ class ActivityMap extends Component {
             background: "blue"
         };
 
+        // this.props.activitiesData.forEach( (activityData) => {
+        //     console.log("activityData");
+        //     console.log(activityData.name);
+        //     console.log(activityData.startDateLocal);
+        // });
+
+        const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);
+
         return (
             <div id="mapBoxMap"
                 ref={(c) => {
                     self.mapBoxMap = c;
                     self.loadAndRenderMap();
                 }}>
-                <div id="mapLegend">
-                    <div>
-                        <div className="mapLegendActivityRect" style={blueStyle}/>
-                        <div className="mapLegendActivityName">
-                            activity1
-                        </div>
-                        <br/>
-                        <div className="mapLegendActivityRect" style={redStyle}/>
-                        <div className="mapLegendActivityName">
-                            activity2
-                        </div>
-                        <br/>
-                    </div>
-                </div>
+                { mapLegendJSX }
             </div>
         );
     }
