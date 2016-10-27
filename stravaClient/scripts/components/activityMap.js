@@ -193,31 +193,27 @@ class ActivityMap extends Component {
 
     buildMapLegend(activitiesData) {
 
-        const redStyle = {
-            background: "red"
-        };
-
-        const blueStyle = {
-            background: "blue"
-        };
+        // for now, only show legend when more than one activity is mapped
+        if (activitiesData.length < 2) {
+            return (
+                <noscript/>
+            );
+        }
 
         let mapLegend = activitiesData.map((activityData, index) => {
 
-            let colorStyle;
-            if (index == 0) {
-                colorStyle = redStyle;
-            }
-            else {
-                colorStyle = blueStyle;
-            }
+            const bgColor = activityData.strokeColor;
+            const colorStyle = {
+                background: bgColor
+            };
 
             return (
-                <div>
+                <div key={activityData.startDateLocal}>
                     <div className="mapLegendActivityRect" style={colorStyle}/>
                     <div className="mapLegendActivityName">
                         {activityData.name}
-                        </div>
-                        <br/>
+                    </div>
+                    <br/>
                 </div>
             );
         });
@@ -230,22 +226,6 @@ class ActivityMap extends Component {
 
     }
 
-    // const mapLegendJSX =
-    // <div id="mapLegend">
-    //     <div>
-    //         <div className="mapLegendActivityRect" style={blueStyle}/>
-    //         <div className="mapLegendActivityName">
-    //             activity1
-    //         </div>
-    //         <br/>
-    //         <div className="mapLegendActivityRect" style={redStyle}/>
-    //         <div className="mapLegendActivityName">
-    //             activity2
-    //         </div>
-    //         {/*<br/>*/}
-    //     {/*</div>*/}
-    // </div>;
-
     render() {
 
         var self = this;
@@ -253,20 +233,6 @@ class ActivityMap extends Component {
         if (this.activityMap && this.props.mapLatitudeLongitude && this.props.mapLatitudeLongitude.length > 0) {
             this.setMarkerPosition();
         }
-
-        const redStyle = {
-            background: "red"
-        };
-
-        const blueStyle = {
-            background: "blue"
-        };
-
-        // this.props.activitiesData.forEach( (activityData) => {
-        //     console.log("activityData");
-        //     console.log(activityData.name);
-        //     console.log(activityData.startDateLocal);
-        // });
 
         const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);
 
