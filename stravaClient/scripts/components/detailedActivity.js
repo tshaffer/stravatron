@@ -321,6 +321,7 @@ export default class DetailedActivity extends Component {
                     activitiesData={activitiesData}
                     totalActivities={1}
                     mapHeight={"400px"}
+                    showMarker={true}
                     mapLatitudeLongitude={this.props.mapLatitudeLongitude}
                 />
                 <ElevationChart

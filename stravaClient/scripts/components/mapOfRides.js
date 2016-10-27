@@ -75,6 +75,8 @@ class MapOfRides extends Component {
                     location={[]}
                     totalActivities={this.state.activityIds.length}
                     mapHeight={"760px"}
+                    showMarker={false}
+                    mapLatitudeLongitude={[]}
                 />
             </div>
         );
