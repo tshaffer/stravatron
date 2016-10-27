@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { hashHistory } from 'react-router';
 
 const fs = require('fs');
 const GeoJSON = require('geojson');
@@ -190,10 +189,6 @@ class ActivityMap extends Component {
         }
     }
 
-    handleShowDetailedMap(activityId) {
-        hashHistory.push('/detailedActivityContainer/' + activityId);
-    }
-
     buildMapLegend(activitiesData) {
 
         // for now, only show legend when more than one activity is mapped
@@ -225,12 +220,7 @@ class ActivityMap extends Component {
             const activityDate = new Date(activityData.startDateLocal);
             const legendLabel = activityData.name + " - " + activityDate.toDateString();
 
-            // <a didn't work.
-            // <a href="http://www.w3schools.com">Visit W3Schools.com!</a>
             const url = '/detailedActivityContainer/' + activityData.activityId;
-            // <a href={url}>{legendLabel}</a>
-
-            // <span onClick={() => this.handleShowDetailedMap(activityData.activityId)}>{legendLabel}</span>
 
             return (
                 <div key={activityData.startDateLocal}>
