@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 import { hashHistory } from 'react-router';
 
 const fs = require('fs');
@@ -223,11 +224,19 @@ class ActivityMap extends Component {
 
             const activityDate = new Date(activityData.startDateLocal);
             const legendLabel = activityData.name + " - " + activityDate.toDateString();
+
+            // <a didn't work.
+            // <a href="http://www.w3schools.com">Visit W3Schools.com!</a>
+            const url = '/detailedActivityContainer/' + activityData.activityId;
+            // <a href={url}>{legendLabel}</a>
+
+            // <span onClick={() => this.handleShowDetailedMap(activityData.activityId)}>{legendLabel}</span>
+
             return (
                 <div key={activityData.startDateLocal}>
                     <div className="mapLegendActivityRect" style={colorStyle}/>
                     <div className="mapLegendActivityName">
-                        <span onClick={() => this.handleShowDetailedMap(activityData.activityId)}>{legendLabel}</span>
+                        <Link to={url}>{legendLabel}</Link>
                     </div>
                     <br/>
                 </div>
