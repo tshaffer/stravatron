@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
+
 const fs = require('fs');
 const GeoJSON = require('geojson');
 
@@ -67,12 +69,6 @@ class ActivityMap extends Component {
             ];
 
             self.activityMap.fitBounds([minBounds, maxBounds]);
-
-            // console.log("fitBounds");
-            // console.log(minBounds);
-            // console.log(maxBounds);
-            //
-            // console.log("initial zoom is:", self.activityMap.getZoom().toString());
 
             for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
@@ -193,6 +189,10 @@ class ActivityMap extends Component {
         }
     }
 
+    handleShowDetailedMap(activityId) {
+        hashHistory.push('/detailedActivityContainer/' + activityId);
+    }
+
     buildMapLegend(activitiesData) {
 
         // for now, only show legend when more than one activity is mapped
@@ -214,7 +214,7 @@ class ActivityMap extends Component {
         });
 
         // does map iterate in sorted order? if not, iterate through sorted array and assign colors
-        
+
         let mapLegend = activitiesData.map((activityData, index) => {
 
             const colorStyle = {
@@ -227,7 +227,7 @@ class ActivityMap extends Component {
                 <div key={activityData.startDateLocal}>
                     <div className="mapLegendActivityRect" style={colorStyle}/>
                     <div className="mapLegendActivityName">
-                        {legendLabel}
+                        <span onClick={() => this.handleShowDetailedMap(activityData.activityId)}>{legendLabel}</span>
                     </div>
                     <br/>
                 </div>
@@ -239,7 +239,6 @@ class ActivityMap extends Component {
                 {mapLegend}
             </div>
         );
-
     }
 
     render() {
@@ -269,7 +268,7 @@ ActivityMap.propTypes = {
     mapHeight: React.PropTypes.string.isRequired,
     activitiesData: React.PropTypes.array.isRequired,
     showMarker: React.PropTypes.bool.isRequired,
-    mapLatitudeLongitude: React.PropTypes.array.isRequired
+    mapLatitudeLongitude: React.PropTypes.array.isRequired,
 };
 
 

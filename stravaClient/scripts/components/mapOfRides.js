@@ -57,6 +57,7 @@ class MapOfRides extends Component {
             }
             const activityData =
                 {
+                    activityId: activity.id,
                     name: activity.name,
                     startDateLocal: activity.startDateLocal,
                     polyline: activity.mapPolyline,
