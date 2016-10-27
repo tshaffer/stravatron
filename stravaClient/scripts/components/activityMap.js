@@ -202,18 +202,32 @@ class ActivityMap extends Component {
             );
         }
 
+        activitiesData.sort( (activity0, activity1) => {
+
+            const dt0 = new Date(activity0.startDateLocal);
+            const dt1 = new Date(activity1.startDateLocal);
+
+            if (dt0 > dt1) {
+                return -1;
+            }
+            return 1;
+        });
+
+        // does map iterate in sorted order? if not, iterate through sorted array and assign colors
+        
         let mapLegend = activitiesData.map((activityData, index) => {
 
-            const bgColor = activityData.strokeColor;
             const colorStyle = {
-                background: bgColor
+                background: activityData.strokeColor
             };
 
+            const activityDate = new Date(activityData.startDateLocal);
+            const legendLabel = activityData.name + " - " + activityDate.toDateString();
             return (
                 <div key={activityData.startDateLocal}>
                     <div className="mapLegendActivityRect" style={colorStyle}/>
                     <div className="mapLegendActivityName">
-                        {activityData.name}
+                        {legendLabel}
                     </div>
                     <br/>
                 </div>
