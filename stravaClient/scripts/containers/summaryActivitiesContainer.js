@@ -14,8 +14,8 @@ class SummaryActivitiesContainer extends Component {
     componentWillMount() {
 
         this.props.fetchAndUpdateSummaryActivities();
-        this.props.retrieveBaseMapSegments();
-        this.props.retrieveCustomSegmentData();
+        // this.props.retrieveBaseMapSegments();
+        // this.props.retrieveCustomSegmentData();
     }
 
     handleShowDetailedMap(activityId) {
