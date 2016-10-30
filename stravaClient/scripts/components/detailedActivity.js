@@ -327,6 +327,8 @@ export default class DetailedActivity extends Component {
                 <ElevationChart
                     streams={streams}
                     onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
+                    activityStartDateLocal={activity.startDateLocal}
+                    segmentEffortsForActivity={this.props.segmentEffortsForActivity}
                 />
                 {segmentEffortsTable}
             </div>

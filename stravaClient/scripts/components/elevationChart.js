@@ -18,8 +18,26 @@ class ElevationChart extends Component {
         return true;
     }
 
+    getSegmentsFromTime(timeOffset) {
+
+        let segmentEffortsAtTime = [];
+
+        this.props.segmentEffortsForActivity.forEach( (segmentEffort) => {
+
+            const segmentStartTime = segmentEffort.startDateLocal.getTime();
+            const segmentEndTime = segmentStartTime + (segmentEffort.movingTime * 1000);
+
+            if (timeOffset >= segmentStartTime && timeOffset < segmentEndTime) {
+                segmentEffortsAtTime.push(segmentEffort);
+            }
+        });
+
+        return segmentEffortsAtTime;
+    }
+
     buildElevationGraph(stream) {
 
+        var times;
         var distances;
         var elevations;
         var gradients;
@@ -28,6 +46,9 @@ class ElevationChart extends Component {
         // at this point, stream is an array that includes a number of streams; need to pick out the required stream data
         for (let i = 0; i < stream.length; i++) {
             switch (stream[i].type) {
+                case 'time':
+                    times = stream[i].data;
+                    break;
                 case 'distance':
                     distances = stream[i].data;
                     break;
@@ -56,6 +77,10 @@ class ElevationChart extends Component {
         var row = [];
         var mapDistanceToLocation = {};
 
+        console.log("segmentEffortsForActivity length:", this.props.segmentEffortsForActivity.length);
+        console.log("activityStartDateLocal: ", this.props.activityStartDateLocal);
+        const activityStartTime = this.props.activityStartDateLocal.getTime();
+
         for (let i = 0; i < distances.length; i++) {
 
             var distance = distances[i];
@@ -70,7 +95,31 @@ class ElevationChart extends Component {
             row.push(distanceInMiles);
             row.push(elevationInFeet);
 
-            var ttHtml = '<div style="padding:5px 5px 5px 5px;">Distance:<b>' + distanceInMiles.toFixed(1) + 'mi</b><br>Elevation:<b>' + elevationInFeet.toFixed(0) + 'ft</b><br>Grade:<b>' + gradient.toFixed(1) + '%</b></div>';
+            // get segments from current time offset
+            const timeOffset = activityStartTime + (times[i] * 1000);
+            const segmentEffortsAtTime = this.getSegmentsFromTime(timeOffset);
+
+            let segmentEffortsAtTimeLabel = "";
+            if (segmentEffortsAtTime.length > 0) {
+                if (segmentEffortsAtTime.length == 1) {
+                    segmentEffortsAtTimeLabel = "<br>Segment: <b>";
+                }
+                else {
+                    segmentEffortsAtTimeLabel = "<br>Segments: <b>";
+                }
+
+                segmentEffortsAtTime.forEach( (segmentEffortAtTime, index) => {
+                    if (index > 0) {
+                        segmentEffortsAtTimeLabel += ", ";
+                    }
+                    segmentEffortsAtTimeLabel += segmentEffortAtTime.name;
+                });
+                segmentEffortsAtTimeLabel += "</b>";
+            }
+
+            var ttHtml = '<div style="padding:5px 5px 5px 5px;">Distance:<b>' + distanceInMiles.toFixed(1);
+            ttHtml += 'mi</b><br>Elevation:<b>' + elevationInFeet.toFixed(0) + 'ft</b><br>Grade:<b>' + gradient.toFixed(1) + '%</b>';
+            ttHtml += segmentEffortsAtTimeLabel + '</div>';
             row.push(ttHtml);
 
             dataTable.addRow(row);
@@ -149,7 +198,9 @@ class ElevationChart extends Component {
 
 ElevationChart.propTypes = {
     streams: React.PropTypes.array.isRequired,
-    onSetMapLatitudeLongitude: React.PropTypes.func.isRequired
+    onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
+    segmentEffortsForActivity: React.PropTypes.array.isRequired,
+    activityStartDateLocal: React.PropTypes.object.isRequired
 };
 
 

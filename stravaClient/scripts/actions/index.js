@@ -226,8 +226,13 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
         getStreamsPromise.then( (streamData) => {
 
             let streams = [];
-            let stream = {};
 
+            let stream = {};
+            stream.type = "time";
+            stream.data = streamData.timeData;
+            streams.push(stream);
+
+            stream = {};
             stream.type = "distance";
             stream.data = streamData.distanceData;
             streams.push(stream);
@@ -284,6 +289,7 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
             //          string = 'distance'
             //      type
             //          string = 'latlng'
+            debugger;
             const detailedActivityAttributes =
                 {
                     "calories": stravaDetailedActivity.calories,
@@ -299,12 +305,16 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
             dbServices.addDetailsToActivity(stravaDetailedActivity.id, detailedActivityAttributes);
 
             // add streams to the db
+            let timeData = null;
             let locationData = null;
             let elevationData = null;
             let distanceData = null;
             let gradientData = null;
             for (let i = 0; i < stravaStreams.length; i++) {
                 switch (stravaStreams[i].type) {
+                    case 'time':
+                        timeData = stravaStreams[i].data;
+                        break;
                     case 'distance':
                         distanceData = stravaStreams[i].data;
                         break;
@@ -321,6 +331,7 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
             }
             const streamData =
                 {
+                    timeData,
                     locationData,
                     elevationData,
                     distanceData,
