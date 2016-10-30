@@ -95,26 +95,29 @@ class ElevationChart extends Component {
             row.push(distanceInMiles);
             row.push(elevationInFeet);
 
-            // get segments from current time offset
-            const timeOffset = activityStartTime + (times[i] * 1000);
-            const segmentEffortsAtTime = this.getSegmentsFromTime(timeOffset);
-
             let segmentEffortsAtTimeLabel = "";
-            if (segmentEffortsAtTime.length > 0) {
-                if (segmentEffortsAtTime.length == 1) {
-                    segmentEffortsAtTimeLabel = "<br>Segment: <b>";
-                }
-                else {
-                    segmentEffortsAtTimeLabel = "<br>Segments: <b>";
-                }
 
-                segmentEffortsAtTime.forEach( (segmentEffortAtTime, index) => {
-                    if (index > 0) {
-                        segmentEffortsAtTimeLabel += ", ";
+            if (times) {
+                // get segments from current time offset
+                const timeOffset = activityStartTime + (times[i] * 1000);
+                const segmentEffortsAtTime = this.getSegmentsFromTime(timeOffset);
+
+                if (segmentEffortsAtTime.length > 0) {
+                    if (segmentEffortsAtTime.length == 1) {
+                        segmentEffortsAtTimeLabel = "<br>Segment: <b>";
                     }
-                    segmentEffortsAtTimeLabel += segmentEffortAtTime.name;
-                });
-                segmentEffortsAtTimeLabel += "</b>";
+                    else {
+                        segmentEffortsAtTimeLabel = "<br>Segments: <b>";
+                    }
+
+                    segmentEffortsAtTime.forEach( (segmentEffortAtTime, index) => {
+                        if (index > 0) {
+                            segmentEffortsAtTimeLabel += ", ";
+                        }
+                        segmentEffortsAtTimeLabel += segmentEffortAtTime.name;
+                    });
+                    segmentEffortsAtTimeLabel += "</b>";
+                }
             }
 
             var ttHtml = '<div style="padding:5px 5px 5px 5px;">Distance:<b>' + distanceInMiles.toFixed(1);
