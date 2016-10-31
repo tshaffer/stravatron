@@ -70,6 +70,8 @@ class MapStarredSegments extends Component {
                         location={[]}
                         totalActivities={self.props.baseMapSegments.length}
                         mapHeight={"760px"}
+                        mapLatitudeLongitude={[]}
+                        showMarker={false}
                     />
                 </div>
             );
@@ -86,6 +88,8 @@ class MapStarredSegments extends Component {
                     location={[]}
                     totalActivities={69}
                     mapHeight={"760px"}
+                    mapLatitudeLongitude={[]}
+                    showMarker={false}
                 />
             </div>
         );

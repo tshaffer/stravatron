@@ -9,10 +9,6 @@ class SummaryActivities extends Component {
         this.props.onShowDetailedMap(activityId);
     }
 
-    handleMapStarredSegments() {
-        this.props.onMapStarredSegments();
-    }
-
     handleMapSelectedRides() {
 
         let selectedActivityIds = [];
@@ -28,6 +24,10 @@ class SummaryActivities extends Component {
         if (selectedActivityIds.length === 0) return;
 
         this.props.onMapSelectedRides(selectedActivityIds);
+    }
+
+    handleMapStarredSegments() {
+        this.props.onMapStarredSegments();
     }
 
     buildSummaryActivityRow(activity) {
@@ -119,6 +119,7 @@ class SummaryActivities extends Component {
                 <Link to="/">Back</Link>
                 <br/>
                 <button type="button" id="btnMapSelectedRides" onClick={() => this.handleMapSelectedRides()}>Map selected rides</button>
+                <button type="button" id="btnMapStarredSegments" onClick={() => this.handleMapStarredSegments()}>Map of starred segments</button>
                 <table id="activitiesTable">
                     <thead>
                         <tr>
