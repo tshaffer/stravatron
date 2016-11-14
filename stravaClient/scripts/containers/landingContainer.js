@@ -47,7 +47,7 @@ class LandingContainer extends Component {
     }
 
     handleShowSummaryActivities() {
-        hashHistory.push('/summaryActivitiesContainer');
+        hashHistory.push('/allSummaryActivitiesContainer');
     }
 
     render() {

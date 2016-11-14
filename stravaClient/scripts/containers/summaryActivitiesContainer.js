@@ -1,22 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import { hashHistory } from 'react-router';
 
-import { fetchAndUpdateSummaryActivities } from '../actions/index';
-import { retrieveBaseMapSegments, retrieveCustomSegmentData } from '../actions/index';
-
 import SummaryActivities from '../components/summaryActivities';
 
-class SummaryActivitiesContainer extends Component {
-
-    componentWillMount() {
-
-        this.props.fetchAndUpdateSummaryActivities();
-        // this.props.retrieveBaseMapSegments();
-        // this.props.retrieveCustomSegmentData();
-    }
+export default class SummaryActivitiesContainer extends Component {
 
     handleShowDetailedMap(activityId) {
         hashHistory.push('/detailedActivityContainer/' + activityId);
@@ -44,23 +32,6 @@ class SummaryActivitiesContainer extends Component {
     }
 }
 
-function mapStateToProps (state) {
-    return {
-        activities: state.activities
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({fetchAndUpdateSummaryActivities, retrieveBaseMapSegments, retrieveCustomSegmentData},
-        dispatch);
-}
-
 SummaryActivitiesContainer.propTypes = {
-    fetchAndUpdateSummaryActivities: React.PropTypes.func.isRequired,
-    retrieveBaseMapSegments: React.PropTypes.func.isRequired,
-    retrieveCustomSegmentData: React.PropTypes.func.isRequired,
     activities: React.PropTypes.object.isRequired
 };
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(SummaryActivitiesContainer);
