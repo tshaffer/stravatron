@@ -289,7 +289,6 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
             //          string = 'distance'
             //      type
             //          string = 'latlng'
-            debugger;
             const detailedActivityAttributes =
                 {
                     "calories": stravaDetailedActivity.calories,

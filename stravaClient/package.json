@@ -6,8 +6,8 @@
   "author": "Ted Shaffer",
   "license": "MIT",
   "scripts": {
-    "start": "webpack --watch",
-    "build": "webpack",
+    "start": "electron .",
+    "build": "webpack --config ./webpacktron.config.js",
     "stravatron": "webpack --config ./webpacktron.config.js",
     "stravatronW": "webpack --config ./webpacktron.config.js --watch",
     "stravaWapp": "webpack --config ./webpackwapp.config.js"
