@@ -210,9 +210,6 @@ export default class DetailedActivity extends Component {
             }
         }
 
-        console.log(segmentEffort.name);
-        console.log(segment);
-
         return (
             <tr key={segmentEffort.id}>
                 <td>
@@ -242,7 +239,6 @@ export default class DetailedActivity extends Component {
                 </td>
                 <td>
                     <button onClick={() => {
-                        debugger;
                         self.handleAllActivitiesWithThisSegment(segment.id);
                     }
                     }>Show all...</button>
