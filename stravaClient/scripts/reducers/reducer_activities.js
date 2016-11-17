@@ -1,4 +1,4 @@
-import { ADD_ACTIVITIES, ADD_DETAILED_ACTIVITY_ATTRIBUTES, ADD_ACTIVITY_MAP } from '../actions/index';
+import { ADD_ACTIVITIES, SET_ACTIVITIES, ADD_DETAILED_ACTIVITY_ATTRIBUTES, ADD_ACTIVITY_MAP } from '../actions/index';
 import Activity from '../entities/activity';
 
 const initialState =
@@ -15,6 +15,21 @@ export default function(state = initialState, action) {
 
         case ADD_ACTIVITIES: {
             newActivitiesById = Object.assign( {}, state.activitiesById);
+
+            const activities = action.activities;
+            activities.forEach( (activity) => {
+                newActivitiesById[activity.id] = activity;
+            });
+
+            newState = {
+                activitiesById: newActivitiesById
+            };
+            return newState;
+        }
+
+        case SET_ACTIVITIES: {
+
+            newActivitiesById = {};
 
             const activities = action.activities;
             activities.forEach( (activity) => {

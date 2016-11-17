@@ -11,6 +11,7 @@ import * as Converters from '../utilities/converters';
 
 export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
 export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
+export const SET_ACTIVITIES = 'SET_ACTIVITIES';
 export const ADD_ACTIVITY_MAP = 'ADD_ACTIVITY_MAP';
 export const ADD_DETAILED_ACTIVITY_ATTRIBUTES = 'ADD_DETAILED_ACTIVITY_ATTRIBUTES';
 export const ADD_SEGMENTS = 'ADD_SEGMENTS';
@@ -35,6 +36,13 @@ export function addActivities(activities) {
     };
 }
 
+export function setActivities(activities) {
+
+    return {
+        type: SET_ACTIVITIES,
+        activities
+    };
+}
 
 export function addActivityMap(activityId, mapPolyline) {
 
@@ -478,20 +486,9 @@ export function fetchAndUpdateSummaryActivities() {
 
         dbServices.getActivities(athleteId).then( (dbActivities) => {
 
-            // convert activities in db format to activities in stravatron format
-            let activities = [];
-            let latestDate = new Date(1970, 0, 0, 0, 0, 0, 0);
-            dbActivities.forEach( (dbActivity) => {
-                let activity = Object.assign(new Activity(), dbActivity);
-                activity.startLatitudeLongitude = [dbActivity.startLatitude, dbActivity.startLongitude];
-                activity.endLatitudeLongitude = [dbActivity.endLatitude, dbActivity.endLongitude];
-                activities.push(activity);
-
-                // get the timestamp of the most recent activity in the database (just fetched activities)
-                if (activity.startDateLocal.getTime() > latestDate.getTime()) {
-                    latestDate = activity.startDateLocal;
-                }
-            });
+            const activityData = parseDbSummaryActivities(dbActivities);
+            const activities = activityData.activities;
+            const latestDate = activityData.latestDate;
 
             // initialize redux store with these activities
             dispatch(addActivities(activities));
@@ -555,7 +552,63 @@ function fetchStravaActivities(dateOfLastFetchedActivity, dbServices, dispatch, 
     });
 }
 
+
+function parseDbSummaryActivities(dbActivities) {
+
+    let activityData = {};
+
+    let activities = [];
+    let latestDate = new Date(1970, 0, 0, 0, 0, 0, 0);
+    dbActivities.forEach( (dbActivity) => {
+        let activity = Object.assign(new Activity(), dbActivity);
+        activity.startLatitudeLongitude = [dbActivity.startLatitude, dbActivity.startLongitude];
+        activity.endLatitudeLongitude = [dbActivity.endLatitude, dbActivity.endLongitude];
+        activities.push(activity);
+
+        // get the timestamp of the most recent activity in the database (just fetched activities)
+        if (activity.startDateLocal.getTime() > latestDate.getTime()) {
+            latestDate = activity.startDateLocal;
+        }
+    });
+
+    activityData.activities = activities;
+    activityData.latestDate = latestDate;
+
+    return activityData;
+}
+
+
+function parseStravaSummaryActivities(stravaSummaryActivities) {
+
+    let activities = [];
+
+    if (!(stravaSummaryActivities instanceof Array)) {
+        debugger;
+        console.log("stravaSummaryActivities not array");
+        // reject("error");
+        return;
+    }
+
+    stravaSummaryActivities.forEach( (stravaActivity) => {
+        const summaryActivity = new Activity(stravaActivity);
+
+        if (!summaryActivity.description) {
+            summaryActivity.description = "";
+        }
+        if (!summaryActivity.kilojoules) {
+            summaryActivity.kilojoules = 0;
+        }
+        if (!summaryActivity.city) {
+            summaryActivity.city = "";
+        }
+        activities.push(summaryActivity);
+    });
+
+    return activities;
+}
+
 function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
+
 
     return new Promise((resolve, reject) => {
 
@@ -563,34 +616,26 @@ function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
 
         fetchStravaData(path, getState()).then( (stravaSummaryActivities)=> {
 
-            let activities = [];
-
-            if (!(stravaSummaryActivities instanceof Array)) {
-                debugger;
-                console.log("stravaSummaryActivities not array");
-                reject("error");
-                return;
-            }
-
-            stravaSummaryActivities.forEach( (stravaActivity) => {
-                const summaryActivity = new Activity(stravaActivity);
-
-                if (!summaryActivity.description) {
-                    summaryActivity.description = "";
-                }
-                if (!summaryActivity.kilojoules) {
-                    summaryActivity.kilojoules = 0;
-                }
-                if (!summaryActivity.city) {
-                    summaryActivity.city = "";
-                }
-                activities.push(summaryActivity);
-            });
-
+            let activities = parseStravaSummaryActivities(stravaSummaryActivities);
             resolve(activities);
         });
     });
 }
+
+export function fetchSegmentsActivities(segmentId) {
+
+    return function(dispatch, getState) {
+
+        const state = getState();
+        const dbServices = state.db.dbServices;
+
+        dbServices.getActivitiesWithSegment(segmentId).then( (stravaSummaryActivities) => {
+            const activityData = parseDbSummaryActivities(stravaSummaryActivities);
+            dispatch(setActivities(activityData.activities));
+        });
+    };
+}
+
 
 export function SetCustomMapSegments(customMapSegments) {
 

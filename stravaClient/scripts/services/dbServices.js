@@ -285,6 +285,54 @@ export default class DBServices {
         });
     }
 
+    getActivitiesWithSegment(segmentIdParam) {
+
+        const segmentId='6096098';
+
+        let self = this;
+
+        return new Promise((resolve, reject) => {
+
+            let activities = [];
+
+            const query = "select * from activities where activities.id in (select activityId from segmentEfforts where athleteId='2843574' and segmentId=?)";
+
+            this.dbConnection.query(
+                query,
+                [segmentId],
+                (err, rows) => {
+
+                    let dbActivities = [];
+                    rows.forEach( row => {
+
+                        let dbActivity = {
+                            id: row.id,
+                            athleteId : row.athleteId,
+                            averageSpeed : row.averageSpeed,
+                            city : row.city,
+                            distance : row.distance,
+                            elapsedTime : row.elapsedTime,
+                            kilojoules : row.kilojoules,
+                            mapSummaryPolyline : row.mapSummaryPolyline,
+                            maxSpeed : row.maxSpeed,
+                            movingTime : row.movingTime,
+                            name : row.name,
+                            startDateLocal : row.startDateLocal,
+                            totalElevationGain : row.totalElevationGain,
+                        };
+                        if (row.mapPolyline) {
+                            dbActivity.mapPolyline = row.mapPolyline;
+                        }
+
+                        dbActivities.push(dbActivity);
+                    });
+
+                    resolve(dbActivities);
+                }
+            );
+        });
+    }
+
     createStreamsTable() {
 
         var self = this;

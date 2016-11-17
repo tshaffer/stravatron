@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 
+import { hashHistory } from 'react-router';
+
 import * as Converters from '../utilities/converters';
 
 import ActivityMap from './activityMap';
@@ -97,6 +99,11 @@ export default class DetailedActivity extends Component {
             };
 
         return analyzedEffortsForSegment;
+    }
+
+    handleAllActivitiesWithThisSegment(segmentId) {
+        console.log("handleAllActivitiesWithThisSegment: ", segmentId.toString());
+        hashHistory.push('/segmentsSummaryActivitiesContainer/' + segmentId);
     }
 
     buildSegmentEffortRow(segmentEffort) {
@@ -228,6 +235,9 @@ export default class DetailedActivity extends Component {
                 <td>
                     {totalElevationGain}
                 </td>
+                <td>
+                    <button onClick={() => this.handleAllActivitiesWithThisSegment(segment.id)}>Show all...</button>
+                </td>
             </tr>
         );
     }
@@ -269,6 +279,7 @@ export default class DetailedActivity extends Component {
                             <th>Speed</th>
                             <th>Average Grade</th>
                             <th>Elevation Gain</th>
+                            <th/>
                         </tr>
                     </thead>
                     <tbody>
@@ -345,5 +356,6 @@ DetailedActivity.propTypes = {
     effortsForSegments: React.PropTypes.object.isRequired,
     segmentEffortsForActivity: React.PropTypes.array.isRequired,
     params: React.PropTypes.object.isRequired,
-    mapLatitudeLongitude: React.PropTypes.array.isRequired
+    mapLatitudeLongitude: React.PropTypes.array.isRequired,
+    fetchSegmentsActivities: React.PropTypes.func.isRequired
 };
