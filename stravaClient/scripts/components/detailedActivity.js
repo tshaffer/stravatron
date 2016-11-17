@@ -108,6 +108,8 @@ export default class DetailedActivity extends Component {
 
     buildSegmentEffortRow(segmentEffort) {
 
+        let self = this;
+
         const segmentId = segmentEffort.segmentId;
         const segment = this.props.segments.segmentsById[segmentId];
 
@@ -208,6 +210,9 @@ export default class DetailedActivity extends Component {
             }
         }
 
+        console.log(segmentEffort.name);
+        console.log(segment);
+
         return (
             <tr key={segmentEffort.id}>
                 <td>
@@ -236,7 +241,11 @@ export default class DetailedActivity extends Component {
                     {totalElevationGain}
                 </td>
                 <td>
-                    <button onClick={() => this.handleAllActivitiesWithThisSegment(segment.id)}>Show all...</button>
+                    <button onClick={() => {
+                        debugger;
+                        self.handleAllActivitiesWithThisSegment(segment.id);
+                    }
+                    }>Show all...</button>
                 </td>
             </tr>
         );
@@ -357,5 +366,5 @@ DetailedActivity.propTypes = {
     segmentEffortsForActivity: React.PropTypes.array.isRequired,
     params: React.PropTypes.object.isRequired,
     mapLatitudeLongitude: React.PropTypes.array.isRequired,
-    fetchSegmentsActivities: React.PropTypes.func.isRequired
+    // fetchSegmentsActivities: React.PropTypes.func.isRequired
 };

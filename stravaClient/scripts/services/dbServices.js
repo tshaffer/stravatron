@@ -104,8 +104,8 @@ export default class DBServices {
                 [segment.id, segment.averageGrade, segment.distance, segment.name, segment.starred],
                 (err) => {
                     if (err) {
-                        console.log("segment add failed for segmentId=", segmentId);
-                        console.log(err);
+                        // console.log("segment add failed for segmentId=", segmentId);
+                        // console.log(err);
                         reject(err);
                     }
                     resolve();
@@ -242,7 +242,7 @@ export default class DBServices {
                 [segmentEffort.id, segmentEffort.activityId, segmentEffort.athleteId, segmentEffort.distance, segmentEffort.movingTime, segmentEffort.name, segmentEffort.segmentId, new Date(segmentEffort.startDateLocal)],
                 (err) => {
                     if (err) {
-                        console.log(err);
+                        // console.log(err);
                         reject(err);
                     }
                     resolve();
@@ -287,7 +287,8 @@ export default class DBServices {
 
     getActivitiesWithSegment(segmentIdParam) {
 
-        const segmentId='6096098';
+        // const segmentId='6096098';
+        const segmentId = segmentIdParam;
 
         let self = this;
 

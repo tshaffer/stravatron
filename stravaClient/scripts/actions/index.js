@@ -366,13 +366,13 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
             const addSegmentPromise = dbServices.addSegment(segment);
             addSegmentPromise.then( () => {
             }, (reason) => {
-                console.log("segment addition failed:", activityId);
+                // console.log("segment addition failed:", activityId);
             });
 
             const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
             addSegmentEffortPromise.then( () => {
             }, (reason) => {
-                console.log("segmentEffort addition failed:", segmentEffort.activityId);
+                // console.log("segmentEffort addition failed:", segmentEffort.activityId);
             });
         });
 
@@ -409,7 +409,7 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
                             const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
                             addSegmentEffortPromise.then( () => {
                             }, (reason) => {
-                                console.log("segmentEffort addition failed:", segmentEffort.activityId);
+                                // console.log("segmentEffort addition failed:", segmentEffort.activityId);
                             });
                         });
 

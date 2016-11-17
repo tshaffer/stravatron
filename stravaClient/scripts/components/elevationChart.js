@@ -24,7 +24,22 @@ class ElevationChart extends Component {
 
         this.props.segmentEffortsForActivity.forEach( (segmentEffort) => {
 
-            const segmentStartTime = segmentEffort.startDateLocal.getTime();
+            let dt;
+            if (typeof segmentEffort.startDateLocal === 'string') {
+                dt = new Date(segmentEffort.startDateLocal);
+            }
+            else {
+                dt = segmentEffort.startDateLocal;
+            }
+
+            let segmentStartTime;
+            try {
+                segmentStartTime = dt.getTime();
+            }
+            catch(err) {
+                console.log(err);
+            }
+
             const segmentEndTime = segmentStartTime + (segmentEffort.movingTime * 1000);
 
             if (timeOffset >= segmentStartTime && timeOffset < segmentEndTime) {
