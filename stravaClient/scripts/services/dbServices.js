@@ -143,7 +143,6 @@ export default class DBServices {
                 query,
                 [activityId],
                 (err, rows) => {
-
                     rows.forEach(row => {
 
                         let segment =
@@ -158,9 +157,10 @@ export default class DBServices {
                             };
                         segments.push(segment);
                     });
+
+                    resolve(segments);
                 });
 
-            resolve(segments);
         });
     }
 
