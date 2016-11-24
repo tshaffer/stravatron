@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-
 import { hashHistory } from 'react-router';
+var moment = require('moment');
+const fs = require('fs');
+const GeoJSON = require('geojson');
 
 import * as Converters from '../utilities/converters';
 
 import ActivityMap from './activityMap';
 import ElevationChart from './elevationChart';
 
-var moment = require('moment');
 
 export default class DetailedActivity extends Component {
 
@@ -19,11 +20,186 @@ export default class DetailedActivity extends Component {
         this.endPoint = null;
         this.startPointStreamIndex = -1;
         this.endPointStreamIndex = -1;
+
+        this.geoJSONCoordinates = [];
     }
 
     componentWillMount() {
         this.props.onLoadDetailedActivity(this.props.params.id);
     }
+
+    addGeoJSONSegment(segmentName, segmentCoordinates) {
+
+        const segmentPointInterval = 10;
+        const numCoordinates = segmentCoordinates.length;
+
+        let coordinateIndex = 0;
+        while (coordinateIndex < numCoordinates) {
+
+            this.geoJSONCoordinates.push(
+                {
+                    title: segmentName + "-" + coordinateIndex.toString(),
+                    x: segmentCoordinates[coordinateIndex][1],
+                    y: segmentCoordinates[coordinateIndex][0]
+                }
+            );
+
+            coordinateIndex += segmentPointInterval;
+        }
+
+        if (numCoordinates % segmentPointInterval != 0) {
+            this.geoJSONCoordinates.push(
+                {
+                    title: segmentName + "-" + coordinateIndex.toString(),
+                    x: segmentCoordinates[numCoordinates - 1][1],
+                    y: segmentCoordinates[numCoordinates - 1][0]
+                }
+            );
+        }
+
+        this.geoJSONCoordinates.push(
+            {
+                title: segmentName,
+                line: segmentCoordinates
+            }
+        );
+    }
+
+    writeGeoJSONSegment(segmentName, segmentCoordinates) {
+
+        let segmentGeometry = [];
+
+        // add point at start of segment
+        const pointPropValue = "Start of " + segmentName;
+        segmentGeometry[0] =
+        {
+            x: segmentCoordinates[0][1],
+            y: segmentCoordinates[0][0],
+            title: pointPropValue,
+            location: pointPropValue
+        };
+
+        // line segments
+        segmentGeometry[1] =
+        {
+            line: segmentCoordinates,
+            title: segmentName,
+            segment: segmentName
+        };
+
+        const geoJSON = GeoJSON.parse(segmentGeometry, {'Point': ['x', 'y'], 'LineString': 'line'});
+        const geoJSONAsStr = JSON.stringify(geoJSON, null, '\t');
+        const fileName = segmentName + ".geojson";
+        console.log("save file ", fileName);
+        fs.writeFile(fileName, geoJSONAsStr, (err) => {
+            if (err) debugger;
+            console.log(fileName, " write complete");
+        });
+    }
+
+    writeGeoJSONSegments() {
+
+        const geoJSON = GeoJSON.parse(this.geoJSONCoordinates, {'Point': ['x', 'y'], 'LineString': 'line'});
+        const geoJSONAsStr = JSON.stringify(geoJSON, null, '\t');
+        const fileName = "segments.geojson";
+        console.log("save file ", fileName);
+        fs.writeFile(fileName, geoJSONAsStr, (err) => {
+            if (err) debugger;
+            console.log(fileName, " write complete");
+        });
+    }
+
+
+    /*
+     let segmentName = segmentData.segmentData.name;
+     console.log(segmentName, " is index ", segmentIndex);
+     self.writeGeoJSONSegment(segmentName, coordinates);
+     self.addGeoJSONSegment(segmentName, coordinates);
+
+     self.writeGeoJSONSegments();
+     */
+
+    handleSetMapStreamIndex(streamIndex) {
+        this.props.onSetMapStreamIndex(streamIndex);
+    }
+
+    handleSetStartPoint() {
+        console.log("handleSetStartPoint");
+        this.startPoint = this.props.mapLatitudeLongitude;
+        this.startPointStreamIndex = this.props.mapStreamIndex;
+    }
+
+    handleSetEndPoint() {
+        console.log("handleSetEndPoint");
+        this.endPoint = this.props.mapLatitudeLongitude;
+        this.endPointStreamIndex = this.props.mapStreamIndex;
+    }
+
+    handleGenerateSegment() {
+        console.log("handleGenerateSegment");
+        console.log("generate segment: ");
+        console.log(this.txtBoxSegmentName.value);
+        console.log("start point:");
+        console.log(this.startPoint);
+        console.log(this.startPointStreamIndex);
+        console.log("end point:");
+        console.log(this.endPoint);
+        console.log(this.endPointStreamIndex);
+
+        const activity = this.props.activity;
+        let streams = [];
+        if (!activity.streams) {
+            console.log("No streams available - return");
+        }
+        streams = activity.streams;
+
+        let locations;
+        for (let i = 0; i < streams.length; i++) {
+            switch (streams[i].type) {
+                case 'latlng':
+                    locations = streams[i].data;
+                    break;
+            }
+        }
+
+        let segmentLocations = [];
+        for (let i = this.startPointStreamIndex; i <= this.endPointStreamIndex; i++) {
+
+            const stravaLocation = locations[i];
+            const latitude = stravaLocation[0];
+            const longitude = stravaLocation[1];
+            const stravatronLocation = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
+
+            segmentLocations.push(stravatronLocation);
+        }
+
+        console.log("locations on segment:");
+        console.log(segmentLocations);
+
+        const segmentName = this.txtBoxSegmentName.value;
+        const segmentCoordinates = segmentLocations;
+        this.writeGeoJSONSegment(segmentName, segmentCoordinates);
+    }
+
+    buildSegmenter() {
+
+        const segmentNameStyle = {
+            width: "128px"
+        };
+
+        return (
+            <div>
+                <button type="button" onClick={this.handleSetStartPoint.bind(this)}>Set Start Point</button>
+                <button type="button" onClick={this.handleSetEndPoint.bind(this)}>Set End Point</button>
+                Segment Name:
+                <input type="text" id="txtBoxSegmentName" ref={(c) => {
+                    this.txtBoxSegmentName = c;
+                }}/>
+                <button type="button" onClick={this.handleGenerateSegment.bind(this)}>Generate Segment</button>
+            </div>
+        );
+    }
+
 
     buildRideSummaryHeader(activity) {
 
@@ -309,78 +485,6 @@ export default class DetailedActivity extends Component {
         this.props.onSetMapLatitudeLongitude(mapLatitudeLongitude);
     }
 
-    handleSetMapStreamIndex(streamIndex) {
-        this.props.onSetMapStreamIndex(streamIndex);
-    }
-
-    handleSetStartPoint() {
-        console.log("handleSetStartPoint");
-        this.startPoint = this.props.mapLatitudeLongitude;
-        this.startPointStreamIndex = this.props.mapStreamIndex;
-    }
-
-    handleSetEndPoint() {
-        console.log("handleSetEndPoint");
-        this.endPoint = this.props.mapLatitudeLongitude;
-        this.endPointStreamIndex = this.props.mapStreamIndex;
-    }
-
-    handleGenerateSegment() {
-        console.log("handleGenerateSegment");
-        console.log("generate segment: ");
-        console.log(this.txtBoxSegmentName.value);
-        console.log("start point:");
-        console.log(this.startPoint);
-        console.log(this.startPointStreamIndex);
-        console.log("end point:");
-        console.log(this.endPoint);
-        console.log(this.endPointStreamIndex);
-
-        const activity = this.props.activity;
-        let streams = [];
-        if (!activity.streams) {
-            console.log("No streams available - return");
-        }
-        streams = activity.streams;
-
-        let locations;
-        // at this point, stream is an array that includes a number of streams; need to pick out the required stream data
-        for (let i = 0; i < streams.length; i++) {
-            switch (streams[i].type) {
-                case 'latlng':
-                    locations = streams[i].data;
-                    break;
-            }
-        }
-
-        let segmentLocations = [];
-        for (let i = this.startPointStreamIndex; i <= this.endPointStreamIndex; i++) {
-            segmentLocations.push(locations[i]);
-        }
-
-        console.log("locations on segment:");
-        console.log(segmentLocations);
-    }
-
-    buildSegmenter() {
-
-        const segmentNameStyle = {
-            width: "128px"
-        };
-
-        return (
-            <div>
-                <button type="button" onClick={this.handleSetStartPoint.bind(this)}>Set Start Point</button>
-                <button type="button" onClick={this.handleSetEndPoint.bind(this)}>Set End Point</button>
-                Segment Name:
-                <input type="text" id="txtBoxSegmentName" ref={(c) => {
-                    this.txtBoxSegmentName = c;
-                }}/>
-                <button type="button" onClick={this.handleGenerateSegment.bind(this)}>Generate Segment</button>
-            </div>
-        );
-    }
-    
     render () {
 
         const activity = this.props.activity;
