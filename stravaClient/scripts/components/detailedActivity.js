@@ -97,11 +97,15 @@ export default class DetailedActivity extends Component {
         });
     }
 
-    writeGeoJSONSegments() {
+    writeGeoJSONSegments(existingGeoJSONSegments) {
 
         const geoJSON = GeoJSON.parse(this.geoJSONCoordinates, {'Point': ['x', 'y'], 'LineString': 'line'});
-        const geoJSONAsStr = JSON.stringify(geoJSON, null, '\t');
-        const fileName = "segments.geojson";
+
+        let allGeoJSONSegmentFeatures = existingGeoJSONSegments.features.concat(geoJSON.features);
+        existingGeoJSONSegments.features = allGeoJSONSegmentFeatures;
+
+        const geoJSONAsStr = JSON.stringify(existingGeoJSONSegments, null, '\t');
+        const fileName = "newSegments.geojson";
         console.log("save file ", fileName);
         fs.writeFile(fileName, geoJSONAsStr, (err) => {
             if (err) debugger;
@@ -164,41 +168,47 @@ export default class DetailedActivity extends Component {
         }
 
         // add geo json segments for all existing segments
-        let mapPolyline = "";
-        if (!activity.mapPolyline) return;
-        mapPolyline = activity.mapPolyline;
+        // let mapPolyline = "";
+        // if (!activity.mapPolyline) return;
+        // mapPolyline = activity.mapPolyline;
+        //
+        // const activityData =
+        //     {
+        //         polyline: mapPolyline,
+        //         strokeColor: "red"
+        //     };
+        // const activitiesData = [activityData];
+        //
+        // for (let segmentIndex = 0; segmentIndex < activitiesData.length; segmentIndex++) {
+        //     const segmentData = activitiesData[segmentIndex];
+        //     let pathToDecode = segmentData.polyline;
+        //     let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
+        //
+        //     let coordinates = [];
+        //     ridePathDecoded.forEach((location) => {
+        //         let longitude = location.lng();
+        //         let latitude = location.lat();
+        //         let lngLat = [longitude, latitude];
+        //         coordinates.push(lngLat);
+        //     });
+        //     let segmentName = segmentData.segmentData.name;
+        //     console.log(segmentName, " is index ", segmentIndex);
+        //     this.writeGeoJSONSegment(segmentName, coordinates);
+        //     this.addGeoJSONSegment(segmentName, coordinates);
+        // }
 
-        const activityData =
-            {
-                polyline: mapPolyline,
-                strokeColor: "red"
-            };
-        const activitiesData = [activityData];
+        fs.readFile('segments.geojson', (err, data) => {
+            console.log("segments.geojson read complete");
+            const existingGeoJSONSegments = JSON.parse(data);
+            console.log("segments.geojson parse complete");
 
-        for (let segmentIndex = 0; segmentIndex < activitiesData.length; segmentIndex++) {
-            const segmentData = activitiesData[segmentIndex];
-            let pathToDecode = segmentData.polyline;
-            let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
+            const segmentName = this.txtBoxSegmentName.value;
+            const segmentCoordinates = segmentLocations;
+            // this.writeGeoJSONSegment(segmentName, segmentCoordinates);
+            this.addGeoJSONSegment(segmentName, segmentCoordinates);
 
-            let coordinates = [];
-            ridePathDecoded.forEach((location) => {
-                let longitude = location.lng();
-                let latitude = location.lat();
-                let lngLat = [longitude, latitude];
-                coordinates.push(lngLat);
-            });
-            let segmentName = segmentData.segmentData.name;
-            console.log(segmentName, " is index ", segmentIndex);
-            this.writeGeoJSONSegment(segmentName, coordinates);
-            this.addGeoJSONSegment(segmentName, coordinates);
-        }
-
-        const segmentName = this.txtBoxSegmentName.value;
-        const segmentCoordinates = segmentLocations;
-        this.writeGeoJSONSegment(segmentName, segmentCoordinates);
-        this.addGeoJSONSegment(segmentName, segmentCoordinates);
-
-        this.writeGeoJSONSegments();
+            this.writeGeoJSONSegments(existingGeoJSONSegments);
+        });
     }
 
     buildSegmenter() {
