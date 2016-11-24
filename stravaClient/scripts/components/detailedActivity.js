@@ -109,16 +109,6 @@ export default class DetailedActivity extends Component {
         });
     }
 
-
-    /*
-     let segmentName = segmentData.segmentData.name;
-     console.log(segmentName, " is index ", segmentIndex);
-     self.writeGeoJSONSegment(segmentName, coordinates);
-     self.addGeoJSONSegment(segmentName, coordinates);
-
-     self.writeGeoJSONSegments();
-     */
-
     handleSetMapStreamIndex(streamIndex) {
         this.props.onSetMapStreamIndex(streamIndex);
     }
@@ -173,12 +163,42 @@ export default class DetailedActivity extends Component {
             segmentLocations.push(stravatronLocation);
         }
 
-        console.log("locations on segment:");
-        console.log(segmentLocations);
+        // add geo json segments for all existing segments
+        let mapPolyline = "";
+        if (!activity.mapPolyline) return;
+        mapPolyline = activity.mapPolyline;
+
+        const activityData =
+            {
+                polyline: mapPolyline,
+                strokeColor: "red"
+            };
+        const activitiesData = [activityData];
+
+        for (let segmentIndex = 0; segmentIndex < activitiesData.length; segmentIndex++) {
+            const segmentData = activitiesData[segmentIndex];
+            let pathToDecode = segmentData.polyline;
+            let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
+
+            let coordinates = [];
+            ridePathDecoded.forEach((location) => {
+                let longitude = location.lng();
+                let latitude = location.lat();
+                let lngLat = [longitude, latitude];
+                coordinates.push(lngLat);
+            });
+            let segmentName = segmentData.segmentData.name;
+            console.log(segmentName, " is index ", segmentIndex);
+            this.writeGeoJSONSegment(segmentName, coordinates);
+            this.addGeoJSONSegment(segmentName, coordinates);
+        }
 
         const segmentName = this.txtBoxSegmentName.value;
         const segmentCoordinates = segmentLocations;
         this.writeGeoJSONSegment(segmentName, segmentCoordinates);
+        this.addGeoJSONSegment(segmentName, segmentCoordinates);
+
+        this.writeGeoJSONSegments();
     }
 
     buildSegmenter() {
