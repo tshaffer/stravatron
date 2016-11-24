@@ -12,6 +12,15 @@ var moment = require('moment');
 
 export default class DetailedActivity extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.startPoint = null;
+        this.endPoint = null;
+        this.startPointStreamIndex = -1;
+        this.endPointStreamIndex = -1;
+    }
+
     componentWillMount() {
         this.props.onLoadDetailedActivity(this.props.params.id);
     }
@@ -300,6 +309,48 @@ export default class DetailedActivity extends Component {
         this.props.onSetMapLatitudeLongitude(mapLatitudeLongitude);
     }
 
+    handleSetMapStreamIndex(streamIndex) {
+        this.props.onSetMapStreamIndex(streamIndex);
+    }
+
+    handleSetStartPoint() {
+        console.log("handleSetStartPoint");
+        this.startPoint = this.props.mapLatitudeLongitude;
+        this.startPointStreamIndex = this.props.mapStreamIndex;
+    }
+
+    handleSetEndPoint() {
+        console.log("handleSetEndPoint");
+        this.endPoint = this.props.mapLatitudeLongitude;
+        this.endPointStreamIndex = this.props.mapStreamIndex;
+    }
+
+    handleGenerateSegment() {
+        console.log("handleGenerateSegment");
+        console.log("start point:");
+        console.log(this.startPoint);
+        console.log(this.startPointStreamIndex);
+        console.log("end point:");
+        console.log(this.endPoint);
+        console.log(this.endPointStreamIndex);
+    }
+
+    buildSegmenter() {
+
+        const segmentNameStyle = {
+            width: "128px"
+        };
+
+        return (
+            <div>
+                <button type="button" onClick={this.handleSetStartPoint.bind(this)}>Set Start Point</button>
+                <button type="button" onClick={this.handleSetEndPoint.bind(this)}>Set End Point</button>
+                Segment Name: <input type="text" id="txtBoxSegmentName"/>
+                <button type="button" onClick={this.handleGenerateSegment.bind(this)}>Generate Segment</button>
+            </div>
+        );
+    }
+    
     render () {
 
         const activity = this.props.activity;
@@ -309,6 +360,7 @@ export default class DetailedActivity extends Component {
         }
 
         const rideSummaryHeader = this.buildRideSummaryHeader(activity);
+        const segmenter = this.buildSegmenter();
         const segmentEffortsTable = this.buildSegmentEffortsTable();
 
         let mapPolyline = "";
@@ -343,9 +395,11 @@ export default class DetailedActivity extends Component {
                 <ElevationChart
                     streams={streams}
                     onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
+                    onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
                     activityStartDateLocal={activity.startDateLocal}
                     segmentEffortsForActivity={this.props.segmentEffortsForActivity}
                 />
+                {segmenter}
                 {segmentEffortsTable}
             </div>
         );
@@ -355,6 +409,7 @@ export default class DetailedActivity extends Component {
 DetailedActivity.propTypes = {
     onLoadDetailedActivity: React.PropTypes.func.isRequired,
     onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
+    onSetMapStreamIndex: React.PropTypes.func.isRequired,
     activity: React.PropTypes.object.isRequired,
     segments: React.PropTypes.object.isRequired,
     segmentEfforts: React.PropTypes.object.isRequired,
@@ -362,5 +417,6 @@ DetailedActivity.propTypes = {
     segmentEffortsForActivity: React.PropTypes.array.isRequired,
     params: React.PropTypes.object.isRequired,
     mapLatitudeLongitude: React.PropTypes.array.isRequired,
+    mapStreamIndex: React.PropTypes.number.isRequired
     // fetchSegmentsActivities: React.PropTypes.func.isRequired
 };

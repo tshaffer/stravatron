@@ -91,6 +91,7 @@ class ElevationChart extends Component {
 
         var row = [];
         var mapDistanceToLocation = {};
+        let mapDistanceToStreamIndex = {};
 
         console.log("segmentEffortsForActivity length:", this.props.segmentEffortsForActivity.length);
         console.log("activityStartDateLocal: ", this.props.activityStartDateLocal);
@@ -142,7 +143,9 @@ class ElevationChart extends Component {
 
             dataTable.addRow(row);
 
-            mapDistanceToLocation[Converters.metersToMiles(distance).toString()] = Converters.stravatronCoordinateFromLatLng(location[0], location[1]);
+            const distanceIndex = Converters.metersToMiles(distance).toString();
+            mapDistanceToLocation[distanceIndex] = Converters.stravatronCoordinateFromLatLng(location[0], location[1]);
+            mapDistanceToStreamIndex[distanceIndex] = i;
         }
 
         var options = {
@@ -190,9 +193,15 @@ class ElevationChart extends Component {
             if (item != undefined) {
                 var selectedItem = item[0];
 
-                var selectedLocation = mapDistanceToLocation[dataTable.getValue(selectedItem.row, 0)];
+                const d = dataTable.getValue(selectedItem.row, 0);
+                var selectedLocation = mapDistanceToLocation[d];
                 if (selectedLocation != undefined) {
                     self.props.onSetMapLatitudeLongitude(selectedLocation);
+                }
+
+                const selectedStreamIndex = mapDistanceToStreamIndex[d];
+                if (selectedStreamIndex != undefined) {
+                    self.props.onSetMapStreamIndex(selectedStreamIndex);
                 }
             }
         }
@@ -217,6 +226,7 @@ class ElevationChart extends Component {
 ElevationChart.propTypes = {
     streams: React.PropTypes.array.isRequired,
     onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
+    onSetMapStreamIndex: React.PropTypes.func.isRequired,
     segmentEffortsForActivity: React.PropTypes.array.isRequired,
     activityStartDateLocal: React.PropTypes.object.isRequired
 };

@@ -8,6 +8,7 @@ import DBReducer from './reducer_db';
 import AthletesReducer from './reducer_athletes';
 import SelectedAthleteReducer from './reducer_selected_athlete';
 import MapLatitudeLongitudeReducer from './reducer_map_latitude_longitude';
+import MapStreamIndexReducer from './reducer_map_stream_index';
 
 const rootReducer = combineReducers({
     activities: ActivitiesReducer,
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
     db: DBReducer,
     athletes: AthletesReducer,
     selectedAthlete: SelectedAthleteReducer,
-    mapLatitudeLongitude: MapLatitudeLongitudeReducer
+    mapLatitudeLongitude: MapLatitudeLongitudeReducer,
+    mapStreamIndex: MapStreamIndexReducer
 });
 
 export default rootReducer;

@@ -20,6 +20,7 @@ export const ADD_SEGMENT_EFFORTS = 'ADD_SEGMENT_EFFORTS';
 export const SET_CUSTOM_MAP_SEGMENTS = 'SET_CUSTOM_MAP_SEGMENTS';
 export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
 export const SET_MAP_LATITUDE_LONGITUDE = 'SET_MAP_LATITUDE_LONGITUDE';
+export const SET_MAP_STREAM_INDEX = 'SET_MAP_STREAM_INDEX';
 
 export function setSelectedAthlete(athlete) {
     return {
@@ -68,6 +69,14 @@ export function setMapLatitudeLongitude(latitudeLongitude) {
     return {
         type: SET_MAP_LATITUDE_LONGITUDE,
         latitudeLongitude
+    };
+}
+
+export function setMapStreamIndex(streamIndex) {
+
+    return {
+        type: SET_MAP_STREAM_INDEX,
+        streamIndex
     };
 }
 
@@ -274,6 +283,7 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
             dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
 
             dispatch(setMapLatitudeLongitude(startingLatitudeLongitude));
+            dispatch(setMapStreamIndex(0));
         });
     });
 }
