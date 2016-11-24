@@ -198,7 +198,7 @@ class ElevationChart extends Component {
         }
 
         function chartMouseOut(e) {
-            chart.setSelection([{ 'row': null, 'column': null }]);
+            // chart.setSelection([{ 'row': null, 'column': null }]);
         }
     }
 
