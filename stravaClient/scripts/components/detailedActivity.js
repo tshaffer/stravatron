@@ -327,12 +327,39 @@ export default class DetailedActivity extends Component {
 
     handleGenerateSegment() {
         console.log("handleGenerateSegment");
+        console.log("generate segment: ");
+        console.log(this.txtBoxSegmentName.value);
         console.log("start point:");
         console.log(this.startPoint);
         console.log(this.startPointStreamIndex);
         console.log("end point:");
         console.log(this.endPoint);
         console.log(this.endPointStreamIndex);
+
+        const activity = this.props.activity;
+        let streams = [];
+        if (!activity.streams) {
+            console.log("No streams available - return");
+        }
+        streams = activity.streams;
+
+        let locations;
+        // at this point, stream is an array that includes a number of streams; need to pick out the required stream data
+        for (let i = 0; i < streams.length; i++) {
+            switch (streams[i].type) {
+                case 'latlng':
+                    locations = streams[i].data;
+                    break;
+            }
+        }
+
+        let segmentLocations = [];
+        for (let i = this.startPointStreamIndex; i <= this.endPointStreamIndex; i++) {
+            segmentLocations.push(locations[i]);
+        }
+
+        console.log("locations on segment:");
+        console.log(segmentLocations);
     }
 
     buildSegmenter() {
@@ -345,7 +372,10 @@ export default class DetailedActivity extends Component {
             <div>
                 <button type="button" onClick={this.handleSetStartPoint.bind(this)}>Set Start Point</button>
                 <button type="button" onClick={this.handleSetEndPoint.bind(this)}>Set End Point</button>
-                Segment Name: <input type="text" id="txtBoxSegmentName"/>
+                Segment Name:
+                <input type="text" id="txtBoxSegmentName" ref={(c) => {
+                    this.txtBoxSegmentName = c;
+                }}/>
                 <button type="button" onClick={this.handleGenerateSegment.bind(this)}>Generate Segment</button>
             </div>
         );
