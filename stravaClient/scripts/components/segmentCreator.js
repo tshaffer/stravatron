@@ -93,7 +93,7 @@ export default class SegmentCreator extends Component {
         existingGeoJSONSegments.features = allGeoJSONSegmentFeatures;
 
         const geoJSONAsStr = JSON.stringify(existingGeoJSONSegments, null, '\t');
-        const fileName = "newSegments.geojson";
+        const fileName = "segments.geojson";
         console.log("save file ", fileName);
         fs.writeFile(fileName, geoJSONAsStr, (err) => {
             if (err) debugger;
