@@ -182,8 +182,22 @@ class ElevationChart extends Component {
         // Add our over/out handlers.
         window.google.visualization.events.addListener(chart, 'onmouseover', chartMouseOver);
         window.google.visualization.events.addListener(chart, 'onmouseout', chartMouseOut);
+        window.google.visualization.events.addListener(chart, 'onmousedown', chartMouseDown);
+        window.google.visualization.events.addListener(chart, 'click', chartClick);
 
         let self = this;
+
+        function chartClick(e) {
+            console.log("chartClick");
+            console.log(e.targetID);
+
+            // e.targetID = "point#0#64" - point 64 in the chart data?
+        }
+
+        function chartMouseDown(e) {
+            console.log("chartMouseDown");
+            console.log(e.targetID);
+        }
 
         function chartMouseOver(e) {
 
