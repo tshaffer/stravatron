@@ -6,8 +6,7 @@ const fs = require('fs');
 
 import * as Converters from '../utilities/converters';
 
-import ActivityMap from './activityMap';
-import ElevationChart from './elevationChart';
+import ActivityVisuals from './activityVisuals';
 import SegmentCreator from './segmentCreator';
 
 export default class DetailedActivity extends Component {
@@ -337,14 +336,12 @@ export default class DetailedActivity extends Component {
                 <Link to="/summaryActivitiesContainer" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
                 {rideSummaryHeader}
-                <ActivityMap
+                <ActivityVisuals
                     activitiesData={activitiesData}
                     totalActivities={1}
                     mapHeight={"400px"}
                     showMarker={true}
                     mapLatitudeLongitude={this.props.mapLatitudeLongitude}
-                />
-                <ElevationChart
                     streams={streams}
                     onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
                     onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
