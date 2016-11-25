@@ -11,7 +11,7 @@ export default class SummaryActivitiesContainer extends Component {
     }
 
     handleCreateSegments(activityId) {
-        hashHistory.push('/createSegmentsContainer/' + activityId);
+        hashHistory.push('/activitySegmentCreatorContainer/' + activityId);
     }
 
     handleMapStarredSegments() {

@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 
-import CreateSegments from '../components/createSegments';
+import ActivitySegmentCreator from '../components/activitySegmentCreator';
 
-import { loadCreateSegments, setMapLatitudeLongitude, setMapStreamIndex } from '../actions/index';
+import { loadDetailedActivity, setMapLatitudeLongitude, setMapStreamIndex } from '../actions/index';
 import { getActivity } from '../reducers/reducer_activities';
 import { getEffortsForActivitySegments } from '../reducers/reducer_segment_efforts';
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
@@ -22,8 +22,8 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onLoadCreateSegments: (activityId) => {
-            dispatch(loadCreateSegments(activityId));
+        onLoadDetailedActivity: (activityId) => {
+            dispatch(loadDetailedActivity(activityId));
         },
         onSetMapLatitudeLongitude: (latitudeLongitude) => {
             dispatch(setMapLatitudeLongitude(latitudeLongitude));
@@ -34,9 +34,9 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-const CreateSegmentsContainer = connect(
+const ActivitySegmentCreatorContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(CreateSegments);
+)(ActivitySegmentCreator);
 
-export default CreateSegmentsContainer;
+export default ActivitySegmentCreatorContainer;

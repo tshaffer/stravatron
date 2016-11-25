@@ -18,6 +18,7 @@ import App from './components/app';
 import AllSummaryActivitiesContainer from './containers/allSummaryActivitiesContainer';
 import SegmentsSummaryActivitiesContainer from './containers/segmentsSummaryActivitiesContainer';
 import DetailedActivityContainer from './containers/detailedActivityContainer';
+import ActivitySegmentCreatorContainer from './containers/activitySegmentCreatorContainer';
 import MapOfRides from './components/mapOfRides';
 import MapStarredSegments from './components/mapStarredSegments';
 
@@ -40,6 +41,7 @@ ReactDOM.render(
             <Route path="/allSummaryActivitiesContainer" component={AllSummaryActivitiesContainer} />
             <Route path="/segmentsSummaryActivitiesContainer/:id" component={SegmentsSummaryActivitiesContainer} />
             <Route path="/detailedActivityContainer/:id" component={DetailedActivityContainer} />
+            <Route path="/activitySegmentCreatorContainer/:id" component={ActivitySegmentCreatorContainer} />
             <Route path="/mapOfRides/:ids" component={MapOfRides} />
             <Route path="/mapStarredSegments" component={MapStarredSegments} />
         </Router>
