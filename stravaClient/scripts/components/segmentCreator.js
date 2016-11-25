@@ -102,12 +102,10 @@ export default class SegmentCreator extends Component {
     }
 
     handleSetStartPoint() {
-        console.log("handleSetStartPoint");
         this.startPointStreamIndex = this.props.mapStreamIndex;
     }
 
     handleSetEndPoint() {
-        console.log("handleSetEndPoint");
         this.endPointStreamIndex = this.props.mapStreamIndex;
     }
 

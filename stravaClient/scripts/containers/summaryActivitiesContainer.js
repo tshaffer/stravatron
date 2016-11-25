@@ -10,6 +10,10 @@ export default class SummaryActivitiesContainer extends Component {
         hashHistory.push('/detailedActivityContainer/' + activityId);
     }
 
+    handleCreateSegments(activityId) {
+        hashHistory.push('/createSegmentsContainer/' + activityId);
+    }
+
     handleMapStarredSegments() {
         hashHistory.push('/mapStarredSegments');
     }
@@ -24,6 +28,7 @@ export default class SummaryActivitiesContainer extends Component {
                 <SummaryActivities
                     activities={this.props.activities}
                     onShowDetailedMap={this.handleShowDetailedMap.bind(this)}
+                    onCreateSegments={this.handleCreateSegments.bind(this)}
                     onMapStarredSegments={this.handleMapStarredSegments.bind(this)}
                     onMapSelectedRides={this.handleMapSelectedRides.bind(this)}
                 />

@@ -9,6 +9,10 @@ class SummaryActivities extends Component {
         this.props.onShowDetailedMap(activityId);
     }
 
+    handleCreateSegments(activityId) {
+        this.props.onCreateSegments(activityId);
+    }
+
     handleMapStarredSegments() {
         this.props.onMapStarredSegments();
     }
@@ -68,6 +72,9 @@ class SummaryActivities extends Component {
                 <td>
                     <button onClick={() => self.handleShowDetailedMap(activity.id)}>Show details</button>
                 </td>
+                <td>
+                    <button onClick={() => self.handleCreateSegments(activity.id)}>Create segments</button>
+                </td>
             </tr>
         );
     }
@@ -107,9 +114,6 @@ class SummaryActivities extends Component {
         return summaryActivityRows;
     }
 
-// <button type="button" id="btnMapStarredSegments" onClick={() => this.handleMapStarredSegments()}>Map of starred segments</button>
-// <button type="button" id="btnCompareSelectedRides">Compare selected rides</button>
-
     render() {
 
         const summaryActivityRows = this.buildSummaryActivityRows();
@@ -131,6 +135,7 @@ class SummaryActivities extends Component {
                             <th>Average Speed</th>
                             <th>Calories</th>
                             <th/>
+                            <th/>
                         </tr>
                     </thead>
                     <tbody>
@@ -145,6 +150,7 @@ class SummaryActivities extends Component {
 SummaryActivities.propTypes = {
     activities: React.PropTypes.object.isRequired,
     onShowDetailedMap: React.PropTypes.func.isRequired,
+    onCreateSegments: React.PropTypes.func.isRequired,
     onMapStarredSegments: React.PropTypes.func.isRequired,
     onMapSelectedRides: React.PropTypes.func.isRequired
 };
