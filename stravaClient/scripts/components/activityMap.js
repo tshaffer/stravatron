@@ -70,20 +70,11 @@ class ActivityMap extends Component {
 
             self.activityMap.fitBounds([minBounds, maxBounds]);
 
-            self.activityMap.on('mousemove', (mouseEvent) => {
-                console.log("map onMouseMove:");
-                console.log(mouseEvent);
-                // console.log(self.activityMap);
-            });
-
-            self.activityMap.eachLayer(function (layer) {
-                console.log(layer);
-                debugger;
-                layer.on('mousemove', (mouseEvent) => {
-                    console.log("layer onMouseMove:");
-                    console.log(mouseEvent);
-                });
-            });
+// code that may be required to track mouse movements over route
+//             self.activityMap.on('mousemove', (mouseEvent) => {
+//                 console.log("map onMouseMove:");
+//                 console.log(mouseEvent);
+//             });
 
 // polyline for activity
             for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
