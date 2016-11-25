@@ -7,7 +7,6 @@ const fs = require('fs');
 import * as Converters from '../utilities/converters';
 
 import ActivityVisuals from './activityVisuals';
-import SegmentCreator from './segmentCreator';
 
 export default class DetailedActivity extends Component {
 
@@ -348,10 +347,6 @@ export default class DetailedActivity extends Component {
                     activityStartDateLocal={activity.startDateLocal}
                     segmentEffortsForActivity={this.props.segmentEffortsForActivity}
                 />
-                <SegmentCreator
-                    activity={this.props.activity}
-                    mapStreamIndex={this.props.mapStreamIndex}
-                />
                 {segmentEffortsTable}
             </div>
         );
@@ -369,5 +364,4 @@ DetailedActivity.propTypes = {
     segmentEffortsForActivity: React.PropTypes.array.isRequired,
     params: React.PropTypes.object.isRequired,
     mapLatitudeLongitude: React.PropTypes.array.isRequired,
-    mapStreamIndex: React.PropTypes.number.isRequired
 };
