@@ -9,7 +9,6 @@ const GeoJSON = require('geojson');
 import * as Converters from '../utilities/converters';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
 export default class SegmentCreator extends Component {
@@ -146,6 +145,40 @@ export default class SegmentCreator extends Component {
         this.updateSlider(1, -this.clickStep);
     }
 
+    getActivityLocations() {
+
+        const activity = this.props.activity;
+        let streams = [];
+        if (!activity.streams) {
+            console.log("No streams available - return");
+            return null;
+        }
+        streams = activity.streams;
+
+        let locations;
+        for (let i = 0; i < streams.length; i++) {
+            switch (streams[i].type) {
+                case 'latlng':
+                    locations = streams[i].data;
+                    break;
+            }
+        }
+
+        let activityLocations = [];
+        for (let i = 0; i < locations.length; i++) {
+
+            const stravaLocation = locations[i];
+            const latitude = stravaLocation[0];
+            const longitude = stravaLocation[1];
+            const stravatronLocation = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
+
+            activityLocations.push(stravatronLocation);
+        }
+
+        return activityLocations;
+    }
+
+
     handleGenerateSegment() {
 
         const activity = this.props.activity;
@@ -176,8 +209,11 @@ export default class SegmentCreator extends Component {
         }
 
         fs.readFile('segments.geojson', (err, data) => {
+
+            // load existing map segments from segments.geojson
             const existingGeoJSONSegments = JSON.parse(data);
 
+            // add in data from new segment - the stream values between the start index and the end index
             const segmentName = this.txtBoxSegmentName.value;
             const segmentCoordinates = segmentLocations;
             // this.writeGeoJSONSegment(segmentName, segmentCoordinates);
@@ -189,17 +225,25 @@ export default class SegmentCreator extends Component {
 
 
     handleSliderChange(sliderValues) {
-        this.setState(
-            {
-                start: sliderValues[0],
-                end: sliderValues[1]
-            }
-        );
+        console.log(sliderValues);
+        // this.setState(
+        //     {
+        //         start: sliderValues[0],
+        //         end: sliderValues[1]
+        //     }
+        // );
     }
 
     render() {
 
         let self = this;
+
+        this.activityLocations = this.getActivityLocations();
+        if (!this.activityLocations) {
+            return (
+                <noscript/>
+            );
+        }
 
         const style = { width: 400, margin: 50 };
 
@@ -212,19 +256,6 @@ export default class SegmentCreator extends Component {
             width: "128px"
         };
 
-        /*
-         <RaisedButton
-         onClick={this.handleSetStartPoint.bind(this)}
-         label="Set Start Point"
-         style={buttonStyle}
-         />
-         <RaisedButton
-         onClick={this.handleSetEndPoint.bind(this)}
-         label="Set End Point"
-         style={buttonStyle}
-         />
-         */
-
         return (
 
             <MuiThemeProvider>
@@ -235,9 +266,11 @@ export default class SegmentCreator extends Component {
                                 ref={(c) => {
                                     self.sliderComponent = c;
                                 }}
+                                min={0}
+                                max={self.activityLocations.length - 1}
                                 range={true}
                                 allowCross={false}
-                                defaultValue={[0, 100]}
+                                defaultValue={[0, self.activityLocations.length - 1]}
                                 tipFormatter={null}
                                 onChange={self.handleSliderChange.bind(self)} />
                         </div>
