@@ -53,6 +53,7 @@ export default class ActivitySegmentCreator extends Component {
                 <SegmentCreator
                     activity={this.props.activity}
                     mapStreamIndex={this.props.mapStreamIndex}
+                    onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
                 />
                 <ActivityVisuals
                     activitiesData={activitiesData}

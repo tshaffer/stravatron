@@ -125,6 +125,21 @@ export default class SegmentCreator extends Component {
         this.endPointStreamIndex = this.props.mapStreamIndex;
     }
 
+
+    handleSliderChange(sliderValues) {
+        console.log(sliderValues);
+        // this.setState(
+        //     {
+        //         start: sliderValues[0],
+        //         end: sliderValues[1]
+        //     }
+        // );
+
+        const selectedLocation = this.activityLocations[sliderValues[0]];
+        this.props.onSetMapLatitudeLongitude(selectedLocation);
+    }
+
+
     handleMoveStartForward() {
         console.log("poo1");
         this.updateSlider(0, this.clickStep);
@@ -224,20 +239,11 @@ export default class SegmentCreator extends Component {
     }
 
 
-    handleSliderChange(sliderValues) {
-        console.log(sliderValues);
-        // this.setState(
-        //     {
-        //         start: sliderValues[0],
-        //         end: sliderValues[1]
-        //     }
-        // );
-    }
-
     render() {
 
         let self = this;
 
+        // only do this once
         this.activityLocations = this.getActivityLocations();
         if (!this.activityLocations) {
             return (
@@ -316,5 +322,6 @@ export default class SegmentCreator extends Component {
 
 SegmentCreator.propTypes = {
     activity: React.PropTypes.object.isRequired,
+    onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
     mapStreamIndex: React.PropTypes.number.isRequired
 };
