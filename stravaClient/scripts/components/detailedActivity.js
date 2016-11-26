@@ -339,7 +339,7 @@ export default class DetailedActivity extends Component {
                     activitiesData={activitiesData}
                     totalActivities={1}
                     mapHeight={"400px"}
-                    showMarker={true}
+                    markerCount={1}
                     mapLatitudeLongitude={this.props.mapLatitudeLongitude}
                     streams={streams}
                     onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}

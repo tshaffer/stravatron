@@ -12,7 +12,7 @@ export default class ActivityVisuals extends Component {
                     activitiesData={this.props.activitiesData}
                     totalActivities={1}
                     mapHeight={"400px"}
-                    showMarker={true}
+                    markerCount={1}
                     mapLatitudeLongitude={this.props.mapLatitudeLongitude}
                 />
                 <ElevationChart

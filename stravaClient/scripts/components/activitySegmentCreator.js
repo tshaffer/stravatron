@@ -54,12 +54,13 @@ export default class ActivitySegmentCreator extends Component {
                     activity={this.props.activity}
                     mapStreamIndex={this.props.mapStreamIndex}
                     onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
+                    markerCount={2}
                 />
                 <ActivityVisuals
                     activitiesData={activitiesData}
                     totalActivities={1}
                     mapHeight={"400px"}
-                    showMarker={true}
+                    markerCount={1}
                     mapLatitudeLongitude={this.props.mapLatitudeLongitude}
                     streams={streams}
                     onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}

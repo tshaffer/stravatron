@@ -128,7 +128,7 @@ class ActivityMap extends Component {
             }
 
 // create a GeoJSON point to serve as a starting point
-            if (self.props.showMarker) {
+            if (self.props.markerCount > 0) {
                 let coordinates = [longitudeCenter, latitudeCenter];
                 if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
                     coordinates = self.props.mapLatitudeLongitude;
@@ -180,7 +180,7 @@ class ActivityMap extends Component {
     }
 
     setMarkerPosition() {
-        if (this.props.showMarker) {
+        if (this.props.markerCount > 0) {
             const source = this.activityMap.getSource('markerLocation');
             if (!source) return;
 
@@ -251,7 +251,7 @@ class ActivityMap extends Component {
 
         var self = this;
 
-        if (this.activityMap && this.props.showMarker && this.props.mapLatitudeLongitude && this.props.mapLatitudeLongitude.length > 0) {
+        if (this.activityMap && this.props.markerCount > 0 && this.props.mapLatitudeLongitude && this.props.mapLatitudeLongitude.length > 0) {
             this.setMarkerPosition();
         }
 
@@ -273,7 +273,7 @@ ActivityMap.propTypes = {
     totalActivities: React.PropTypes.number.isRequired,
     mapHeight: React.PropTypes.string.isRequired,
     activitiesData: React.PropTypes.array.isRequired,
-    showMarker: React.PropTypes.bool.isRequired,
+    markerCount: React.PropTypes.number.isRequired,
     mapLatitudeLongitude: React.PropTypes.array.isRequired,
 };
 
