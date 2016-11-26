@@ -10,6 +10,7 @@ import * as Converters from '../utilities/converters';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class SegmentCreator extends Component {
 
@@ -20,6 +21,8 @@ export default class SegmentCreator extends Component {
         this.endPointStreamIndex = -1;
 
         this.geoJSONCoordinates = [];
+
+        this.clickStep = 1;
     }
 
     addGeoJSONSegment(segmentName, segmentCoordinates) {
@@ -107,12 +110,40 @@ export default class SegmentCreator extends Component {
         });
     }
 
+    updateSlider(boundsIndex, step) {
+        let bounds = this.sliderComponent.state.bounds;
+        bounds[boundsIndex] += step;
+        this.sliderComponent.setState({
+            bounds
+        });
+    }
+
     handleSetStartPoint() {
         this.startPointStreamIndex = this.props.mapStreamIndex;
     }
 
     handleSetEndPoint() {
         this.endPointStreamIndex = this.props.mapStreamIndex;
+    }
+
+    handleMoveStartForward() {
+        console.log("poo1");
+        this.updateSlider(0, this.clickStep);
+    }
+
+    handleMoveStartBack() {
+        console.log("poo2");
+        this.updateSlider(0, -this.clickStep);
+    }
+
+    handleMoveEndForward() {
+        console.log("poo3");
+        this.updateSlider(1, this.clickStep);
+    }
+
+    handleMoveEndBack() {
+        console.log("poo4");
+        this.updateSlider(1, -this.clickStep);
     }
 
     handleGenerateSegment() {
@@ -157,9 +188,15 @@ export default class SegmentCreator extends Component {
     }
 
 
-    log(value) {
-        console.log(value);
+    handleSliderChange(sliderValues) {
+        this.setState(
+            {
+                start: sliderValues[0],
+                end: sliderValues[1]
+            }
+        );
     }
+
     render() {
 
         let self = this;
@@ -167,12 +204,26 @@ export default class SegmentCreator extends Component {
         const style = { width: 400, margin: 50 };
 
         const buttonStyle = {
-            margin: 8,
+            margin: 0,
+            backgroundColor: 'lightgray'
         };
 
         const segmentNameStyle = {
             width: "128px"
         };
+
+        /*
+         <RaisedButton
+         onClick={this.handleSetStartPoint.bind(this)}
+         label="Set Start Point"
+         style={buttonStyle}
+         />
+         <RaisedButton
+         onClick={this.handleSetEndPoint.bind(this)}
+         label="Set End Point"
+         style={buttonStyle}
+         />
+         */
 
         return (
 
@@ -180,25 +231,50 @@ export default class SegmentCreator extends Component {
                 <div>
                     <div>
                         <div style={style}>
-                            <p>Basic Range，`allowCross=false`</p>
-                            <Slider range allowCross={false} defaultValue={[0, 20]} onChange={self.log} />
+                            <Slider
+                                ref={(c) => {
+                                    self.sliderComponent = c;
+                                }}
+                                range={true}
+                                allowCross={false}
+                                defaultValue={[0, 100]}
+                                tipFormatter={null}
+                                onChange={self.handleSliderChange.bind(self)} />
                         </div>
                     </div>
-                    <RaisedButton
-                        onClick={this.handleSetStartPoint.bind(this)}
-                        label="Set Start Point"
-                        style={buttonStyle}
-                    />
-                    <RaisedButton
-                        onClick={this.handleSetEndPoint.bind(this)}
-                        label="Set End Point"
-                        style={buttonStyle}
-                    />
-                    Segment Name:
-                    <input type="text" id="txtBoxSegmentName" ref={(c) => {
-                        this.txtBoxSegmentName = c;
-                    }}/>
-                    <button type="button" onClick={this.handleGenerateSegment.bind(this)}>Generate Segment</button>
+
+                    <div className="floatRight">
+                        <FlatButton
+                            onClick={self.handleMoveEndBack.bind(self)}
+                            label="Back"
+                            style={buttonStyle}
+                        />
+                        <FlatButton
+                            onClick={self.handleMoveEndForward.bind(self)}
+                            label="Forward"
+                            style={buttonStyle}
+                        />
+                    </div>
+                    <div className="floatLeft">
+                        <FlatButton
+                            onClick={self.handleMoveStartBack.bind(self)}
+                            label="Back"
+                            style={buttonStyle}
+                        />
+                        <FlatButton
+                            onClick={self.handleMoveStartForward.bind(self)}
+                            label="Forward"
+                            style={buttonStyle}
+                        />
+                    </div>
+
+                    <div className="clearBoth">
+                        Segment Name:
+                        <input type="text" id="txtBoxSegmentName" ref={(c) => {
+                            self.txtBoxSegmentName = c;
+                        }}/>
+                        <button type="button" onClick={self.handleGenerateSegment.bind(self)}>Generate Segment</button>
+                    </div>
                 </div>
             </MuiThemeProvider>
         );

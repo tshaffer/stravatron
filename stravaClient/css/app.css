@@ -89,3 +89,19 @@ th,td
     margin-left: 8px;
     display: inline-block;
 }
+
+.floatLeft {
+    float: left;
+    width: 300px;
+    padding: 10px;
+}
+
+.floatRight {
+    float: right;
+    width: 300px;
+    padding: 10px;
+}
+
+.clearBoth {
+    clear: left;
+}
