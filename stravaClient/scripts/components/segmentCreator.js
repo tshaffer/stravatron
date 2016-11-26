@@ -5,6 +5,9 @@ const GeoJSON = require('geojson');
 
 import * as Converters from '../utilities/converters';
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
+
 export default class SegmentCreator extends Component {
 
     constructor(props) {
@@ -151,20 +154,36 @@ export default class SegmentCreator extends Component {
     }
 
     render() {
+
+        const buttonStyle = {
+            margin: 8,
+        };
+
         const segmentNameStyle = {
             width: "128px"
         };
 
         return (
-            <div>
-                <button type="button" onClick={this.handleSetStartPoint.bind(this)}>Set Start Point</button>
-                <button type="button" onClick={this.handleSetEndPoint.bind(this)}>Set End Point</button>
-                Segment Name:
-                <input type="text" id="txtBoxSegmentName" ref={(c) => {
-                    this.txtBoxSegmentName = c;
-                }}/>
-                <button type="button" onClick={this.handleGenerateSegment.bind(this)}>Generate Segment</button>
-            </div>
+
+            <MuiThemeProvider>
+                <div>
+                    <RaisedButton
+                        onClick={this.handleSetStartPoint.bind(this)}
+                        label="Set Start Point"
+                        style={buttonStyle}
+                    />
+                    <RaisedButton
+                        onClick={this.handleSetEndPoint.bind(this)}
+                        label="Set End Point"
+                        style={buttonStyle}
+                    />
+                    Segment Name:
+                    <input type="text" id="txtBoxSegmentName" ref={(c) => {
+                        this.txtBoxSegmentName = c;
+                    }}/>
+                    <button type="button" onClick={this.handleGenerateSegment.bind(this)}>Generate Segment</button>
+                </div>
+            </MuiThemeProvider>
         );
     }
 }

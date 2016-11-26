@@ -144,10 +144,10 @@ export default class DetailedActivity extends Component {
 
                     effortsForSegmentLbl =
                         (
-                        <span>
-                            <span>{bestEffortTime}</span>
-                            <span className="smallDimDate">{bestEffortDate}</span>
-                        </span>
+                            <span>
+                                <span>{bestEffortTime}</span>
+                                <span className="smallDimDate">{bestEffortDate}</span>
+                            </span>
                         );
 
                     if (effortData.effortsSortedByMovingTime[1]) {
@@ -159,12 +159,12 @@ export default class DetailedActivity extends Component {
 
                         effortsForSegmentLbl =
                             (
-                            <span>
-                                <span>{bestEffortTime}</span>
-                                <span className="smallDimDate">{bestEffortDate}</span>
-                                <span>, {nextBestEffortTime}</span>
-                                <span className="smallDimDate">{nextBestEffortDate}</span>
-                            </span>
+                                <span>
+                                    <span>{bestEffortTime}</span>
+                                    <span className="smallDimDate">{bestEffortDate}</span>
+                                    <span>, {nextBestEffortTime}</span>
+                                    <span className="smallDimDate">{nextBestEffortDate}</span>
+                                </span>
                             );
                     }
 
@@ -197,16 +197,16 @@ export default class DetailedActivity extends Component {
 
                     recentEffortsLbl =
                         (
-                        <span>
-                            <span>{Converters.elapsedTimeToTimeString(recentEfforts[0].movingTime)}</span>
-                            <span className="smallDimDate">{Converters.formatDate(recentEfforts[0].date)}</span>
-                            <span>{recentEfforts[1].separator}</span>
-                            <span>{Converters.elapsedTimeToTimeString(recentEfforts[1].movingTime)}</span>
-                            <span className="smallDimDate">{Converters.formatDate(recentEfforts[1].date)}</span>
-                            <span>{recentEfforts[2].separator}</span>
-                            <span>{Converters.elapsedTimeToTimeString(recentEfforts[2].movingTime)}</span>
-                            <span className="smallDimDate">{Converters.formatDate(recentEfforts[2].date)}</span>
-                        </span>
+                            <span>
+                                <span>{Converters.elapsedTimeToTimeString(recentEfforts[0].movingTime)}</span>
+                                <span className="smallDimDate">{Converters.formatDate(recentEfforts[0].date)}</span>
+                                <span>{recentEfforts[1].separator}</span>
+                                <span>{Converters.elapsedTimeToTimeString(recentEfforts[1].movingTime)}</span>
+                                <span className="smallDimDate">{Converters.formatDate(recentEfforts[1].date)}</span>
+                                <span>{recentEfforts[2].separator}</span>
+                                <span>{Converters.elapsedTimeToTimeString(recentEfforts[2].movingTime)}</span>
+                                <span className="smallDimDate">{Converters.formatDate(recentEfforts[2].date)}</span>
+                            </span>
                         );
                 }
             }
@@ -290,7 +290,7 @@ export default class DetailedActivity extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                    {segmentEffortRows}
+                        {segmentEffortRows}
                     </tbody>
                 </table>
             </div>
