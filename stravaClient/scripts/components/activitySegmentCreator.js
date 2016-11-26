@@ -50,6 +50,10 @@ export default class ActivitySegmentCreator extends Component {
             <div>
                 <Link to="/allSummaryActivitiesContainer" id="backFromDetailedActivityButton">Back</Link>
                 <br/>
+                <SegmentCreator
+                    activity={this.props.activity}
+                    mapStreamIndex={this.props.mapStreamIndex}
+                />
                 <ActivityVisuals
                     activitiesData={activitiesData}
                     totalActivities={1}
@@ -61,10 +65,6 @@ export default class ActivitySegmentCreator extends Component {
                     onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
                     activityStartDateLocal={activity.startDateLocal}
                     segmentEffortsForActivity={this.props.segmentEffortsForActivity}
-                />
-                <SegmentCreator
-                    activity={this.props.activity}
-                    mapStreamIndex={this.props.mapStreamIndex}
                 />
             </div>
         );

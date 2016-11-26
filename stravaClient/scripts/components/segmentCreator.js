@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+// require('rc-slider/assets/index.css');
+const Slider = require('rc-slider');
+
 const fs = require('fs');
 const GeoJSON = require('geojson');
 
@@ -153,7 +156,15 @@ export default class SegmentCreator extends Component {
         });
     }
 
+
+    log(value) {
+        console.log(value);
+    }
     render() {
+
+        let self = this;
+
+        const style = { width: 400, margin: 50 };
 
         const buttonStyle = {
             margin: 8,
@@ -167,6 +178,12 @@ export default class SegmentCreator extends Component {
 
             <MuiThemeProvider>
                 <div>
+                    <div>
+                        <div style={style}>
+                            <p>Basic Range，`allowCross=false`</p>
+                            <Slider range allowCross={false} defaultValue={[0, 20]} onChange={self.log} />
+                        </div>
+                    </div>
                     <RaisedButton
                         onClick={this.handleSetStartPoint.bind(this)}
                         label="Set Start Point"
