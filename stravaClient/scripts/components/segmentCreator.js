@@ -109,14 +109,6 @@ export default class SegmentCreator extends Component {
         });
     }
 
-    updateSlider(boundsIndex, step) {
-        let bounds = this.sliderComponent.state.bounds;
-        bounds[boundsIndex] += step;
-        this.sliderComponent.setState({
-            bounds
-        });
-    }
-
     handleSetStartPoint() {
         this.startPointStreamIndex = this.props.mapStreamIndex;
     }
@@ -124,7 +116,6 @@ export default class SegmentCreator extends Component {
     handleSetEndPoint() {
         this.endPointStreamIndex = this.props.mapStreamIndex;
     }
-
 
     handleSliderChange(sliderValues) {
 
@@ -135,24 +126,34 @@ export default class SegmentCreator extends Component {
         this.props.onSetSegmentEndPoint(selectedEndLocation);
     }
 
+    updateSlider(boundsIndex, step) {
+        let bounds = this.sliderComponent.state.bounds;
+        bounds[boundsIndex] += step;
+        this.sliderComponent.setState({
+            bounds
+        });
+
+        if (boundsIndex === 0) {
+            this.props.onSetMapLatitudeLongitude(this.props.activityLocations[bounds[boundsIndex]]);
+        }
+        else {
+            this.props.onSetSegmentEndPoint(this.props.activityLocations[bounds[boundsIndex]]);
+        }
+    }
 
     handleMoveStartForward() {
-        console.log("poo1");
         this.updateSlider(0, this.clickStep);
     }
 
     handleMoveStartBack() {
-        console.log("poo2");
         this.updateSlider(0, -this.clickStep);
     }
 
     handleMoveEndForward() {
-        console.log("poo3");
         this.updateSlider(1, this.clickStep);
     }
 
     handleMoveEndBack() {
-        console.log("poo4");
         this.updateSlider(1, -this.clickStep);
     }
 
