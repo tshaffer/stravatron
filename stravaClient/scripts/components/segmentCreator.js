@@ -212,23 +212,22 @@ export default class SegmentCreator extends Component {
             );
         }
 
-        const style = { width: 400, margin: 50 };
+        const style = { width: 600, margin: 10 };
 
         const buttonStyle = {
             margin: 0,
-            backgroundColor: 'lightgray'
+            backgroundColor: 'lightgray',
+            fontSize: '12px'
         };
 
         const segmentNameStyle = {
             width: "128px"
         };
 
-        // <div style={style}>
-
         return (
 
             <MuiThemeProvider>
-                <div>
+                <div style={style}>
                     <Slider
                         ref={(c) => {
                             self.sliderComponent = c;
@@ -242,28 +241,42 @@ export default class SegmentCreator extends Component {
                         onChange={self.handleSliderChange.bind(self)} />
 
                     <div className="floatRight">
-                        <FlatButton
+
+                        <button
+                            type="button"
                             onClick={self.handleMoveEndBack.bind(self)}
-                            label="Back"
                             style={buttonStyle}
-                        />
-                        <FlatButton
+                        >
+                            Back
+                        </button>
+
+                        <button
+                            type="button"
                             onClick={self.handleMoveEndForward.bind(self)}
-                            label="Forward"
                             style={buttonStyle}
-                        />
+                        >
+                            Forward
+                        </button>
+
                     </div>
                     <div className="floatLeft">
-                        <FlatButton
+
+                        <button
+                            type="button"
                             onClick={self.handleMoveStartBack.bind(self)}
-                            label="Back"
                             style={buttonStyle}
-                        />
-                        <FlatButton
+                        >
+                            Back
+                        </button>
+
+                        <button
+                            type="button"
                             onClick={self.handleMoveStartForward.bind(self)}
-                            label="Forward"
                             style={buttonStyle}
-                        />
+                        >
+                            Forward
+                        </button>
+
                     </div>
 
                     <div className="clearBoth">

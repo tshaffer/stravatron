@@ -92,14 +92,12 @@ th,td
 
 .floatLeft {
     float: left;
-    width: 300px;
-    padding: 10px;
+    padding: 0px;
 }
 
 .floatRight {
     float: right;
-    width: 300px;
-    padding: 10px;
+    padding: 0px;
 }
 
 .clearBoth {
