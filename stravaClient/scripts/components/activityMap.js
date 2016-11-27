@@ -85,49 +85,7 @@ class ActivityMap extends Component {
 
                 const segmentData = self.props.activitiesData[segmentIndex];
 
-                // addLineToMap(sourceName, sourceTitle, layerName, pathToDecode, color, startIndex, endIndex, ) {
                 activityCoordinates = self.addLineToMap(sourceName, "segment" + segmentIndex.toString(), lineLayerName, segmentData.polyline, segmentData.strokeColor, 0, 0);
-
-                // let pathToDecode = segmentData.polyline;
-                // let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
-
-                // ridePathDecoded.forEach((location) => {
-                //     let longitude = location.lng();
-                //     let latitude = location.lat();
-                //     let lngLat = [longitude, latitude];
-                //     activityCoordinates.push(lngLat);
-                // });
-
-                // self.activityMap.addSource(sourceName, {
-                //     "type": "geojson",
-                //     "data": {
-                //         "type": "FeatureCollection",
-                //         "features": [{
-                //             "type": "Feature",
-                //             "geometry": {
-                //                 "type": "LineString",
-                //                 "coordinates": activityCoordinates,
-                //             },
-                //             "properties": {
-                //                 "title": "segment" + segmentIndex.toString()
-                //             }
-                //         }]
-                //     }
-                // });
-                //
-                // self.activityMap.addLayer({
-                //     "id": lineLayerName,
-                //     "type": "line",
-                //     "source": sourceName,
-                //     "layout": {
-                //         "line-join": "round",
-                //         "line-cap": "round",
-                //     },
-                //     "paint": {
-                //         "line-color": segmentData.strokeColor,
-                //         "line-width": 2
-                //     }
-                // });
             }
 
 // create a GeoJSON point to serve as a starting point
