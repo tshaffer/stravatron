@@ -206,8 +206,6 @@ export default class SegmentCreator extends Component {
 
         let self = this;
 
-        // only do this once
-        // this.activityLocations = this.getActivityLocations();
         if (!this.props.activityLocations || this.props.activityLocations.length == 0) {
             return (
                 <noscript/>
@@ -224,10 +222,6 @@ export default class SegmentCreator extends Component {
         const segmentNameStyle = {
             width: "128px"
         };
-
-        const maxIndex = self.props.activityLocations.length - 1;
-        const defaultValueEndIndex = Math.round(self.props.activityLocations.length / 2) - 1;
-        const defaultValueEnd = self.props.activityLocations[defaultValueEndIndex];
 
         return (
 
