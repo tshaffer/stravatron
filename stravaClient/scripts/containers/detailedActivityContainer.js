@@ -16,7 +16,9 @@ function mapStateToProps (state, ownProps) {
         effortsForSegments: getEffortsForActivitySegments(state, ownProps.params.id),
         segmentEffortsForActivity: getSegmentEffortsForActivity(state, ownProps.params.id),
         mapLatitudeLongitude: state.mapLatitudeLongitude,
+        segmentEndPoint: state.segmentEndPoint,
         mapStreamIndex: state.mapStreamIndex,
+        activityLocations: state.activityLocations
     };
 }
 

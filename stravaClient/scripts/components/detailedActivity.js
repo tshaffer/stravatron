@@ -341,11 +341,13 @@ export default class DetailedActivity extends Component {
                     mapHeight={"400px"}
                     markerCount={1}
                     mapLatitudeLongitude={this.props.mapLatitudeLongitude}
+                    segmentEndPoint={this.props.segmentEndPoint}
                     streams={streams}
                     onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
                     onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
                     activityStartDateLocal={activity.startDateLocal}
                     segmentEffortsForActivity={this.props.segmentEffortsForActivity}
+                    activityLocations={this.props.activityLocations}
                 />
                 {segmentEffortsTable}
             </div>
@@ -364,4 +366,6 @@ DetailedActivity.propTypes = {
     segmentEffortsForActivity: React.PropTypes.array.isRequired,
     params: React.PropTypes.object.isRequired,
     mapLatitudeLongitude: React.PropTypes.array.isRequired,
+    segmentEndPoint: React.PropTypes.array.isRequired,
+    activityLocations: React.PropTypes.array.isRequired
 };
