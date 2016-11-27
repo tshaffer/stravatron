@@ -227,64 +227,68 @@ export default class SegmentCreator extends Component {
         return (
 
             <MuiThemeProvider>
-                <div style={style}>
-                    <Slider
-                        ref={(c) => {
-                            self.sliderComponent = c;
-                        }}
-                        min={0}
-                        max={self.props.activityLocations.length - 1}
-                        range={true}
-                        allowCross={false}
-                        defaultValue={[0, Math.round(self.props.activityLocations.length / 2) - 1]}
-                        tipFormatter={null}
-                        onChange={self.handleSliderChange.bind(self)} />
+                <div>
+                    <div style={style}>
+                        <Slider
+                            ref={(c) => {
+                                self.sliderComponent = c;
+                            }}
+                            min={0}
+                            max={self.props.activityLocations.length - 1}
+                            range={true}
+                            allowCross={false}
+                            defaultValue={[0, Math.round(self.props.activityLocations.length / 2) - 1]}
+                            tipFormatter={null}
+                            onChange={self.handleSliderChange.bind(self)} />
 
-                    <div className="floatRight">
+                        <div className="floatRight">
 
-                        <button
-                            type="button"
-                            onClick={self.handleMoveEndBack.bind(self)}
-                            style={buttonStyle}
-                        >
-                            Back
-                        </button>
+                            <button
+                                type="button"
+                                onClick={self.handleMoveEndBack.bind(self)}
+                                style={buttonStyle}
+                            >
+                                Back
+                            </button>
 
-                        <button
-                            type="button"
-                            onClick={self.handleMoveEndForward.bind(self)}
-                            style={buttonStyle}
-                        >
-                            Forward
-                        </button>
+                            <button
+                                type="button"
+                                onClick={self.handleMoveEndForward.bind(self)}
+                                style={buttonStyle}
+                            >
+                                Forward
+                            </button>
+
+                        </div>
+                        <div className="floatLeft">
+
+                            <button
+                                type="button"
+                                onClick={self.handleMoveStartBack.bind(self)}
+                                style={buttonStyle}
+                            >
+                                Back
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={self.handleMoveStartForward.bind(self)}
+                                style={buttonStyle}
+                            >
+                                Forward
+                            </button>
+
+                        </div>
 
                     </div>
-                    <div className="floatLeft">
-
-                        <button
-                            type="button"
-                            onClick={self.handleMoveStartBack.bind(self)}
-                            style={buttonStyle}
-                        >
-                            Back
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={self.handleMoveStartForward.bind(self)}
-                            style={buttonStyle}
-                        >
-                            Forward
-                        </button>
-
-                    </div>
-
-                    <div className="clearBoth">
-                        Segment Name:
-                        <input type="text" id="txtBoxSegmentName" ref={(c) => {
+                    <div className="clearBoth generateSegmentRow">
+                        <span className="segmentNameLabel">
+                            Segment Name:
+                        </span>
+                        <input type="text" id="txtBoxSegmentName" className="segmentNameText" ref={(c) => {
                             self.txtBoxSegmentName = c;
                         }}/>
-                        <button type="button" onClick={self.handleGenerateSegment.bind(self)}>Generate Segment</button>
+                        <button type="button" className="generateSegmentButton" onClick={self.handleGenerateSegment.bind(self)}>Generate Segment</button>
                     </div>
                 </div>
             </MuiThemeProvider>
