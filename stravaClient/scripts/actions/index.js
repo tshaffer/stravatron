@@ -21,6 +21,8 @@ export const SET_CUSTOM_MAP_SEGMENTS = 'SET_CUSTOM_MAP_SEGMENTS';
 export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
 export const SET_MAP_LATITUDE_LONGITUDE = 'SET_MAP_LATITUDE_LONGITUDE';
 export const SET_MAP_STREAM_INDEX = 'SET_MAP_STREAM_INDEX';
+export const SET_SEGMENT_END_POINT = 'SET_SEGMENT_END_POINT';
+export const SET_ACTIVITY_LOCATIONS = 'SET_ACTIVITY_LOCATIONS';
 
 export function setSelectedAthlete(athlete) {
     return {
@@ -69,6 +71,22 @@ export function setMapLatitudeLongitude(latitudeLongitude) {
     return {
         type: SET_MAP_LATITUDE_LONGITUDE,
         latitudeLongitude
+    };
+}
+
+export function setSegmentEndPoint(latitudeLongitude) {
+
+    return {
+        type: SET_SEGMENT_END_POINT,
+        latitudeLongitude
+    };
+}
+
+export function setActivityLocations(activityLocations) {
+
+    return {
+        type: SET_ACTIVITY_LOCATIONS,
+        payload: activityLocations
     };
 }
 
@@ -268,6 +286,8 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
             const longitude = initialLatitudeLongitude[1];
             const startingLatitudeLongitude = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
 
+            dispatch(setActivityLocations(streamData.locationData));
+
             stream = {};
             stream.type = "grade_smooth";
             stream.data = streamData.gradientData;
@@ -356,6 +376,7 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
                 };
             const addStreamPromise = dbServices.addStream(stravaDetailedActivity.id, streamData);
 
+            dispatch(setActivityLocations(locationData));
         });
 
         let segments = [];

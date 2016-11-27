@@ -127,16 +127,12 @@ export default class SegmentCreator extends Component {
 
 
     handleSliderChange(sliderValues) {
-        console.log(sliderValues);
-        // this.setState(
-        //     {
-        //         start: sliderValues[0],
-        //         end: sliderValues[1]
-        //     }
-        // );
 
-        const selectedLocation = this.activityLocations[sliderValues[0]];
-        this.props.onSetMapLatitudeLongitude(selectedLocation);
+        const selectedStartLocation = this.props.activityLocations[sliderValues[0]];
+        this.props.onSetMapLatitudeLongitude(selectedStartLocation);
+
+        const selectedEndLocation = this.props.activityLocations[sliderValues[1]];
+        this.props.onSetSegmentEndPoint(selectedEndLocation);
     }
 
 
@@ -160,39 +156,39 @@ export default class SegmentCreator extends Component {
         this.updateSlider(1, -this.clickStep);
     }
 
-    getActivityLocations() {
-
-        const activity = this.props.activity;
-        let streams = [];
-        if (!activity.streams) {
-            console.log("No streams available - return");
-            return null;
-        }
-        streams = activity.streams;
-
-        let locations;
-        for (let i = 0; i < streams.length; i++) {
-            switch (streams[i].type) {
-                case 'latlng':
-                    locations = streams[i].data;
-                    break;
-            }
-        }
-
-        let activityLocations = [];
-        for (let i = 0; i < locations.length; i++) {
-
-            const stravaLocation = locations[i];
-            const latitude = stravaLocation[0];
-            const longitude = stravaLocation[1];
-            const stravatronLocation = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
-
-            activityLocations.push(stravatronLocation);
-        }
-
-        return activityLocations;
-    }
-
+    // getActivityLocations() {
+    //
+    //     const activity = this.props.activity;
+    //     let streams = [];
+    //     if (!activity.streams) {
+    //         console.log("No streams available - return");
+    //         return null;
+    //     }
+    //     streams = activity.streams;
+    //
+    //     let locations;
+    //     for (let i = 0; i < streams.length; i++) {
+    //         switch (streams[i].type) {
+    //             case 'latlng':
+    //                 locations = streams[i].data;
+    //                 break;
+    //         }
+    //     }
+    //
+    //     let activityLocations = [];
+    //     for (let i = 0; i < locations.length; i++) {
+    //
+    //         const stravaLocation = locations[i];
+    //         const latitude = stravaLocation[0];
+    //         const longitude = stravaLocation[1];
+    //         const stravatronLocation = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
+    //
+    //         activityLocations.push(stravatronLocation);
+    //     }
+    //
+    //     return activityLocations;
+    // }
+    //
 
     handleGenerateSegment() {
 
@@ -244,8 +240,8 @@ export default class SegmentCreator extends Component {
         let self = this;
 
         // only do this once
-        this.activityLocations = this.getActivityLocations();
-        if (!this.activityLocations) {
+        // this.activityLocations = this.getActivityLocations();
+        if (!this.props.activityLocations || this.props.activityLocations.length == 0) {
             return (
                 <noscript/>
             );
@@ -273,10 +269,10 @@ export default class SegmentCreator extends Component {
                                     self.sliderComponent = c;
                                 }}
                                 min={0}
-                                max={self.activityLocations.length - 1}
+                                max={self.props.activityLocations.length - 1}
                                 range={true}
                                 allowCross={false}
-                                defaultValue={[0, self.activityLocations.length - 1]}
+                                defaultValue={[0, Math.round(self.props.activityLocations.length / 2) - 1]}
                                 tipFormatter={null}
                                 onChange={self.handleSliderChange.bind(self)} />
                         </div>
@@ -323,5 +319,7 @@ export default class SegmentCreator extends Component {
 SegmentCreator.propTypes = {
     activity: React.PropTypes.object.isRequired,
     onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
-    mapStreamIndex: React.PropTypes.number.isRequired
+    onSetSegmentEndPoint: React.PropTypes.func.isRequired,
+    mapStreamIndex: React.PropTypes.number.isRequired,
+    activityLocations: React.PropTypes.array.isRequired
 };

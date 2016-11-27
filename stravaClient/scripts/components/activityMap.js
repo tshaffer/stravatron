@@ -77,6 +77,7 @@ class ActivityMap extends Component {
 //             });
 
 // polyline for activity
+            let activityCoordinates = [];
             for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
                 let sourceName = "segment" + segmentIndex.toString();
@@ -87,12 +88,11 @@ class ActivityMap extends Component {
                 let pathToDecode = segmentData.polyline;
                 let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
 
-                let coordinates = [];
                 ridePathDecoded.forEach((location) => {
                     let longitude = location.lng();
                     let latitude = location.lat();
                     let lngLat = [longitude, latitude];
-                    coordinates.push(lngLat);
+                    activityCoordinates.push(lngLat);
                 });
 
                 self.activityMap.addSource(sourceName, {
@@ -103,7 +103,7 @@ class ActivityMap extends Component {
                             "type": "Feature",
                             "geometry": {
                                 "type": "LineString",
-                                "coordinates": coordinates,
+                                "coordinates": activityCoordinates,
                             },
                             "properties": {
                                 "title": "segment" + segmentIndex.toString()
@@ -133,6 +133,8 @@ class ActivityMap extends Component {
                 if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
                     coordinates = self.props.mapLatitudeLongitude;
                 }
+                coordinates = activityCoordinates[0];
+
                 self.markerPoint = {
                     "type": "Point",
                     "coordinates": coordinates
@@ -150,6 +152,33 @@ class ActivityMap extends Component {
                     }
                 });
             }
+
+            if (self.props.markerCount > 1) {
+                let coordinates = [longitudeCenter, latitudeCenter];
+                if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
+                    coordinates = self.props.mapLatitudeLongitude;
+                }
+                coordinates = activityCoordinates[Math.round(self.props.activityLocations.length / 2) - 1];
+
+                self.endMarkerPoint = {
+                    "type": "Point",
+                    "coordinates": coordinates
+                };
+                self.activityMap.addSource('endMarkerLocation', { type: 'geojson', data: self.endMarkerPoint });
+
+                self.activityMap.addLayer({
+                    "id": "endMarkerCircle",
+                    "type": "circle",
+                    "source": "endMarkerLocation",
+                    "paint": {
+                        "circle-radius": 8,
+                        "circle-color": "green",
+                        "circle-opacity": 0.8
+                    }
+                });
+            }
+
+
         });
     }
 
@@ -193,6 +222,25 @@ class ActivityMap extends Component {
             }
             this.markerPoint.coordinates = this.props.mapLatitudeLongitude;
             source.setData(this.markerPoint);
+        }
+    }
+
+    setSegmentEndPointPosition() {
+        if (this.props.markerCount > 1) {
+            const source = this.activityMap.getSource('endMarkerLocation');
+            if (!source) return;
+
+            if (!this.endMarkerPoint) {
+                this.endMarkerPoint = {
+                    "type": "Point",
+                    "coordinates": []
+                };
+
+            }
+            this.endMarkerPoint.coordinates = this.props.segmentEndPoint;
+            source.setData(this.endMarkerPoint);
+
+            console.log("setSegmentEndPointPosition: ", this.endMarkerPoint);
         }
     }
 
@@ -254,6 +302,9 @@ class ActivityMap extends Component {
         if (this.activityMap && this.props.markerCount > 0 && this.props.mapLatitudeLongitude && this.props.mapLatitudeLongitude.length > 0) {
             this.setMarkerPosition();
         }
+        if (this.activityMap && this.props.markerCount > 1 && this.props.segmentEndPoint && this.props.segmentEndPoint.length > 0) {
+            this.setSegmentEndPointPosition();
+        }
 
         const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);
 
@@ -275,6 +326,8 @@ ActivityMap.propTypes = {
     activitiesData: React.PropTypes.array.isRequired,
     markerCount: React.PropTypes.number.isRequired,
     mapLatitudeLongitude: React.PropTypes.array.isRequired,
+    segmentEndPoint: React.PropTypes.array.isRequired,
+    activityLocations: React.PropTypes.array.isRequired
 };
 
 
