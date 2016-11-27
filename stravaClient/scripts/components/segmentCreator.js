@@ -223,25 +223,23 @@ export default class SegmentCreator extends Component {
             width: "128px"
         };
 
+        // <div style={style}>
+
         return (
 
             <MuiThemeProvider>
                 <div>
-                    <div>
-                        <div style={style}>
-                            <Slider
-                                ref={(c) => {
-                                    self.sliderComponent = c;
-                                }}
-                                min={0}
-                                max={self.props.activityLocations.length - 1}
-                                range={true}
-                                allowCross={false}
-                                defaultValue={[0, Math.round(self.props.activityLocations.length / 2) - 1]}
-                                tipFormatter={null}
-                                onChange={self.handleSliderChange.bind(self)} />
-                        </div>
-                    </div>
+                    <Slider
+                        ref={(c) => {
+                            self.sliderComponent = c;
+                        }}
+                        min={0}
+                        max={self.props.activityLocations.length - 1}
+                        range={true}
+                        allowCross={false}
+                        defaultValue={[0, Math.round(self.props.activityLocations.length / 2) - 1]}
+                        tipFormatter={null}
+                        onChange={self.handleSliderChange.bind(self)} />
 
                     <div className="floatRight">
                         <FlatButton
