@@ -156,40 +156,6 @@ export default class SegmentCreator extends Component {
         this.updateSlider(1, -this.clickStep);
     }
 
-    // getActivityLocations() {
-    //
-    //     const activity = this.props.activity;
-    //     let streams = [];
-    //     if (!activity.streams) {
-    //         console.log("No streams available - return");
-    //         return null;
-    //     }
-    //     streams = activity.streams;
-    //
-    //     let locations;
-    //     for (let i = 0; i < streams.length; i++) {
-    //         switch (streams[i].type) {
-    //             case 'latlng':
-    //                 locations = streams[i].data;
-    //                 break;
-    //         }
-    //     }
-    //
-    //     let activityLocations = [];
-    //     for (let i = 0; i < locations.length; i++) {
-    //
-    //         const stravaLocation = locations[i];
-    //         const latitude = stravaLocation[0];
-    //         const longitude = stravaLocation[1];
-    //         const stravatronLocation = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
-    //
-    //         activityLocations.push(stravatronLocation);
-    //     }
-    //
-    //     return activityLocations;
-    // }
-    //
-
     handleGenerateSegment() {
 
         const activity = this.props.activity;
@@ -257,6 +223,10 @@ export default class SegmentCreator extends Component {
         const segmentNameStyle = {
             width: "128px"
         };
+
+        const maxIndex = self.props.activityLocations.length - 1;
+        const defaultValueEndIndex = Math.round(self.props.activityLocations.length / 2) - 1;
+        const defaultValueEnd = self.props.activityLocations[defaultValueEndIndex];
 
         return (
 

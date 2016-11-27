@@ -158,7 +158,7 @@ class ActivityMap extends Component {
                 if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
                     coordinates = self.props.mapLatitudeLongitude;
                 }
-                coordinates = activityCoordinates[Math.round(self.props.activityLocations.length / 2) - 1];
+                coordinates = self.props.activityLocations[Math.round(self.props.activityLocations.length / 2) - 1];
 
                 self.endMarkerPoint = {
                     "type": "Point",
