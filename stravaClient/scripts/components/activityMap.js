@@ -78,27 +78,46 @@ class ActivityMap extends Component {
 
 // polyline for activity
             let activityCoordinates = [];
+
+            let startingPointCoordinates = null;
+            if (self.props.markerCount > 0) {
+                startingPointCoordinates = [longitudeCenter, latitudeCenter];
+                if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
+                    startingPointCoordinates = self.props.mapLatitudeLongitude;
+                }
+            }
+
             for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
-                let sourceName = "segment" + segmentIndex.toString();
-                let lineLayerName = "points" + segmentIndex.toString();
+                let sourceName = "segment0" + segmentIndex.toString();
+                let lineLayerName = "points0" + segmentIndex.toString();
+                let segmentData = self.props.activitiesData[segmentIndex];
+                activityCoordinates = self.addLineToMap(sourceName, "segment" + segmentIndex.toString(), lineLayerName, segmentData.polyline, segmentData.strokeColor, 0, 84);
 
-                const segmentData = self.props.activitiesData[segmentIndex];
+                startingPointCoordinates = activityCoordinates[0];
 
-                activityCoordinates = self.addLineToMap(sourceName, "segment" + segmentIndex.toString(), lineLayerName, segmentData.polyline, segmentData.strokeColor, 0, 0);
+                sourceName = "segment1" + segmentIndex.toString();
+                lineLayerName = "points1" + segmentIndex.toString();
+                segmentData = self.props.activitiesData[segmentIndex];
+                activityCoordinates = self.addLineToMap(sourceName, "segment" + segmentIndex.toString(), lineLayerName, segmentData.polyline, 'blue', 85, 168);
+
+                sourceName = "segment2" + segmentIndex.toString();
+                lineLayerName = "points2" + segmentIndex.toString();
+                segmentData = self.props.activitiesData[segmentIndex];
+                activityCoordinates = self.addLineToMap(sourceName, "segment" + segmentIndex.toString(), lineLayerName, segmentData.polyline, segmentData.strokeColor, 169, 254);
             }
 
 // create a GeoJSON point to serve as a starting point
             if (self.props.markerCount > 0) {
-                let coordinates = [longitudeCenter, latitudeCenter];
-                if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
-                    coordinates = self.props.mapLatitudeLongitude;
-                }
-                coordinates = activityCoordinates[0];
+                // let coordinates = [longitudeCenter, latitudeCenter];
+                // if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
+                //     coordinates = self.props.mapLatitudeLongitude;
+                // }
+                // coordinates = activityCoordinates[0];
 
                 self.markerPoint = {
                     "type": "Point",
-                    "coordinates": coordinates
+                    "coordinates": startingPointCoordinates
                 };
                 self.activityMap.addSource('markerLocation', { type: 'geojson', data: self.markerPoint });
 
@@ -146,12 +165,13 @@ class ActivityMap extends Component {
         let coordinates = [];
 
         let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
-        ridePathDecoded.forEach((location) => {
+        for (let i = startIndex; i <= endIndex; i++) {
+            const location = ridePathDecoded[i];
             let longitude = location.lng();
             let latitude = location.lat();
             let lngLat = [longitude, latitude];
             coordinates.push(lngLat);
-        });
+        }
 
         this.activityMap.addSource(sourceName, {
             "type": "geojson",
