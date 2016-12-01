@@ -24,6 +24,7 @@ export const SET_MAP_STREAM_INDEX = 'SET_MAP_STREAM_INDEX';
 export const SET_SEGMENT_END_POINT = 'SET_SEGMENT_END_POINT';
 export const SET_ACTIVITY_LOCATIONS = 'SET_ACTIVITY_LOCATIONS';
 export const ADD_MAP_MARKERS = 'ADD_MAP_MARKERS';
+export const SET_MAP_MARKER_COORDINATES = 'SET_MAP_MARKER_COORDINATES';
 
 export function setSelectedAthlete(athlete) {
   return {
@@ -311,6 +312,9 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
         coordinates: [0, 0]
       }
       dispatch(addMapMarkers(activity, [marker]));
+
+      // could combine with prior, but I'll test here
+      dispatch(setMapMarkerCoordinates(activity, 0, startingLatitudeLongitude));
 
       const reduxState = getState();
       debugger;
@@ -777,3 +781,15 @@ export function addMapMarkers(activity, markers) {
   };
 }
 
+
+export function setMapMarkerCoordinates(activity, markerIndex, coordinates) {
+
+  return {
+    type: SET_MAP_MARKER_COORDINATES,
+    payload: {
+      activityId: activity.id,
+      markerIndex,
+      coordinates
+    }
+  };
+}
