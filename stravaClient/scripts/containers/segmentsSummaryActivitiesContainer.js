@@ -8,34 +8,34 @@ import SummaryActivitiesContainer from './summaryActivitiesContainer';
 
 class SegmentsSummaryActivitiesContainer extends Component {
 
-    componentWillMount() {
-        let promise = this.props.fetchSegmentsActivities(this.props.params.id);
-    }
+  componentWillMount() {
+    let promise = this.props.fetchSegmentsActivities(this.props.params.id);
+  }
 
-    render() {
-        return (
-            <SummaryActivitiesContainer
-                activities={this.props.activities}
-            />
-        );
-    }
+  render() {
+    return (
+      <SummaryActivitiesContainer
+        activities={this.props.activities}
+      />
+    );
+  }
 }
 
 function mapStateToProps (state) {
-    return {
-        activities: state.activities
-    };
+  return {
+    activities: state.activities
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({fetchSegmentsActivities},
-        dispatch);
+  return bindActionCreators({fetchSegmentsActivities},
+    dispatch);
 }
 
 SegmentsSummaryActivitiesContainer.propTypes = {
-    fetchSegmentsActivities: React.PropTypes.func.isRequired,
-    activities: React.PropTypes.object.isRequired,
-    params: React.PropTypes.object.isRequired,
+  fetchSegmentsActivities: React.PropTypes.func.isRequired,
+  activities: React.PropTypes.object.isRequired,
+  params: React.PropTypes.object.isRequired,
 };
 
 

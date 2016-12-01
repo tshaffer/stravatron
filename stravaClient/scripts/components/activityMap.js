@@ -1,74 +1,72 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 
-const fs = require('fs');
-const GeoJSON = require('geojson');
-
 class ActivityMap extends Component {
 
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.activityMap = null;
+    this.activityMap = null;
+  }
+
+  initializeMap() {
+
+    let self = this;
+
+    let minLongitude = 9999;
+    let maxLongitude = -9999;
+    let minLatitude = 9999;
+    let maxLatitude = -9999;
+
+    for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
+      let pathToDecode = self.props.activitiesData[segmentIndex].polyline;
+      let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
+      ridePathDecoded.forEach((location) => {
+        let longitude = location.lng();
+        let latitude = location.lat();
+
+        if (longitude > maxLongitude) maxLongitude = longitude;
+        if (longitude < minLongitude) minLongitude = longitude;
+
+        if (latitude > maxLatitude) maxLatitude = latitude;
+        if (latitude < minLatitude) minLatitude = latitude;
+
+      });
     }
 
-    initializeMap(mapId) {
+    const longitudeCenter = (minLongitude + maxLongitude) / 2.0;
+    const latitudeCenter = (minLatitude + maxLatitude) / 2.0;
 
-        var self = this;
+    window.mapboxgl.accessToken =
+      'pk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXN2cjR4dXIwMjgwMm9wZ282cmk0aTgzIn0.9EtSUOr_ofLcwCDLM6FUHw';
+    this.activityMap = new window.mapboxgl.Map({
+      container: 'mapBoxMap', // container id
+      style: 'mapbox://styles/tedshaffer/citagbl4b000h2iqbkgub0t26',
+    });
 
-        let minLongitude = 9999;
-        let maxLongitude = -9999;
-        let minLatitude = 9999;
-        let maxLatitude = -9999;
+    this.activityMap.addControl(new window.mapboxgl.Navigation());
 
-        for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
-            let pathToDecode = self.props.activitiesData[segmentIndex].polyline;
-            let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
-            ridePathDecoded.forEach((location) => {
-                let longitude = location.lng();
-                let latitude = location.lat();
+    this.activityMap.on('load', function () {
 
-                if (longitude > maxLongitude) maxLongitude = longitude;
-                if (longitude < minLongitude) minLongitude = longitude;
+      // experiment on adding padding around bounds - instead of a fixed value, perhaps it should be a percentage based on bounds
+      const padding = 0.005;
+      minLatitude -= padding;
+      maxLatitude += padding;
 
-                if (latitude > maxLatitude) maxLatitude = latitude;
-                if (latitude < minLatitude) minLatitude = latitude;
+      minLongitude -= padding;
+      maxLongitude += padding;
 
-            });
-        }
+      const minBounds = [
+        minLongitude,
+        minLatitude
+      ];
 
-        const longitudeCenter = (minLongitude + maxLongitude) / 2.0;
-        const latitudeCenter = (minLatitude + maxLatitude) / 2.0;
+      const maxBounds = [
+        maxLongitude,
+        maxLatitude
+      ];
 
-        window.mapboxgl.accessToken = 'pk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXN2cjR4dXIwMjgwMm9wZ282cmk0aTgzIn0.9EtSUOr_ofLcwCDLM6FUHw';
-        this.activityMap = new window.mapboxgl.Map({
-            container: 'mapBoxMap', // container id
-            style: 'mapbox://styles/tedshaffer/citagbl4b000h2iqbkgub0t26',
-        });
-
-        this.activityMap.addControl(new window.mapboxgl.Navigation());
-
-        this.activityMap.on('load', function () {
-
-            // experiment on adding padding around bounds - instead of a fixed value, perhaps it should be a percentage based on bounds
-            const padding = 0.005;
-            minLatitude -= padding;
-            maxLatitude += padding;
-
-            minLongitude -= padding;
-            maxLongitude += padding;
-
-            const minBounds = [
-                minLongitude,
-                minLatitude
-            ];
-
-            const maxBounds = [
-                maxLongitude,
-                maxLatitude
-            ];
-
-            self.activityMap.fitBounds([minBounds, maxBounds]);
+      self.activityMap.fitBounds([minBounds, maxBounds]);
 
 // code that may be required to track mouse movements over route
 //             self.activityMap.on('mousemove', (mouseEvent) => {
@@ -77,262 +75,265 @@ class ActivityMap extends Component {
 //             });
 
 // polyline for activity
-            let activityCoordinates = [];
-            for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
+      let activityCoordinates = [];
+      for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
-                let sourceName = "segment" + segmentIndex.toString();
-                let lineLayerName = "points" + segmentIndex.toString();
+        let sourceName = "segment" + segmentIndex.toString();
+        let lineLayerName = "points" + segmentIndex.toString();
 
-                const segmentData = self.props.activitiesData[segmentIndex];
+        const segmentData = self.props.activitiesData[segmentIndex];
 
-                activityCoordinates = self.addLineToMap(sourceName, "segment" + segmentIndex.toString(), lineLayerName, segmentData.polyline, segmentData.strokeColor, 0, 0);
-            }
+        activityCoordinates = self.addLineToMap(sourceName, "segment" + segmentIndex.toString(),
+          lineLayerName, segmentData.polyline, segmentData.strokeColor);
+      }
 
 // create a GeoJSON point to serve as a starting point
-            if (self.props.markerCount > 0) {
-                let coordinates = [longitudeCenter, latitudeCenter];
-                if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
-                    coordinates = self.props.mapLatitudeLongitude;
-                }
-                coordinates = activityCoordinates[0];
+      if (self.props.markerCount > 0) {
+        let coordinates = [longitudeCenter, latitudeCenter];
+        if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
+          coordinates = self.props.mapLatitudeLongitude;
+        }
+        coordinates = activityCoordinates[0];
 
-                self.markerPoint = {
-                    "type": "Point",
-                    "coordinates": coordinates
-                };
-                self.activityMap.addSource('markerLocation', { type: 'geojson', data: self.markerPoint });
+        self.markerPoint = {
+          "type": "Point",
+          "coordinates": coordinates
+        };
+        self.activityMap.addSource('markerLocation', { type: 'geojson', data: self.markerPoint });
 
-                self.activityMap.addLayer({
-                    "id": "markerCircle",
-                    "type": "circle",
-                    "source": "markerLocation",
-                    "paint": {
-                        "circle-radius": 8,
-                        "circle-color": "red",
-                        "circle-opacity": 0.8
-                    }
-                });
-            }
-
-            if (self.props.markerCount > 1) {
-                let coordinates = [longitudeCenter, latitudeCenter];
-                if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
-                    coordinates = self.props.mapLatitudeLongitude;
-                }
-                coordinates = self.props.activityLocations[Math.round(self.props.activityLocations.length / 2) - 1];
-
-                self.endMarkerPoint = {
-                    "type": "Point",
-                    "coordinates": coordinates
-                };
-                self.activityMap.addSource('endMarkerLocation', { type: 'geojson', data: self.endMarkerPoint });
-
-                self.activityMap.addLayer({
-                    "id": "endMarkerCircle",
-                    "type": "circle",
-                    "source": "endMarkerLocation",
-                    "paint": {
-                        "circle-radius": 8,
-                        "circle-color": "green",
-                        "circle-opacity": 0.8
-                    }
-                });
-            }
+        self.activityMap.addLayer({
+          "id": "markerCircle",
+          "type": "circle",
+          "source": "markerLocation",
+          "paint": {
+            "circle-radius": 8,
+            "circle-color": "red",
+            "circle-opacity": 0.8
+          }
         });
-    }
+      }
 
-    addLineToMap(sourceName, sourceTitle, layerName, pathToDecode, color, startIndex, endIndex) {
+      if (self.props.markerCount > 1) {
+        let coordinates = [longitudeCenter, latitudeCenter];
+        if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
+          coordinates = self.props.mapLatitudeLongitude;
+        }
+        coordinates = self.props.activityLocations[Math.round(self.props.activityLocations.length / 2) - 1];
 
-        let coordinates = [];
+        self.endMarkerPoint = {
+          "type": "Point",
+          "coordinates": coordinates
+        };
+        self.activityMap.addSource('endMarkerLocation', { type: 'geojson', data: self.endMarkerPoint });
 
-        let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
-        ridePathDecoded.forEach((location) => {
-            let longitude = location.lng();
-            let latitude = location.lat();
-            let lngLat = [longitude, latitude];
-            coordinates.push(lngLat);
+        self.activityMap.addLayer({
+          "id": "endMarkerCircle",
+          "type": "circle",
+          "source": "endMarkerLocation",
+          "paint": {
+            "circle-radius": 8,
+            "circle-color": "green",
+            "circle-opacity": 0.8
+          }
         });
+      }
+    });
+  }
 
-        this.activityMap.addSource(sourceName, {
-            "type": "geojson",
-            "data": {
-                "type": "FeatureCollection",
-                "features": [{
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "LineString",
-                        "coordinates": coordinates,
-                    },
-                    "properties": {
-                        "title": sourceTitle
-                    }
-                }]
-            }
-        });
+  addLineToMap(sourceName, sourceTitle, layerName, pathToDecode, color) {
 
-        this.activityMap.addLayer({
-            "id": layerName,
-            "type": "line",
-            "source": sourceName,
-            "layout": {
-                "line-join": "round",
-                "line-cap": "round",
-            },
-            "paint": {
-                "line-color": color,
-                "line-width": 2
-            }
-        });
+    let coordinates = [];
 
-        return coordinates;
+    let ridePathDecoded = window.google.maps.geometry.encoding.decodePath(pathToDecode);
+    ridePathDecoded.forEach((location) => {
+      let longitude = location.lng();
+      let latitude = location.lat();
+      let lngLat = [longitude, latitude];
+      coordinates.push(lngLat);
+    });
+
+    this.activityMap.addSource(sourceName, {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": coordinates,
+          },
+          "properties": {
+            "title": sourceTitle
+          }
+        }]
+      }
+    });
+
+    this.activityMap.addLayer({
+      "id": layerName,
+      "type": "line",
+      "source": sourceName,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      "paint": {
+        "line-color": color,
+        "line-width": 2
+      }
+    });
+
+    return coordinates;
+  }
+
+  loadAndRenderMap() {
+
+    if (this.activityMap) return;
+
+    let allDataLoaded = true;
+    if (this.props.activitiesData.length === this.props.totalActivities) {
+      this.props.activitiesData.forEach( (activityData) => {
+        if (activityData.polyline === "") {
+          allDataLoaded = false;
+        }
+      });
     }
-    
-    loadAndRenderMap() {
-
-        if (this.activityMap) return;
-
-        let allDataLoaded = true;
-        if (this.props.activitiesData.length == this.props.totalActivities) {
-            this.props.activitiesData.forEach( (activityData) => {
-                if (activityData.polyline == "") {
-                    allDataLoaded = false;
-                }
-            });
-        }
-        else {
-            allDataLoaded = false;
-        }
-
-        if (this.mapBoxMap && allDataLoaded) {
-
-            this.mapBoxMap.style.height = this.props.mapHeight;
-
-            if (!this.activityMap) {
-                this.initializeMap("mapBoxMap");
-            }
-        }
-    }
-
-    setMarkerPosition() {
-        if (this.props.markerCount > 0) {
-            const source = this.activityMap.getSource('markerLocation');
-            if (!source) return;
-
-            if (!this.markerPoint) {
-                this.markerPoint = {
-                    "type": "Point",
-                    "coordinates": []
-                };
-
-            }
-            this.markerPoint.coordinates = this.props.mapLatitudeLongitude;
-            source.setData(this.markerPoint);
-        }
+    else {
+      allDataLoaded = false;
     }
 
-    setSegmentEndPointPosition() {
-        if (this.props.markerCount > 1) {
-            const source = this.activityMap.getSource('endMarkerLocation');
-            if (!source) return;
+    if (this.mapBoxMap && allDataLoaded) {
 
-            if (!this.endMarkerPoint) {
-                this.endMarkerPoint = {
-                    "type": "Point",
-                    "coordinates": []
-                };
+      this.mapBoxMap.style.height = this.props.mapHeight;
 
-            }
-            this.endMarkerPoint.coordinates = this.props.segmentEndPoint;
-            source.setData(this.endMarkerPoint);
+      if (!this.activityMap) {
+        this.initializeMap();
+      }
+    }
+  }
 
-            console.log("setSegmentEndPointPosition: ", this.endMarkerPoint);
-        }
+  setMarkerPosition() {
+    if (this.props.markerCount > 0) {
+      const source = this.activityMap.getSource('markerLocation');
+      if (!source) return;
+
+      if (!this.markerPoint) {
+        this.markerPoint = {
+          "type": "Point",
+          "coordinates": []
+        };
+
+      }
+      this.markerPoint.coordinates = this.props.mapLatitudeLongitude;
+      source.setData(this.markerPoint);
+    }
+  }
+
+  setSegmentEndPointPosition() {
+    if (this.props.markerCount > 1) {
+      const source = this.activityMap.getSource('endMarkerLocation');
+      if (!source) return;
+
+      if (!this.endMarkerPoint) {
+        this.endMarkerPoint = {
+          "type": "Point",
+          "coordinates": []
+        };
+
+      }
+      this.endMarkerPoint.coordinates = this.props.segmentEndPoint;
+      source.setData(this.endMarkerPoint);
+
+      console.log("setSegmentEndPointPosition: ", this.endMarkerPoint);
+    }
+  }
+
+  buildMapLegend(activitiesData) {
+
+    // for now, only show legend when more than one activity is mapped
+    if (activitiesData.length < 2) {
+      return (
+        <noscript/>
+      );
     }
 
-    buildMapLegend(activitiesData) {
+    activitiesData.sort( (activity0, activity1) => {
 
-        // for now, only show legend when more than one activity is mapped
-        if (activitiesData.length < 2) {
-            return (
-                <noscript/>
-            );
-        }
+      const dt0 = new Date(activity0.startDateLocal);
+      const dt1 = new Date(activity1.startDateLocal);
 
-        activitiesData.sort( (activity0, activity1) => {
+      if (dt0 > dt1) {
+        return -1;
+      }
+      return 1;
+    });
 
-            const dt0 = new Date(activity0.startDateLocal);
-            const dt1 = new Date(activity1.startDateLocal);
+    // does map iterate in sorted order? if not, iterate through sorted array and assign colors
 
-            if (dt0 > dt1) {
-                return -1;
-            }
-            return 1;
-        });
+    let mapLegend = activitiesData.map((activityData) => {
 
-        // does map iterate in sorted order? if not, iterate through sorted array and assign colors
+      const colorStyle = {
+        background: activityData.strokeColor
+      };
 
-        let mapLegend = activitiesData.map((activityData, index) => {
+      const activityDate = new Date(activityData.startDateLocal);
+      const legendLabel = activityData.name + " - " + activityDate.toDateString();
 
-            const colorStyle = {
-                background: activityData.strokeColor
-            };
+      const url = '/detailedActivityContainer/' + activityData.activityId;
 
-            const activityDate = new Date(activityData.startDateLocal);
-            const legendLabel = activityData.name + " - " + activityDate.toDateString();
+      return (
+        <div key={activityData.startDateLocal}>
+          <div className="mapLegendActivityRect" style={colorStyle}/>
+          <div className="mapLegendActivityName">
+            <Link to={url}>{legendLabel}</Link>
+          </div>
+          <br/>
+        </div>
+      );
+    });
 
-            const url = '/detailedActivityContainer/' + activityData.activityId;
+    return (
+      <div>
+        {mapLegend}
+      </div>
+    );
+  }
 
-            return (
-                <div key={activityData.startDateLocal}>
-                    <div className="mapLegendActivityRect" style={colorStyle}/>
-                    <div className="mapLegendActivityName">
-                        <Link to={url}>{legendLabel}</Link>
-                    </div>
-                    <br/>
-                </div>
-            );
-        });
+  render() {
 
-        return (
-            <div>
-                {mapLegend}
-            </div>
-        );
+    var self = this;
+
+    if (this.activityMap && this.props.markerCount > 0 && this.props.mapLatitudeLongitude
+      && this.props.mapLatitudeLongitude.length > 0) {
+      this.setMarkerPosition();
+    }
+    if (this.activityMap && this.props.markerCount > 1 && this.props.segmentEndPoint
+      && this.props.segmentEndPoint.length > 0) {
+      this.setSegmentEndPointPosition();
     }
 
-    render() {
+    const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);
 
-        var self = this;
-
-        if (this.activityMap && this.props.markerCount > 0 && this.props.mapLatitudeLongitude && this.props.mapLatitudeLongitude.length > 0) {
-            this.setMarkerPosition();
-        }
-        if (this.activityMap && this.props.markerCount > 1 && this.props.segmentEndPoint && this.props.segmentEndPoint.length > 0) {
-            this.setSegmentEndPointPosition();
-        }
-
-        const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);
-
-        return (
-            <div id="mapBoxMap"
-                ref={(c) => {
-                    self.mapBoxMap = c;
-                    self.loadAndRenderMap();
-                }}>
-                { mapLegendJSX }
-            </div>
-        );
-    }
+    return (
+      <div id="mapBoxMap"
+        ref={(c) => {
+          self.mapBoxMap = c;
+          self.loadAndRenderMap();
+        }}>
+        { mapLegendJSX }
+      </div>
+    );
+  }
 }
 
 ActivityMap.propTypes = {
-    totalActivities: React.PropTypes.number.isRequired,
-    mapHeight: React.PropTypes.string.isRequired,
-    activitiesData: React.PropTypes.array.isRequired,
-    markerCount: React.PropTypes.number.isRequired,
-    mapLatitudeLongitude: React.PropTypes.array.isRequired,
-    segmentEndPoint: React.PropTypes.array.isRequired,
-    activityLocations: React.PropTypes.array.isRequired
+  totalActivities: React.PropTypes.number.isRequired,
+  mapHeight: React.PropTypes.string.isRequired,
+  activitiesData: React.PropTypes.array.isRequired,
+  markerCount: React.PropTypes.number.isRequired,
+  mapLatitudeLongitude: React.PropTypes.array.isRequired,
+  segmentEndPoint: React.PropTypes.array.isRequired,
+  activityLocations: React.PropTypes.array.isRequired
 };
 
 

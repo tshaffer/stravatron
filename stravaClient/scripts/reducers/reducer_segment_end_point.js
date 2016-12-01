@@ -4,17 +4,17 @@ const initialState = [];
 
 export default function(state = initialState, action) {
 
-    let newState = null;
+  let newState = null;
 
-    switch (action.type) {
+  switch (action.type) {
 
-        case SET_SEGMENT_END_POINT: {
-            newState = Object.assign( [], action.latitudeLongitude);
-            console.log("reducer_segment_end_point");
-            console.log(action.latitudeLongitude);
-            return newState;
-        }
+    case SET_SEGMENT_END_POINT: {
+      newState = Object.assign( [], action.latitudeLongitude);
+      console.log("reducer_segment_end_point");
+      console.log(action.latitudeLongitude);
+      return newState;
     }
+  }
 
-    return state;
+  return state;
 }

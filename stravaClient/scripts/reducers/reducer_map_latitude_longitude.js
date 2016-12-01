@@ -4,15 +4,15 @@ const initialState = [];
 
 export default function(state = initialState, action) {
 
-    let newState = null;
+  let newState = null;
 
-    switch (action.type) {
+  switch (action.type) {
 
-        case SET_MAP_LATITUDE_LONGITUDE: {
-            newState = Object.assign( [], action.latitudeLongitude);
-            return newState;
-        }
+    case SET_MAP_LATITUDE_LONGITUDE: {
+      newState = Object.assign( [], action.latitudeLongitude);
+      return newState;
     }
+  }
 
-    return state;
+  return state;
 }

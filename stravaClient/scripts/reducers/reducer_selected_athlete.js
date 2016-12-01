@@ -4,15 +4,15 @@ const initialState = {};
 
 export default function(state = initialState, action) {
 
-    let newState = null;
+  let newState = null;
 
-    switch (action.type) {
+  switch (action.type) {
 
-        case SET_SELECTED_ATHLETE: {
-            newState = Object.assign( {}, action.athlete);
-            return newState;
-        }
+    case SET_SELECTED_ATHLETE: {
+      newState = Object.assign( {}, action.athlete);
+      return newState;
     }
+  }
 
-    return state;
+  return state;
 }

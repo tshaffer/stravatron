@@ -11,20 +11,22 @@ import MapLatitudeLongitudeReducer from './reducer_map_latitude_longitude';
 import SegmentEndPointReducer from './reducer_segment_end_point';
 import MapStreamIndexReducer from './reducer_map_stream_index';
 import ActivityLocationsReducers from './reducer_activity_locations';
+import MapMarkersReducer from './reducer_map_markers';
 
 const rootReducer = combineReducers({
-    activities: ActivitiesReducer,
-    segmentEfforts: SegmentEffortsReducer,
-    segments: SegmentsReducer,
-    baseMapSegments: BaseMapSegmentsReducer,
-    customMapSegments: CustomMapSegmentsReducer,
-    db: DBReducer,
-    athletes: AthletesReducer,
-    selectedAthlete: SelectedAthleteReducer,
-    mapLatitudeLongitude: MapLatitudeLongitudeReducer,
-    segmentEndPoint: SegmentEndPointReducer,
-    mapStreamIndex: MapStreamIndexReducer,
-    activityLocations: ActivityLocationsReducers
+  activities: ActivitiesReducer,
+  segmentEfforts: SegmentEffortsReducer,
+  segments: SegmentsReducer,
+  baseMapSegments: BaseMapSegmentsReducer,
+  customMapSegments: CustomMapSegmentsReducer,
+  db: DBReducer,
+  athletes: AthletesReducer,
+  selectedAthlete: SelectedAthleteReducer,
+  mapLatitudeLongitude: MapLatitudeLongitudeReducer,
+  segmentEndPoint: SegmentEndPointReducer,
+  mapStreamIndex: MapStreamIndexReducer,
+  activityLocations: ActivityLocationsReducers,
+  mapMarkers: MapMarkersReducer
 });
 
 export default rootReducer;

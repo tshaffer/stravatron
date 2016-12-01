@@ -1,65 +1,65 @@
 import { ADD_SEGMENT_EFFORTS } from '../actions/index';
 
 const initialState =
-    {
-        segmentEffortsById: {}
-    };
+  {
+    segmentEffortsById: {}
+  };
 
 let newSegmentEffortsById = null;
 let newState = null;
 
 export default function(state = initialState, action) {
 
-    switch (action.type) {
+  switch (action.type) {
 
-        case ADD_SEGMENT_EFFORTS: {
-            newSegmentEffortsById = Object.assign( {}, state.segmentEffortsById);
+    case ADD_SEGMENT_EFFORTS: {
+      newSegmentEffortsById = Object.assign( {}, state.segmentEffortsById);
 
-            const segmentEfforts = action.segmentEfforts;
-            segmentEfforts.forEach( (segmentEffort) => {
-                newSegmentEffortsById[segmentEffort.id] = segmentEffort;
-            });
+      const segmentEfforts = action.segmentEfforts;
+      segmentEfforts.forEach( (segmentEffort) => {
+        newSegmentEffortsById[segmentEffort.id] = segmentEffort;
+      });
 
-            newState = {
-                segmentEffortsById: newSegmentEffortsById
-            };
-            return newState;
-        }
+      newState = {
+        segmentEffortsById: newSegmentEffortsById
+      };
+      return newState;
     }
+  }
 
-    return state;
+  return state;
 }
 
 // Selectors
 export const getSegmentEffortsForActivity = (state, activityId) => {
 
-    let segmentEfforts = [];
+  let segmentEfforts = [];
 
-    for (let segmentEffortId in state.segmentEfforts.segmentEffortsById) {
-        const segmentEffort = state.segmentEfforts.segmentEffortsById[segmentEffortId];
-        if (segmentEffort.activityId == activityId) {
-            segmentEfforts.push(segmentEffort);
-        }
+  for (let segmentEffortId in state.segmentEfforts.segmentEffortsById) {
+    const segmentEffort = state.segmentEfforts.segmentEffortsById[segmentEffortId];
+    if (segmentEffort.activityId == activityId) {
+      segmentEfforts.push(segmentEffort);
     }
-    
-    return segmentEfforts;
+  }
+
+  return segmentEfforts;
 };
 
 export const getEffortsForActivitySegments = (state, activityId) => {
 
-    let effortsForActivitySegments = {};
+  let effortsForActivitySegments = {};
 
-    for (let segmentEffortId in state.segmentEfforts.segmentEffortsById) {
-        const segmentEffort = state.segmentEfforts.segmentEffortsById[segmentEffortId];
+  for (let segmentEffortId in state.segmentEfforts.segmentEffortsById) {
+    const segmentEffort = state.segmentEfforts.segmentEffortsById[segmentEffortId];
 
-        const segmentId = segmentEffort.segmentId;
+    const segmentId = segmentEffort.segmentId;
 
-        if (!effortsForActivitySegments[segmentId] || !effortsForActivitySegments.hasOwnProperty(segmentId)) {
-            effortsForActivitySegments[segmentId] = [];
-        }
-        let effortsForSegment = effortsForActivitySegments[segmentId];
-        effortsForSegment.push(segmentEffort);
+    if (!effortsForActivitySegments[segmentId] || !effortsForActivitySegments.hasOwnProperty(segmentId)) {
+      effortsForActivitySegments[segmentId] = [];
     }
+    let effortsForSegment = effortsForActivitySegments[segmentId];
+    effortsForSegment.push(segmentEffort);
+  }
 
-    return effortsForActivitySegments;
+  return effortsForActivitySegments;
 };

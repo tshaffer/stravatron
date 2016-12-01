@@ -4,24 +4,24 @@ const initialState = [];
 
 export default function(state = initialState, action) {
 
-    let newState = state;
+  let newState = state;
 
-    switch (action.type) {
+  switch (action.type) {
 
-        case CLEAR_BASE_MAP_SEGMENTS: {
-            return initialState;
-        }
-
-        case SET_BASE_MAP_SEGMENTS: {
-            newState = [];
-
-            action.baseMapSegments.forEach( baseMapSegment => {
-                newState.push(baseMapSegment);
-            });
-
-            return newState;
-        }
+    case CLEAR_BASE_MAP_SEGMENTS: {
+      return initialState;
     }
 
-    return state;
+    case SET_BASE_MAP_SEGMENTS: {
+      newState = [];
+
+      action.baseMapSegments.forEach( baseMapSegment => {
+        newState.push(baseMapSegment);
+      });
+
+      return newState;
+    }
+  }
+
+  return state;
 }

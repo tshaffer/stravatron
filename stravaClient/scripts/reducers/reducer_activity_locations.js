@@ -6,29 +6,29 @@ const initialState = [];
 
 export default function(state = initialState, action) {
 
-    let newState = null;
+  let newState = null;
 
-    switch (action.type) {
+  switch (action.type) {
 
-        case SET_ACTIVITY_LOCATIONS: {
+    case SET_ACTIVITY_LOCATIONS: {
 
-            const stravaLocations = action.payload;
+      const stravaLocations = action.payload;
 
-            let stravatronLocations = [];
-            for (let i = 0; i < stravaLocations.length; i++) {
+      let stravatronLocations = [];
+      for (let i = 0; i < stravaLocations.length; i++) {
 
-                const stravaLocation = stravaLocations[i];
-                const latitude = stravaLocation[0];
-                const longitude = stravaLocation[1];
-                const stravatronLocation = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
+        const stravaLocation = stravaLocations[i];
+        const latitude = stravaLocation[0];
+        const longitude = stravaLocation[1];
+        const stravatronLocation = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
 
-                stravatronLocations.push(stravatronLocation);
-            }
+        stravatronLocations.push(stravatronLocation);
+      }
 
-            newState = Object.assign( [], stravatronLocations);
-            return newState;
-        }
+      newState = Object.assign( [], stravatronLocations);
+      return newState;
     }
+  }
 
-    return state;
+  return state;
 }

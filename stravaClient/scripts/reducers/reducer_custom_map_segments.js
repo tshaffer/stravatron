@@ -5,24 +5,24 @@ const initialState = [];
 
 export default function(state = initialState, action) {
 
-    let newState = state;
+  let newState = state;
 
-    switch (action.type) {
+  switch (action.type) {
 
-        case CLEAR_CUSTOM_MAP_SEGMENTS: {
-            return initialState;
-        }
-
-        case SET_CUSTOM_MAP_SEGMENTS: {
-            newState = [];
-
-            action.customMapSegments.segments.forEach( customMapSegment => {
-                newState.push(customMapSegment);
-            });
-
-            return newState;
-        }
+    case CLEAR_CUSTOM_MAP_SEGMENTS: {
+      return initialState;
     }
 
-    return state;
+    case SET_CUSTOM_MAP_SEGMENTS: {
+      newState = [];
+
+      action.customMapSegments.segments.forEach( customMapSegment => {
+        newState.push(customMapSegment);
+      });
+
+      return newState;
+    }
+  }
+
+  return state;
 }

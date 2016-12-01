@@ -6,103 +6,103 @@ import ActivityMap from './activityMap';
 
 class MapStarredSegments extends Component {
 
-    render() {
+  render() {
 
-        var self = this;
+    var self = this;
 
-        const defaultJSX = (
-            <div>
-                <Link to="/">Back</Link>
-                <br/>
-            </div>
-        );
+    const defaultJSX = (
+      <div>
+        <Link to="/">Back</Link>
+        <br/>
+      </div>
+    );
 
-        if (self.props.baseMapSegments.length > 0 && self.props.customMapSegments.length > 0) {
+    if (self.props.baseMapSegments.length > 0 && self.props.customMapSegments.length > 0) {
 
-            let mapSegmentsData = [];
+      let mapSegmentsData = [];
 
-            self.props.baseMapSegments.forEach(baseMapSegment => {
+      self.props.baseMapSegments.forEach(baseMapSegment => {
 
-                let defaultSegmentData =
-                    {
-                        textAnchor: "left",
-                        textSize: 10,
-                        textOffset: [0,0]
-                    };
+        let defaultSegmentData =
+          {
+            textAnchor: "left",
+            textSize: 10,
+            textOffset: [0,0]
+          };
 
-                defaultSegmentData.name = baseMapSegment.name;
+        defaultSegmentData.name = baseMapSegment.name;
 
-                // look for entry in segmentsData that matches this baseMapSegment
-                let customSegmentData = null;
-                self.props.customMapSegments.forEach( (customMapSegmentData) => {
-                    if (customMapSegmentData.id === baseMapSegment.id.toString()) {
-                        customSegmentData = customMapSegmentData;
-                        return;
-                    }
-                });
+        // look for entry in segmentsData that matches this baseMapSegment
+        let customSegmentData = null;
+        self.props.customMapSegments.forEach( (customMapSegmentData) => {
+          if (customMapSegmentData.id === baseMapSegment.id.toString()) {
+            customSegmentData = customMapSegmentData;
+            return;
+          }
+        });
 
-                let segmentData = {};
-                if (customSegmentData) {
-                    segmentData = customSegmentData;
-                }
-                else {
-                    segmentData = defaultSegmentData;
-                }
-
-                let mapSegmentData =
-                    {
-                        segmentData,
-                        polyline: baseMapSegment.polyline,
-                        strokeColor: 'black'
-                    };
-
-                mapSegmentsData.push(mapSegmentData);
-            });
-
-            return (
-                <div>
-                    <Link to="/">Back</Link>
-                    <br/>
-                    <ActivityMap
-                        startLatitude={self.props.baseMapSegments[0].startLatitude}
-                        startLongitude={self.props.baseMapSegments[0].startLongitude}
-                        activitiesData={mapSegmentsData}
-                        location={[]}
-                        totalActivities={self.props.baseMapSegments.length}
-                        mapHeight={"760px"}
-                    />
-                </div>
-            );
+        let segmentData = {};
+        if (customSegmentData) {
+          segmentData = customSegmentData;
+        }
+        else {
+          segmentData = defaultSegmentData;
         }
 
-        return (
-            <div>
-                <Link to="/">Back</Link>
-                <br/>
-                <ActivityMap
-                    startLatitude={69}
-                    startLongitude={69}
-                    activitiesData={[]}
-                    location={[]}
-                    totalActivities={69}
-                    mapHeight={"760px"}
-                />
-            </div>
-        );
+        let mapSegmentData =
+          {
+            segmentData,
+            polyline: baseMapSegment.polyline,
+            strokeColor: 'black'
+          };
+
+        mapSegmentsData.push(mapSegmentData);
+      });
+
+      return (
+        <div>
+          <Link to="/">Back</Link>
+          <br/>
+          <ActivityMap
+            startLatitude={self.props.baseMapSegments[0].startLatitude}
+            startLongitude={self.props.baseMapSegments[0].startLongitude}
+            activitiesData={mapSegmentsData}
+            location={[]}
+            totalActivities={self.props.baseMapSegments.length}
+            mapHeight={"760px"}
+          />
+        </div>
+      );
     }
+
+    return (
+      <div>
+        <Link to="/">Back</Link>
+        <br/>
+        <ActivityMap
+          startLatitude={69}
+          startLongitude={69}
+          activitiesData={[]}
+          location={[]}
+          totalActivities={69}
+          mapHeight={"760px"}
+        />
+      </div>
+    );
+  }
 }
 
 function mapStateToProps (state) {
-    return {
-        baseMapSegments: state.baseMapSegments,
-        customMapSegments: state.customMapSegments
-    };
+  return {
+    baseMapSegments: state.baseMapSegments,
+    customMapSegments: state.customMapSegments
+  };
 }
 
 
 MapStarredSegments.propTypes = {
-    baseMapSegments: React.PropTypes.array.isRequired,
-    customMapSegments: React.PropTypes.array.isRequired
+  baseMapSegments: React.PropTypes.array.isRequired,
+  customMapSegments: React.PropTypes.array.isRequired
 };
 
 
