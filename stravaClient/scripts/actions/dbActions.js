@@ -32,10 +32,9 @@ export function loadDBData(dbServices, dbConnection) {
 
 function loadAthletes(dbServices) {
 
-  return function (dispatch, getState) {
+  return function (dispatch) {
 
     // retrieve athletes from db - if none exist, add the defaults athletes
-    let state = getState();
     const getAthletesPromise = dbServices.getAthletes();
     getAthletesPromise.then( athletes => {
 
@@ -46,25 +45,23 @@ function loadAthletes(dbServices) {
 
       console.log(athletes);
       dispatch(setAthletes(athletes));
-      state = getState();
     }, err => {
-
+      console.log(err, " loadAthletes");
     });
   };
 }
 
 function loadSelectedAthlete(dbServices) {
 
-  return function (dispatch, getState) {
+  return function (dispatch) {
 
     // retrieve selectedAthlete from db
-    let state = getState();
     const getSelectedAthletePromise = dbServices.getSelectedAthlete();
     getSelectedAthletePromise.then( selectedAthlete => {
       console.log(selectedAthlete);
       dispatch(setSelectedAthlete(selectedAthlete));
     }, err => {
-
+      console.log(err, " loadAthletes");
     });
   };
 }

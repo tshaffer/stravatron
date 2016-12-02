@@ -37,7 +37,7 @@ export const getSegmentEffortsForActivity = (state, activityId) => {
 
   for (let segmentEffortId in state.segmentEfforts.segmentEffortsById) {
     const segmentEffort = state.segmentEfforts.segmentEffortsById[segmentEffortId];
-    if (segmentEffort.activityId == activityId) {
+    if (segmentEffort.activityId === activityId) {
       segmentEfforts.push(segmentEffort);
     }
   }
@@ -45,7 +45,7 @@ export const getSegmentEffortsForActivity = (state, activityId) => {
   return segmentEfforts;
 };
 
-export const getEffortsForActivitySegments = (state, activityId) => {
+export const getEffortsForActivitySegments = (state) => {
 
   let effortsForActivitySegments = {};
 

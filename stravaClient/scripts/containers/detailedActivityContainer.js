@@ -2,7 +2,8 @@ import { connect } from 'react-redux';
 
 import DetailedActivity from '../components/detailedActivity';
 
-import { loadDetailedActivity, setMapLatitudeLongitude, setMapMarkerCoordinates, setMapStreamIndex } from '../actions/index';
+import { loadDetailedActivity, setMapMarkerCoordinates, setMapStreamIndex }
+  from '../actions/index';
 import { getActivity } from '../reducers/reducer_activities';
 import { getEffortsForActivitySegments } from '../reducers/reducer_segment_efforts';
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';

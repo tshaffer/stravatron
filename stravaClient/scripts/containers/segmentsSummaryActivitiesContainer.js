@@ -9,7 +9,7 @@ import SummaryActivitiesContainer from './summaryActivitiesContainer';
 class SegmentsSummaryActivitiesContainer extends Component {
 
   componentWillMount() {
-    let promise = this.props.fetchSegmentsActivities(this.props.params.id);
+    this.props.fetchSegmentsActivities(this.props.params.id);
   }
 
   render() {

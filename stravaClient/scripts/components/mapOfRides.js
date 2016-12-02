@@ -32,8 +32,8 @@ class MapOfRides extends Component {
 
     const defaultJSX = (
       <div>
-          <Link to="/">Back</Link>
-          <br/>
+        <Link to="/">Back</Link>
+        <br/>
       </div>
     );
 
@@ -41,18 +41,13 @@ class MapOfRides extends Component {
       return defaultJSX;
     }
 
-    const firstActivity = this.props.activities.activitiesById[this.state.activityIds[0]];
-
-    let mapLoaded = true;
-
     const strokeColors = ["red", "blue", "purple", "green"];
     let activityIndex = 0;
     let activitiesData = [];
 
     this.state.activityIds.forEach( (activityId) => {
       const activity = this.props.activities.activitiesById[activityId];
-      if (!activity.mapPolyline || activity.mapPolyline == "") {
-        mapLoaded = false;
+      if (!activity.mapPolyline || activity.mapPolyline === "") {
         return;
       }
       const activityData =
@@ -69,16 +64,16 @@ class MapOfRides extends Component {
 
     return (
       <div>
-          <Link to="/summaryActivitiesContainer">Back</Link>
-          <br/>
-          <ActivityMap
-            activitiesData={activitiesData}
-            location={[]}
-            totalActivities={this.state.activityIds.length}
-            mapHeight={"760px"}
-            markerCount={0}
-            mapLatitudeLongitude={[]}
-          />
+        <Link to="/summaryActivitiesContainer">Back</Link>
+        <br/>
+        <ActivityMap
+          activitiesData={activitiesData}
+          location={[]}
+          totalActivities={this.state.activityIds.length}
+          mapHeight={"760px"}
+          markerCount={0}
+          mapLatitudeLongitude={[]}
+        />
       </div>
     );
   }

@@ -182,9 +182,11 @@ function fetchStream(activityId, getState) {
 
   return new Promise((resolve) => {
 
-    fetchStravaData('activities/' + activityId + '/streams/time,latlng,distance,altitude,grade_smooth', getState()).then( (stravaStreams) => {
-      resolve(stravaStreams);
-    });
+    fetchStravaData('activities/' + activityId +
+      '/streams/time,latlng,distance,altitude,grade_smooth',
+      getState()).then( (stravaStreams) => {
+        resolve(stravaStreams);
+      });
   });
 }
 
@@ -192,9 +194,10 @@ function fetchAllEfforts(athleteId, segmentId, getState) {
   // return new Promise((resolve, reject) => {
   return new Promise((resolve) => {
 
-    fetchStravaData("segments/" + segmentId.toString() + '/all_efforts?athlete_id=' + athleteId.toString(), getState()).then( (stravaAllEfforts) => {
-      resolve(stravaAllEfforts);
-    });
+    fetchStravaData("segments/" + segmentId.toString() + '/all_efforts?athlete_id=' +
+      athleteId.toString(), getState()).then( (stravaAllEfforts) => {
+        resolve(stravaAllEfforts);
+      });
   });
 }
 
@@ -219,9 +222,7 @@ export function loadActivityMap(activityId) {
   };
 }
 
-function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, getState) {
-
-  let state = null;
+function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) {
 
   // retrieve segments for this activity
   const getSegmentsForActivityPromise = dbServices.getSegmentsForActivity(activityId);
@@ -245,7 +246,7 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
       const segmentEffort = segmentEffortForActivity;
 
       // capture segmentEfforts this selected activity
-      if (segmentEffort.activityId == activityId) {
+      if (segmentEffort.activityId === activityId) {
         segmentEffortsForCurrentActivity.push(segmentEffort);
       }
 
@@ -310,17 +311,14 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
       const marker = {
         color: "red",
         coordinates: [0, 0]
-      }
+      };
       dispatch(addMapMarkers(activity, [marker]));
       dispatch(setMapMarkerCoordinates(activity.id, 0, startingLatitudeLongitude));
-
-      const reduxState = getState();
-
     });
   });
 }
 
-function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispatch, getState) {
+function loadDetailedActivityFromStrava(activityId, _, dbServices, dispatch, getState) {
   fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
 
     // retrieve streams for this activity
@@ -386,8 +384,7 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
           distanceData,
           gradientData
         };
-      const addStreamPromise = dbServices.addStream(stravaDetailedActivity.id, streamData);
-
+      dbServices.addStream(stravaDetailedActivity.id, streamData);
       dispatch(setActivityLocations(locationData));
     });
 
@@ -408,13 +405,13 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
       // add segment, segmentEffort to db
       const addSegmentPromise = dbServices.addSegment(segment);
       addSegmentPromise.then( () => {
-      }, (reason) => {
+      }, (_) => {
         // console.log("segment addition failed:", activityId);
       });
 
       const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
       addSegmentEffortPromise.then( () => {
-      }, (reason) => {
+      }, (_) => {
         // console.log("segmentEffort addition failed:", segmentEffort.activityId);
       });
     });
@@ -430,8 +427,6 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
     segmentIds.forEach((segmentId) => {
       fetchAllEffortsPromises.push(fetchAllEfforts(athleteId, segmentId, getState));
     });
-
-    let allEffortsList = [];
 
     Promise.all(fetchAllEffortsPromises).then(allEffortsForSegmentsInCurrentActivity => {
 
@@ -451,19 +446,15 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
               // add segment effort to the db
               const addSegmentEffortPromise = dbServices.addSegmentEffort(segmentEffort);
               addSegmentEffortPromise.then( () => {
-              }, (reason) => {
+              }, (_) => {
                 // console.log("segmentEffort addition failed:", segmentEffort.activityId);
               });
             });
 
             // add all individual segment efforts to store
-            let beforeState = getState();
             dispatch(addSegmentEfforts(segmentEfforts));
-            let afterState = getState();
           }
         });
-
-        const segmentEffortsAddedState = getState();
       }
     });
 
@@ -490,8 +481,6 @@ function loadDetailedActivityFromStrava(activityId, activity, dbServices, dispat
       });
 
       dispatch(addDetailedSegmentAttributes(detailedSegmentsAttributes));
-
-      const segmentsAddedState = getState();
     });
   });
 }
@@ -507,7 +496,7 @@ export function loadDetailedActivity(activityId) {
 
     // check to see if detailed data exists for activity - if not, fetch it.
     // I think the following is kind of a hack - how about if (activity.detailsExist())
-    if (activity.mapPolyline && activity.mapPolyline != "") {
+    if (activity.mapPolyline && activity.mapPolyline !== "") {
       loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, getState);
     }
     else {
@@ -653,9 +642,9 @@ function parseStravaSummaryActivities(stravaSummaryActivities) {
 function fetchSummaryActivities(secondsSinceEpochOfLastActivity, getState) {
 
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
 
-    var path = "athlete/activities?after=" + secondsSinceEpochOfLastActivity;
+    const path = "athlete/activities?after=" + secondsSinceEpochOfLastActivity;
 
     fetchStravaData(path, getState()).then( (stravaSummaryActivities)=> {
 
@@ -691,9 +680,8 @@ export function SetCustomMapSegments(customMapSegments) {
 
 export function retrieveCustomSegmentData() {
 
-  return function(dispatch, getState) {
-    var self;
-    fs.readFile('segments.json', (err, data) => {
+  return function(dispatch) {
+    fs.readFile('segments.json', (_, data) => {
 
       // check err and do something with it.
 

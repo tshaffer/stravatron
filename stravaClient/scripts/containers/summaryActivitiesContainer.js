@@ -25,13 +25,13 @@ export default class SummaryActivitiesContainer extends Component {
   render() {
     return (
       <div>
-          <SummaryActivities
-            activities={this.props.activities}
-            onShowDetailedMap={this.handleShowDetailedMap.bind(this)}
-            onCreateSegments={this.handleCreateSegments.bind(this)}
-            onMapStarredSegments={this.handleMapStarredSegments.bind(this)}
-            onMapSelectedRides={this.handleMapSelectedRides.bind(this)}
-          />
+        <SummaryActivities
+          activities={this.props.activities}
+          onShowDetailedMap={this.handleShowDetailedMap.bind(this)}
+          onCreateSegments={this.handleCreateSegments.bind(this)}
+          onMapStarredSegments={this.handleMapStarredSegments.bind(this)}
+          onMapSelectedRides={this.handleMapSelectedRides.bind(this)}
+        />
       </div>
     );
   }

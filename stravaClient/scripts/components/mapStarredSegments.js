@@ -10,12 +10,12 @@ class MapStarredSegments extends Component {
 
     var self = this;
 
-    const defaultJSX = (
-      <div>
-        <Link to="/">Back</Link>
-        <br/>
-      </div>
-    );
+    // const defaultJSX = (
+    //   <div>
+    //     <Link to="/">Back</Link>
+    //     <br/>
+    //   </div>
+    // );
 
     if (self.props.baseMapSegments.length > 0 && self.props.customMapSegments.length > 0) {
 

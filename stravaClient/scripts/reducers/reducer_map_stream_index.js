@@ -4,8 +4,6 @@ const initialState = -1;
 
 export default function(state = initialState, action) {
 
-  let newState = null;
-
   switch (action.type) {
 
     case SET_MAP_STREAM_INDEX: {

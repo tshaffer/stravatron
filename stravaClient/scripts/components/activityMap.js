@@ -34,9 +34,6 @@ class ActivityMap extends Component {
       });
     }
 
-    const longitudeCenter = (minLongitude + maxLongitude) / 2.0;
-    const latitudeCenter = (minLatitude + maxLatitude) / 2.0;
-
     window.mapboxgl.accessToken =
       'pk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXN2cjR4dXIwMjgwMm9wZ282cmk0aTgzIn0.9EtSUOr_ofLcwCDLM6FUHw';
     this.activityMap = new window.mapboxgl.Map({
@@ -75,7 +72,7 @@ class ActivityMap extends Component {
 //             });
 
 // polyline for activity
-      let activityCoordinates = [];
+//       let activityCoordinates = [];
       for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
         let sourceName = "segment" + segmentIndex.toString();
@@ -83,9 +80,11 @@ class ActivityMap extends Component {
 
         const segmentData = self.props.activitiesData[segmentIndex];
 
-        activityCoordinates = self.addLineToMap(sourceName, "segment" + segmentIndex.toString(),
+        self.addLineToMap(sourceName, "segment" + segmentIndex.toString(),
           lineLayerName, segmentData.polyline, segmentData.strokeColor);
       }
+
+      self.createMapMarker();
 
 // create a GeoJSON point to serve as a starting point
 //       if (self.props.markerCount > 0) {
@@ -229,41 +228,44 @@ class ActivityMap extends Component {
   //   }
   // }
 
-  createMapMarker(marker) {
+  createMapMarker() {
 
-    let coordinates = marker.coordinates;
+    const markersByActivity = this.props.mapMarkers.markersByActivity;
+    for (let activityId in markersByActivity) {
+      if (markersByActivity.hasOwnProperty(activityId)) {
+        const markers = markersByActivity[activityId];
 
-    this.markerPoint = {
-      "type": "Point",
-      "coordinates": coordinates
-    };
+        // TODO - not the real solution - marker and name of marker needs to be based on which marker it is
+        const marker = markers[0];
+        let coordinates = marker.coordinates;
 
-    this.activityMap.addSource('markerLocation', { type: 'geojson', data: this.markerPoint });
+        this.markerPoint = {
+          "type": "Point",
+          "coordinates": coordinates
+        };
 
-    this.activityMap.addLayer({
-      "id": "markerCircle",
-      "type": "circle",
-      "source": "markerLocation",
-      "paint": {
-        "circle-radius": 8,
-        "circle-color": marker.color,
-        "circle-opacity": 0.8
+        this.activityMap.addSource('markerLocation', { type: 'geojson', data: this.markerPoint });
+
+        this.activityMap.addLayer({
+          "id": "markerCircle",
+          "type": "circle",
+          "source": "markerLocation",
+          "paint": {
+            "circle-radius": 8,
+            "circle-color": marker.color,
+            "circle-opacity": 0.8
+          }
+        });
       }
-    });
+    }
   }
 
   updateMapMarkers() {
 
-    // don't create source if marker coordinates have not been properly initialized
-
     const markersByActivity = this.props.mapMarkers.markersByActivity;
-    for (var activityId in markersByActivity) {
+    for (let activityId in markersByActivity) {
       if (markersByActivity.hasOwnProperty(activityId)) {
         const markers = markersByActivity[activityId];
-
-        console.log(markersByActivity, " markersByActivity");
-        console.log(activityId, " activityId");
-        console.log(markers, "markers");
 
         // TODO - not the real solution - marker and name of marker needs to be based on which marker it is
         const marker = markers[0];
@@ -271,7 +273,7 @@ class ActivityMap extends Component {
 
         const source = this.activityMap.getSource('markerLocation');
         if (!source) {
-          this.createMapMarker(marker);
+          return;
         }
         else {
           this.markerPoint.coordinates = marker.coordinates;

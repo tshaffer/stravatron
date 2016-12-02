@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { hashHistory } from 'react-router';
-var moment = require('moment');
-const fs = require('fs');
 
 import ActivityVisuals from './activityVisuals';
 import SegmentCreator from './segmentCreator';
@@ -29,7 +26,7 @@ export default class ActivitySegmentCreator extends Component {
 
     const activity = this.props.activity;
 
-    if (!activity || this.props.segmentEffortsForActivity.length == 0) {
+    if (!activity || this.props.segmentEffortsForActivity.length === 0) {
       return <div>Loading...</div>;
     }
 
@@ -52,30 +49,30 @@ export default class ActivitySegmentCreator extends Component {
 
     return (
       <div>
-          <Link to="/allSummaryActivitiesContainer" id="backFromDetailedActivityButton">Back</Link>
-          <br/>
-          <SegmentCreator
-            activity={this.props.activity}
-            mapStreamIndex={this.props.mapStreamIndex}
-            onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
-            onSetSegmentEndPoint={this.handleSetSegmentEndPoint.bind(this)}
-            markerCount={2}
-            activityLocations={this.props.activityLocations}
-          />
-          <ActivityVisuals
-            activitiesData={activitiesData}
-            totalActivities={1}
-            mapHeight={"400px"}
-            markerCount={2}
-            mapLatitudeLongitude={this.props.mapLatitudeLongitude}
-            segmentEndPoint={this.props.segmentEndPoint}
-            streams={streams}
-            onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
-            onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
-            activityStartDateLocal={activity.startDateLocal}
-            segmentEffortsForActivity={this.props.segmentEffortsForActivity}
-            activityLocations={this.props.activityLocations}
-          />
+        <Link to="/allSummaryActivitiesContainer" id="backFromDetailedActivityButton">Back</Link>
+        <br/>
+        <SegmentCreator
+          activity={this.props.activity}
+          mapStreamIndex={this.props.mapStreamIndex}
+          onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
+          onSetSegmentEndPoint={this.handleSetSegmentEndPoint.bind(this)}
+          markerCount={2}
+          activityLocations={this.props.activityLocations}
+        />
+        <ActivityVisuals
+          activitiesData={activitiesData}
+          totalActivities={1}
+          mapHeight={"400px"}
+          markerCount={2}
+          mapLatitudeLongitude={this.props.mapLatitudeLongitude}
+          segmentEndPoint={this.props.segmentEndPoint}
+          streams={streams}
+          onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
+          onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
+          activityStartDateLocal={activity.startDateLocal}
+          segmentEffortsForActivity={this.props.segmentEffortsForActivity}
+          activityLocations={this.props.activityLocations}
+        />
       </div>
     );
   }

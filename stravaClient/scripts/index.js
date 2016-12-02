@@ -36,14 +36,14 @@ injectTapEventPlugin();
 
 ReactDOM.render(
   <Provider store={store}>
-      <Router history={hashHistory}>
-          <Route path="/" component={App} />
-          <Route path="/allSummaryActivitiesContainer" component={AllSummaryActivitiesContainer} />
-          <Route path="/segmentsSummaryActivitiesContainer/:id" component={SegmentsSummaryActivitiesContainer} />
-          <Route path="/detailedActivityContainer/:id" component={DetailedActivityContainer} />
-          <Route path="/activitySegmentCreatorContainer/:id" component={ActivitySegmentCreatorContainer} />
-          <Route path="/mapOfRides/:ids" component={MapOfRides} />
-          <Route path="/mapStarredSegments" component={MapStarredSegments} />
-      </Router>
+    <Router history={hashHistory}>
+      <Route path="/" component={App} />
+      <Route path="/allSummaryActivitiesContainer" component={AllSummaryActivitiesContainer} />
+      <Route path="/segmentsSummaryActivitiesContainer/:id" component={SegmentsSummaryActivitiesContainer} />
+      <Route path="/detailedActivityContainer/:id" component={DetailedActivityContainer} />
+      <Route path="/activitySegmentCreatorContainer/:id" component={ActivitySegmentCreatorContainer} />
+      <Route path="/mapOfRides/:ids" component={MapOfRides} />
+      <Route path="/mapStarredSegments" component={MapStarredSegments} />
+    </Router>
   </Provider>
   , document.getElementById('content'));

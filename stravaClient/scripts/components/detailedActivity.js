@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { hashHistory } from 'react-router';
-var moment = require('moment');
-const fs = require('fs');
+let moment = require('moment');
 
 import * as Converters from '../utilities/converters';
 
@@ -31,23 +30,23 @@ export default class DetailedActivity extends Component {
 
           <tbody>
 
-          <tr className="summaryDataRow">
-            <td>{activity.name}</td>
-            <td>{Converters.getMovingTime(activity.movingTime)}</td>
-            <td>{Converters.metersToFeet(activity.totalElevationGain).toFixed(0)} ft</td>
-            <td>{Converters.metersToMiles(activity.distance).toFixed(1)} mi</td>
-            <td>{Converters.metersPerSecondToMilesPerHour(activity.averageSpeed).toFixed(1)} mph</td>
-            <td>{calories}</td>
-          </tr>
+            <tr className="summaryDataRow">
+              <td>{activity.name}</td>
+              <td>{Converters.getMovingTime(activity.movingTime)}</td>
+              <td>{Converters.metersToFeet(activity.totalElevationGain).toFixed(0)} ft</td>
+              <td>{Converters.metersToMiles(activity.distance).toFixed(1)} mi</td>
+              <td>{Converters.metersPerSecondToMilesPerHour(activity.averageSpeed).toFixed(1)} mph</td>
+              <td>{calories}</td>
+            </tr>
 
-          <tr className="summaryLabels">
-            <td>{Converters.getDateTime(activity.startDateLocal)}</td>
-            <td>Time</td>
-            <td>Elevation</td>
-            <td>Distance</td>
-            <td>Speed</td>
-            <td>Calories</td>
-          </tr>
+            <tr className="summaryLabels">
+              <td>{Converters.getDateTime(activity.startDateLocal)}</td>
+              <td>Time</td>
+              <td>Elevation</td>
+              <td>Distance</td>
+              <td>Speed</td>
+              <td>Calories</td>
+            </tr>
 
           </tbody>
         </table>
@@ -145,9 +144,9 @@ export default class DetailedActivity extends Component {
           effortsForSegmentLbl =
             (
               <span>
-                                <span>{bestEffortTime}</span>
-                                <span className="smallDimDate">{bestEffortDate}</span>
-                            </span>
+                <span>{bestEffortTime}</span>
+                <span className="smallDimDate">{bestEffortDate}</span>
+              </span>
             );
 
           if (effortData.effortsSortedByMovingTime[1]) {
@@ -155,16 +154,17 @@ export default class DetailedActivity extends Component {
             const nextBestEffortTime = moment().startOf('day')
               .seconds(Number(effortData.effortsSortedByMovingTime[1].movingTime))
               .format('mm:ss');
-            const nextBestEffortDate = moment(effortData.effortsSortedByMovingTime[1].startDateLocal).format('YYYY-MM-DD');
+            const nextBestEffortDate =
+              moment(effortData.effortsSortedByMovingTime[1].startDateLocal).format('YYYY-MM-DD');
 
             effortsForSegmentLbl =
               (
                 <span>
-                                    <span>{bestEffortTime}</span>
-                                    <span className="smallDimDate">{bestEffortDate}</span>
-                                    <span>, {nextBestEffortTime}</span>
-                                    <span className="smallDimDate">{nextBestEffortDate}</span>
-                                </span>
+                  <span>{bestEffortTime}</span>
+                  <span className="smallDimDate">{bestEffortDate}</span>
+                  <span>, {nextBestEffortTime}</span>
+                  <span className="smallDimDate">{nextBestEffortDate}</span>
+                </span>
               );
           }
 
@@ -186,11 +186,11 @@ export default class DetailedActivity extends Component {
             if (effortData.effortsSortedByDate.length > (index + 1)) {
               const effort = effortData.effortsSortedByDate[index + 1];
               recentEfforts[index] =
-                {
-                  movingTime: effort.movingTime,
-                  date: effort.startDateLocal,
-                  separator: ', '
-                };
+              {
+                movingTime: effort.movingTime,
+                date: effort.startDateLocal,
+                separator: ', '
+              };
             }
             index++;
           }
@@ -198,15 +198,15 @@ export default class DetailedActivity extends Component {
           recentEffortsLbl =
             (
               <span>
-                                <span>{Converters.elapsedTimeToTimeString(recentEfforts[0].movingTime)}</span>
-                                <span className="smallDimDate">{Converters.formatDate(recentEfforts[0].date)}</span>
-                                <span>{recentEfforts[1].separator}</span>
-                                <span>{Converters.elapsedTimeToTimeString(recentEfforts[1].movingTime)}</span>
-                                <span className="smallDimDate">{Converters.formatDate(recentEfforts[1].date)}</span>
-                                <span>{recentEfforts[2].separator}</span>
-                                <span>{Converters.elapsedTimeToTimeString(recentEfforts[2].movingTime)}</span>
-                                <span className="smallDimDate">{Converters.formatDate(recentEfforts[2].date)}</span>
-                            </span>
+                <span>{Converters.elapsedTimeToTimeString(recentEfforts[0].movingTime)}</span>
+                <span className="smallDimDate">{Converters.formatDate(recentEfforts[0].date)}</span>
+                <span>{recentEfforts[1].separator}</span>
+                <span>{Converters.elapsedTimeToTimeString(recentEfforts[1].movingTime)}</span>
+                <span className="smallDimDate">{Converters.formatDate(recentEfforts[1].date)}</span>
+                <span>{recentEfforts[2].separator}</span>
+                <span>{Converters.elapsedTimeToTimeString(recentEfforts[2].movingTime)}</span>
+                <span className="smallDimDate">{Converters.formatDate(recentEfforts[2].date)}</span>
+              </span>
             );
         }
       }
@@ -253,7 +253,6 @@ export default class DetailedActivity extends Component {
 
     const self = this;
 
-    let segmentEffort = null;
 
     segmentEfforts.forEach( (segmentEffort) => {
       self.buildSegmentEffortRow(segmentEffort);
@@ -277,20 +276,20 @@ export default class DetailedActivity extends Component {
       <div id="DetailedActivity" className="detailsActivity">
         <table id="DetailedActivityTable" className="detailsActivityTable">
           <thead>
-          <tr>
-            <th>Name</th>
-            <th>Time</th>
-            <th>Best Times</th>
-            <th>Recent Efforts</th>
-            <th>Distance</th>
-            <th>Speed</th>
-            <th>Average Grade</th>
-            <th>Elevation Gain</th>
-            <th/>
-          </tr>
+            <tr>
+              <th>Name</th>
+              <th>Time</th>
+              <th>Best Times</th>
+              <th>Recent Efforts</th>
+              <th>Distance</th>
+              <th>Speed</th>
+              <th>Average Grade</th>
+              <th>Elevation Gain</th>
+              <th/>
+            </tr>
           </thead>
           <tbody>
-          {segmentEffortRows}
+            {segmentEffortRows}
           </tbody>
         </table>
       </div>
@@ -306,7 +305,7 @@ export default class DetailedActivity extends Component {
 
     const activity = this.props.activity;
 
-    if (!activity || this.props.segmentEffortsForActivity.length == 0) {
+    if (!activity || this.props.segmentEffortsForActivity.length === 0) {
       return <div>Loading...</div>;
     }
 

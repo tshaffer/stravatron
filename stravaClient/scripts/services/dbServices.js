@@ -1,8 +1,5 @@
 const mysql = require('mysql');
 
-import Activity from '../entities/activity';
-import SegmentEffort from '../entities/segmentEffort';
-
 export default class DBServices {
 
   constructor() {
@@ -24,7 +21,6 @@ export default class DBServices {
 
       self.dbConnection.connect();
 
-      let reason = {};
       let promises = [];
       promises.push(self.createAthletesTable());
       promises.push(self.createActivitiesTable());
@@ -33,7 +29,7 @@ export default class DBServices {
       promises.push(self.createSegmentEffortsTable());
       promises.push(self.createStreamsTable());
       promises.push(self.createMapsTable());
-      Promise.all(promises).then(value => {
+      Promise.all(promises).then( () => {
         resolve(self.dbConnection);
       }, reason => {
         reject(reason);
@@ -96,8 +92,6 @@ export default class DBServices {
 
     return new Promise( (resolve, reject) => {
 
-      const segmentId = segment.id;
-
       this.dbConnection.query(
         "INSERT INTO segments (id, averageGrade, distance, name, starred) " +
         " VALUES (?, ?, ?, ?, ?)",
@@ -134,15 +128,16 @@ export default class DBServices {
 
     var self = this;
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
 
       let segments = [];
 
-      var query = "SELECT segments.* FROM segments, segmentEfforts WHERE segments.id=segmentEfforts.segmentId AND segmentEfforts.activityId=?";
+      var query = "SELECT segments.* FROM segments, segmentEfforts WHERE ";
+      query += "segments.id=segmentEfforts.segmentId AND segmentEfforts.activityId=?";
       self.dbConnection.query(
         query,
         [activityId],
-        (err, rows) => {
+        (_, rows) => {
           rows.forEach(row => {
 
             let segment =
@@ -169,16 +164,18 @@ export default class DBServices {
 
     var self = this;
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
 
       let segmentEfforts = [];
 
-      var query = "SELECT segmentEfforts.* FROM segmentEfforts where segmentEfforts.segmentId in (SELECT segments.id FROM segments, segmentEfforts WHERE (segments.id=segmentEfforts.segmentId AND segmentEfforts.activityId=?))";
+      let query = "SELECT segmentEfforts.* FROM segmentEfforts where segmentEfforts.segmentId in ";
+      query += "(SELECT segments.id FROM segments, segmentEfforts WHERE ";
+      query += "(segments.id=segmentEfforts.segmentId AND segmentEfforts.activityId=?))";
 
       self.dbConnection.query(
         query,
         [activityId],
-        (err, rows) => {
+        (_, rows) => {
 
           rows.forEach(row => {
 
@@ -237,9 +234,12 @@ export default class DBServices {
     return new Promise( (resolve, reject) => {
 
       this.dbConnection.query(
-        "INSERT INTO segmentEfforts (id, activityId, athleteId, distance, movingTime, name, segmentId, startDateLocal)" +
+        "INSERT INTO segmentEfforts (id, activityId, athleteId, distance, " +
+        "movingTime, name, segmentId, startDateLocal)" +
         " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        [segmentEffort.id, segmentEffort.activityId, segmentEffort.athleteId, segmentEffort.distance, segmentEffort.movingTime, segmentEffort.name, segmentEffort.segmentId, new Date(segmentEffort.startDateLocal)],
+        [segmentEffort.id, segmentEffort.activityId, segmentEffort.athleteId, segmentEffort.distance,
+          segmentEffort.movingTime, segmentEffort.name, segmentEffort.segmentId,
+          new Date(segmentEffort.startDateLocal)],
         (err) => {
           if (err) {
             // console.log(err);
@@ -253,7 +253,7 @@ export default class DBServices {
 
   getSegmentEfforts(segmentEffortId) {
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
 
       let segmentEfforts = [];
 
@@ -262,7 +262,7 @@ export default class DBServices {
       this.dbConnection.query(
         query,
         [segmentEffortId],
-        (err, rows) => {
+        (_, rows) => {
 
           rows.forEach(row => {
             let segmentEffort =
@@ -290,18 +290,15 @@ export default class DBServices {
     // const segmentId='6096098';
     const segmentId = segmentIdParam;
 
-    let self = this;
+    return new Promise((resolve) => {
 
-    return new Promise((resolve, reject) => {
-
-      let activities = [];
-
-      const query = "select * from activities where activities.id in (select activityId from segmentEfforts where athleteId='2843574' and segmentId=?)";
+      let query = "select * from activities where activities.id in ";
+      query += "(select activityId from segmentEfforts where athleteId='2843574' and segmentId=?)";
 
       this.dbConnection.query(
         query,
         [segmentId],
-        (err, rows) => {
+        (_, rows) => {
 
           let dbActivities = [];
           rows.forEach( row => {
@@ -453,10 +450,12 @@ export default class DBServices {
 
     return new Promise( (resolve, reject) => {
       this.dbConnection.query(
-        "INSERT INTO activities (id, athleteId, averageSpeed, description, distance, elapsedTime, kilojoules, city, mapSummaryPolyline, maxSpeed, " +
+        "INSERT INTO activities (id, athleteId, averageSpeed, description, distance, " +
+        "elapsedTime, kilojoules, city, mapSummaryPolyline, maxSpeed, " +
         "movingTime, name, startDateLocal, totalElevationGain) " +
         " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [a.id, a.athleteId, a.averageSpeed, a.description, a.distance, a.elapsedTime, a.kilojoules, a.city, a.mapSummaryPolyline, a.maxSpeed,
+        [a.id, a.athleteId, a.averageSpeed, a.description, a.distance,
+          a.elapsedTime, a.kilojoules, a.city, a.mapSummaryPolyline, a.maxSpeed,
           a.movingTime, a.name, a.startDateLocal, a.totalElevationGain],
         (err) => {
           if (err) {
@@ -472,7 +471,7 @@ export default class DBServices {
 
   getActivities(athleteId) {
 
-    return new Promise( (resolve, reject) => {
+    return new Promise( (resolve, _) => {
 
       var query = "SELECT * FROM activities " +
         "WHERE athleteId=?";
@@ -480,7 +479,7 @@ export default class DBServices {
       this.dbConnection.query(
         query,
         [athleteId],
-        (err, rows) => {
+        (_, rows) => {
 
           let dbActivities = [];
           rows.forEach( row => {
@@ -541,7 +540,7 @@ export default class DBServices {
             reject(err);
           }
 
-          if (rows.length == 0) {
+          if (rows.length === 0) {
             console.log("no athletes found");
             resolve([]);
           }
