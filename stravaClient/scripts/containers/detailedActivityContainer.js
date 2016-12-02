@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import DetailedActivity from '../components/detailedActivity';
 
-import { loadDetailedActivity, setMapLatitudeLongitude, setMapStreamIndex } from '../actions/index';
+import { loadDetailedActivity, setMapLatitudeLongitude, setMapMarkerCoordinates, setMapStreamIndex } from '../actions/index';
 import { getActivity } from '../reducers/reducer_activities';
 import { getEffortsForActivitySegments } from '../reducers/reducer_segment_efforts';
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
@@ -28,8 +28,9 @@ function mapDispatchToProps(dispatch) {
     onLoadDetailedActivity: (activityId) => {
       dispatch(loadDetailedActivity(activityId));
     },
-    onSetMapLatitudeLongitude: (latitudeLongitude) => {
-      dispatch(setMapLatitudeLongitude(latitudeLongitude));
+    onSetMapLatitudeLongitude: (activityId, latitudeLongitude) => {
+      // dispatch(setMapLatitudeLongitude(latitudeLongitude));
+      dispatch(setMapMarkerCoordinates(activityId, 0, latitudeLongitude));
     },
     onSetMapStreamIndex: (streamIndex) => {
       dispatch(setMapStreamIndex(streamIndex));

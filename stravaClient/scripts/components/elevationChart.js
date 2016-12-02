@@ -211,7 +211,7 @@ class ElevationChart extends Component {
         const d = dataTable.getValue(selectedItem.row, 0);
         var selectedLocation = mapDistanceToLocation[d];
         if (selectedLocation) {
-          self.props.onSetMapLatitudeLongitude(selectedLocation);
+          self.props.onSetMapLatitudeLongitude(self.props.activity.id, selectedLocation);
         }
 
         const selectedStreamIndex = mapDistanceToStreamIndex[d];
@@ -239,6 +239,7 @@ class ElevationChart extends Component {
 }
 
 ElevationChart.propTypes = {
+  activity: React.PropTypes.object.isRequired,
   streams: React.PropTypes.array.isRequired,
   onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
   onSetMapStreamIndex: React.PropTypes.func.isRequired,

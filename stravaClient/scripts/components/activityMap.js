@@ -261,6 +261,10 @@ class ActivityMap extends Component {
       if (markersByActivity.hasOwnProperty(activityId)) {
         const markers = markersByActivity[activityId];
 
+        console.log(markersByActivity, " markersByActivity");
+        console.log(activityId, " activityId");
+        console.log(markers, "markers");
+
         // TODO - not the real solution - marker and name of marker needs to be based on which marker it is
         const marker = markers[0];
         if (marker.coordinates[0] === 0 && marker.coordinates[1] === 0) return;
@@ -268,6 +272,10 @@ class ActivityMap extends Component {
         const source = this.activityMap.getSource('markerLocation');
         if (!source) {
           this.createMapMarker(marker);
+        }
+        else {
+          this.markerPoint.coordinates = marker.coordinates;
+          source.setData(this.markerPoint);
         }
       }
     }
@@ -364,7 +372,9 @@ class ActivityMap extends Component {
     // Object.keys(obj).length
 
     // if (Object.keys(this.props.mapMarkers.markersByActivity).length > 0) {
-    this.updateMapMarkers();
+    if (this.activityMap && this.mapBoxMap) {
+      this.updateMapMarkers();
+    }
     // }
 
     const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);

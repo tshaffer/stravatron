@@ -298,8 +298,8 @@ export default class DetailedActivity extends Component {
     );
   }
 
-  handleSetMapLatitudeLongitude(mapLatitudeLongitude) {
-    this.props.onSetMapLatitudeLongitude(mapLatitudeLongitude);
+  handleSetMapLatitudeLongitude(activityId, mapLatitudeLongitude) {
+    this.props.onSetMapLatitudeLongitude(activityId, mapLatitudeLongitude);
   }
 
   render () {
@@ -336,6 +336,7 @@ export default class DetailedActivity extends Component {
         <br/>
         {rideSummaryHeader}
         <ActivityVisuals
+          activity={this.props.activity}
           activitiesData={activitiesData}
           totalActivities={1}
           mapHeight={"400px"}

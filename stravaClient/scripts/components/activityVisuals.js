@@ -19,6 +19,7 @@ export default class ActivityVisuals extends Component {
           mapMarkers={this.props.mapMarkers}
         />
         <ElevationChart
+          activity={this.props.activity}
           streams={this.props.streams}
           onSetMapLatitudeLongitude = {this.props.onSetMapLatitudeLongitude}
           onSetMapStreamIndex={this.props.onSetMapStreamIndex}
@@ -31,6 +32,7 @@ export default class ActivityVisuals extends Component {
 }
 
 ActivityVisuals.propTypes = {
+  activity: React.PropTypes.object.isRequired,
   activitiesData: React.PropTypes.array.isRequired,
   mapLatitudeLongitude: React.PropTypes.array.isRequired,
   segmentEndPoint: React.PropTypes.array.isRequired,

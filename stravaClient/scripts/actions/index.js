@@ -312,7 +312,7 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
         coordinates: [0, 0]
       }
       dispatch(addMapMarkers(activity, [marker]));
-      dispatch(setMapMarkerCoordinates(activity, 0, startingLatitudeLongitude));
+      dispatch(setMapMarkerCoordinates(activity.id, 0, startingLatitudeLongitude));
 
       const reduxState = getState();
 
@@ -779,12 +779,12 @@ export function addMapMarkers(activity, markers) {
 }
 
 
-export function setMapMarkerCoordinates(activity, markerIndex, coordinates) {
+export function setMapMarkerCoordinates(activityId, markerIndex, coordinates) {
 
   return {
     type: SET_MAP_MARKER_COORDINATES,
     payload: {
-      activityId: activity.id,
+      activityId,
       markerIndex,
       coordinates
     }
