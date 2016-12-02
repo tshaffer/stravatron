@@ -1,12 +1,18 @@
+/* @flow */
+
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 
 class ActivityMap extends Component {
 
-  constructor(props) {
+  activityMap : Object;
+  mapBoxMap: Object;
+  markerPoint: Object;
+
+  constructor(props: Object) {
     super(props);
 
-    this.activityMap = null;
+    // this.activityMap = null;
   }
 
   initializeMap() {
@@ -139,7 +145,7 @@ class ActivityMap extends Component {
     });
   }
 
-  addLineToMap(sourceName, sourceTitle, layerName, pathToDecode, color) {
+  addLineToMap(sourceName : string, sourceTitle : string, layerName : string, pathToDecode : string, color : string) {
 
     let coordinates = [];
 
@@ -301,7 +307,7 @@ class ActivityMap extends Component {
   //   }
   // }
 
-  buildMapLegend(activitiesData) {
+  buildMapLegend(activitiesData: Object[] ) {
 
     // for now, only show legend when more than one activity is mapped
     if (activitiesData.length < 2) {
