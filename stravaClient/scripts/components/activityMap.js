@@ -88,55 +88,55 @@ class ActivityMap extends Component {
       }
 
 // create a GeoJSON point to serve as a starting point
-      if (self.props.markerCount > 0) {
-        let coordinates = [longitudeCenter, latitudeCenter];
-        if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
-          coordinates = self.props.mapLatitudeLongitude;
-        }
-        coordinates = activityCoordinates[0];
+//       if (self.props.markerCount > 0) {
+//         let coordinates = [longitudeCenter, latitudeCenter];
+//         if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
+//           coordinates = self.props.mapLatitudeLongitude;
+//         }
+//         coordinates = activityCoordinates[0];
+//
+//         self.markerPoint = {
+//           "type": "Point",
+//           "coordinates": coordinates
+//         };
+//         self.activityMap.addSource('markerLocation', { type: 'geojson', data: self.markerPoint });
+//
+//         self.activityMap.addLayer({
+//           "id": "markerCircle",
+//           "type": "circle",
+//           "source": "markerLocation",
+//           "paint": {
+//             "circle-radius": 8,
+//             "circle-color": "red",
+//             "circle-opacity": 0.8
+//           }
+//         });
+//       }
 
-        self.markerPoint = {
-          "type": "Point",
-          "coordinates": coordinates
-        };
-        self.activityMap.addSource('markerLocation', { type: 'geojson', data: self.markerPoint });
-
-        self.activityMap.addLayer({
-          "id": "markerCircle",
-          "type": "circle",
-          "source": "markerLocation",
-          "paint": {
-            "circle-radius": 8,
-            "circle-color": "red",
-            "circle-opacity": 0.8
-          }
-        });
-      }
-
-      if (self.props.markerCount > 1) {
-        let coordinates = [longitudeCenter, latitudeCenter];
-        if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
-          coordinates = self.props.mapLatitudeLongitude;
-        }
-        coordinates = self.props.activityLocations[Math.round(self.props.activityLocations.length / 2) - 1];
-
-        self.endMarkerPoint = {
-          "type": "Point",
-          "coordinates": coordinates
-        };
-        self.activityMap.addSource('endMarkerLocation', { type: 'geojson', data: self.endMarkerPoint });
-
-        self.activityMap.addLayer({
-          "id": "endMarkerCircle",
-          "type": "circle",
-          "source": "endMarkerLocation",
-          "paint": {
-            "circle-radius": 8,
-            "circle-color": "green",
-            "circle-opacity": 0.8
-          }
-        });
-      }
+      // if (self.props.markerCount > 1) {
+      //   let coordinates = [longitudeCenter, latitudeCenter];
+      //   if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
+      //     coordinates = self.props.mapLatitudeLongitude;
+      //   }
+      //   coordinates = self.props.activityLocations[Math.round(self.props.activityLocations.length / 2) - 1];
+      //
+      //   self.endMarkerPoint = {
+      //     "type": "Point",
+      //     "coordinates": coordinates
+      //   };
+      //   self.activityMap.addSource('endMarkerLocation', { type: 'geojson', data: self.endMarkerPoint });
+      //
+      //   self.activityMap.addLayer({
+      //     "id": "endMarkerCircle",
+      //     "type": "circle",
+      //     "source": "endMarkerLocation",
+      //     "paint": {
+      //       "circle-radius": 8,
+      //       "circle-color": "green",
+      //       "circle-opacity": 0.8
+      //     }
+      //   });
+      // }
     });
   }
 
@@ -212,41 +212,84 @@ class ActivityMap extends Component {
     }
   }
 
-  setMarkerPosition() {
-    if (this.props.markerCount > 0) {
-      const source = this.activityMap.getSource('markerLocation');
-      if (!source) return;
+  // setMarkerPosition() {
+  //   if (this.props.markerCount > 0) {
+  //     const source = this.activityMap.getSource('markerLocation');
+  //     if (!source) return;
+  //
+  //     if (!this.markerPoint) {
+  //       this.markerPoint = {
+  //         "type": "Point",
+  //         "coordinates": []
+  //       };
+  //
+  //     }
+  //     this.markerPoint.coordinates = this.props.mapLatitudeLongitude;
+  //     source.setData(this.markerPoint);
+  //   }
+  // }
 
-      if (!this.markerPoint) {
-        this.markerPoint = {
-          "type": "Point",
-          "coordinates": []
-        };
+  createMapMarker(marker) {
 
+    let coordinates = marker.coordinates;
+
+    this.markerPoint = {
+      "type": "Point",
+      "coordinates": coordinates
+    };
+
+    this.activityMap.addSource('markerLocation', { type: 'geojson', data: this.markerPoint });
+
+    this.activityMap.addLayer({
+      "id": "markerCircle",
+      "type": "circle",
+      "source": "markerLocation",
+      "paint": {
+        "circle-radius": 8,
+        "circle-color": marker.color,
+        "circle-opacity": 0.8
       }
-      this.markerPoint.coordinates = this.props.mapLatitudeLongitude;
-      source.setData(this.markerPoint);
-    }
+    });
   }
 
-  setSegmentEndPointPosition() {
-    if (this.props.markerCount > 1) {
-      const source = this.activityMap.getSource('endMarkerLocation');
-      if (!source) return;
+  updateMapMarkers() {
 
-      if (!this.endMarkerPoint) {
-        this.endMarkerPoint = {
-          "type": "Point",
-          "coordinates": []
-        };
+    // don't create source if marker coordinates have not been properly initialized
 
+    const markersByActivity = this.props.mapMarkers.markersByActivity;
+    for (var activityId in markersByActivity) {
+      if (markersByActivity.hasOwnProperty(activityId)) {
+        const markers = markersByActivity[activityId];
+
+        // TODO - not the real solution - marker and name of marker needs to be based on which marker it is
+        const marker = markers[0];
+        if (marker.coordinates[0] === 0 && marker.coordinates[1] === 0) return;
+
+        const source = this.activityMap.getSource('markerLocation');
+        if (!source) {
+          this.createMapMarker(marker);
+        }
       }
-      this.endMarkerPoint.coordinates = this.props.segmentEndPoint;
-      source.setData(this.endMarkerPoint);
-
-      console.log("setSegmentEndPointPosition: ", this.endMarkerPoint);
     }
   }
+  // setSegmentEndPointPosition() {
+  //   if (this.props.markerCount > 1) {
+  //     const source = this.activityMap.getSource('endMarkerLocation');
+  //     if (!source) return;
+  //
+  //     if (!this.endMarkerPoint) {
+  //       this.endMarkerPoint = {
+  //         "type": "Point",
+  //         "coordinates": []
+  //       };
+  //
+  //     }
+  //     this.endMarkerPoint.coordinates = this.props.segmentEndPoint;
+  //     source.setData(this.endMarkerPoint);
+  //
+  //     console.log("setSegmentEndPointPosition: ", this.endMarkerPoint);
+  //   }
+  // }
 
   buildMapLegend(activitiesData) {
 
@@ -301,16 +344,28 @@ class ActivityMap extends Component {
 
   render() {
 
-    var self = this;
+    let self = this;
 
-    if (this.activityMap && this.props.markerCount > 0 && this.props.mapLatitudeLongitude
-      && this.props.mapLatitudeLongitude.length > 0) {
-      this.setMarkerPosition();
-    }
-    if (this.activityMap && this.props.markerCount > 1 && this.props.segmentEndPoint
-      && this.props.segmentEndPoint.length > 0) {
-      this.setSegmentEndPointPosition();
-    }
+    // if (this.activityMap && this.props.markerCount > 0 && this.props.mapLatitudeLongitude
+    //   && this.props.mapLatitudeLongitude.length > 0) {
+    //   this.setMarkerPosition();
+    // }
+    // if (this.activityMap && this.props.markerCount > 1 && this.props.segmentEndPoint
+    //   && this.props.segmentEndPoint.length > 0) {
+    //   this.setSegmentEndPointPosition();
+    // }
+
+    // for (var property in object) {
+    //   if (object.hasOwnProperty(property)) {
+    //     // do stuff
+    //   }
+    // }
+
+    // Object.keys(obj).length
+
+    // if (Object.keys(this.props.mapMarkers.markersByActivity).length > 0) {
+    this.updateMapMarkers();
+    // }
 
     const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);
 
@@ -333,7 +388,8 @@ ActivityMap.propTypes = {
   markerCount: React.PropTypes.number.isRequired,
   mapLatitudeLongitude: React.PropTypes.array.isRequired,
   segmentEndPoint: React.PropTypes.array.isRequired,
-  activityLocations: React.PropTypes.array.isRequired
+  activityLocations: React.PropTypes.array.isRequired,
+  mapMarkers: React.PropTypes.object.isRequired
 };
 
 

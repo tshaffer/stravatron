@@ -30,7 +30,7 @@ export default function(state = initialState, action) {
       let newMarkersByActivity = Object.assign( {}, state.markersByActivity);
 
       let markers = newMarkersByActivity[action.payload.activityId];
-      markers[action.payload.markerIndex] = action.payload.coordinates;
+      markers[action.payload.markerIndex].coordinates = action.payload.coordinates;
 
       newState = {
         markersByActivity: newMarkersByActivity

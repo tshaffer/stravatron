@@ -312,12 +312,9 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, 
         coordinates: [0, 0]
       }
       dispatch(addMapMarkers(activity, [marker]));
-
-      // could combine with prior, but I'll test here
       dispatch(setMapMarkerCoordinates(activity, 0, startingLatitudeLongitude));
 
       const reduxState = getState();
-      debugger;
 
     });
   });
