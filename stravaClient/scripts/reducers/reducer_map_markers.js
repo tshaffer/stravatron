@@ -33,6 +33,7 @@ export default function(state = initialState, action) {
 
       markers = newMarkersByActivity[action.payload.activityId];
       markers[action.payload.markerIndex].coordinates = action.payload.coordinates;
+      markers[action.payload.markerIndex].locationIndex = action.payload.locationIndex;
 
       newState = {
         markersByActivity: newMarkersByActivity

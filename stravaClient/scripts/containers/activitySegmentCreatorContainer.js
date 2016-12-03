@@ -31,16 +31,9 @@ function mapDispatchToProps(dispatch) {
     onLoadDetailedActivity: (activityId, markerCount) => {
       dispatch(loadDetailedActivity(activityId, markerCount));
     },
-    // onSetMapLatitudeLongitude: (latitudeLongitude) => {
-    //   dispatch(setMapLatitudeLongitude(latitudeLongitude));
-    // },
     onSetMapLatitudeLongitude: (activityId, markerIndex, latitudeLongitude) => {
-      // dispatch(setMapLatitudeLongitude(latitudeLongitude));
       dispatch(setMapMarkerCoordinates(activityId, markerIndex, latitudeLongitude));
     },
-    // onSetSegmentEndPoint: (latitudeLongitude) => {
-    //   dispatch(setSegmentEndPoint(latitudeLongitude));
-    // },
     onSetMapStreamIndex: (streamIndex) => {
       dispatch(setMapStreamIndex(streamIndex));
     }

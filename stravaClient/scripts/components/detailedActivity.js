@@ -298,7 +298,7 @@ export default class DetailedActivity extends Component {
   }
 
   handleSetMapLatitudeLongitude(activityId, mapLatitudeLongitude) {
-    this.props.onSetMapLatitudeLongitude(activityId, 0, mapLatitudeLongitude);
+    this.props.onSetMapLatitudeLongitude(activityId, 0, mapLatitudeLongitude, 0);
   }
 
   render () {

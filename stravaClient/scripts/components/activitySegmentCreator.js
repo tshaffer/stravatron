@@ -15,7 +15,7 @@ export default class ActivitySegmentCreator extends Component {
   }
 
   handleSetMapLatitudeLongitude(activityId, markerIndex, mapLatitudeLongitude) {
-    this.props.onSetMapLatitudeLongitude(activityId, markerIndex, mapLatitudeLongitude);
+    this.props.onSetMapLatitudeLongitude(activityId, markerIndex, mapLatitudeLongitude, 0);
   }
 
   // handleSetSegmentEndPoint(latitudeLongitude) {
