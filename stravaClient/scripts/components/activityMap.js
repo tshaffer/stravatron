@@ -247,6 +247,8 @@ class ActivityMap extends Component {
 
           this.activityMap.addSource('markerLocation' + index.toString(), { type: 'geojson', data: this.markerPoint });
 
+          console.log("markerColor is: ", marker.color);
+
           this.activityMap.addLayer({
             "id": "markerCircle",
             "type": "circle",
@@ -265,17 +267,24 @@ class ActivityMap extends Component {
 
   updateMapMarkers() {
 
-    const markersByActivity = this.props.mapMarkers.markersByActivity;
+    const self = this;
+    
+    const markersByActivity = self.props.mapMarkers.markersByActivity;
     for (let activityId in markersByActivity) {
       if (markersByActivity.hasOwnProperty(activityId)) {
         const markers = markersByActivity[activityId];
 
         markers.forEach( (marker, index) => {
           if (marker.coordinates[0] !== 0 && marker.coordinates[1] !== 0) {
-            const source = this.activityMap.getSource('markerLocation' + index.toString());
+            const source = self.activityMap.getSource('markerLocation' + index.toString());
             if (source) {
-              this.markerPoint.coordinates = marker.coordinates;
-              source.setData(this.markerPoint);
+              self.markerPoint.coordinates = marker.coordinates;
+              source.setData(self.markerPoint);
+
+              console.log(source);
+              console.log(self.markerPoint);
+
+              // debugger;
             }
           }
         });
@@ -283,24 +292,6 @@ class ActivityMap extends Component {
       }
     }
   }
-  // setSegmentEndPointPosition() {
-  //   if (this.props.markerCount > 1) {
-  //     const source = this.activityMap.getSource('endMarkerLocation');
-  //     if (!source) return;
-  //
-  //     if (!this.endMarkerPoint) {
-  //       this.endMarkerPoint = {
-  //         "type": "Point",
-  //         "coordinates": []
-  //       };
-  //
-  //     }
-  //     this.endMarkerPoint.coordinates = this.props.segmentEndPoint;
-  //     source.setData(this.endMarkerPoint);
-  //
-  //     console.log("setSegmentEndPointPosition: ", this.endMarkerPoint);
-  //   }
-  // }
 
   buildMapLegend(activitiesData) {
 

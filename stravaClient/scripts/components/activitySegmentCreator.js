@@ -81,7 +81,7 @@ export default class ActivitySegmentCreator extends Component {
 ActivitySegmentCreator.propTypes = {
   onLoadDetailedActivity: React.PropTypes.func.isRequired,
   onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
-  onSetSegmentEndPoint: React.PropTypes.func.isRequired,
+  // onSetSegmentEndPoint: React.PropTypes.func.isRequired,
   onSetMapStreamIndex: React.PropTypes.func.isRequired,
   activity: React.PropTypes.object.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,

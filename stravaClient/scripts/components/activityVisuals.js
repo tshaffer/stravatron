@@ -34,7 +34,7 @@ ActivityVisuals.propTypes = {
   activity: React.PropTypes.object.isRequired,
   activitiesData: React.PropTypes.array.isRequired,
   mapLatitudeLongitude: React.PropTypes.array.isRequired,
-  segmentEndPoint: React.PropTypes.array.isRequired,
+  // segmentEndPoint: React.PropTypes.array.isRequired,
   streams: React.PropTypes.array.isRequired,
   activityStartDateLocal: React.PropTypes.object.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
