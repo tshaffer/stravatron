@@ -15,6 +15,9 @@ export default function(state = initialState, action) {
 
     case ADD_MAP_MARKERS: {
 
+      console.log("ADD_MAP_MARKERS");
+      console.log(action);
+
       newMarkersByActivity = Object.assign( {}, state.markersByActivity);
 
       markers = action.payload.markers;
@@ -28,6 +31,9 @@ export default function(state = initialState, action) {
     }
 
     case SET_MAP_MARKER_COORDINATES: {
+
+      console.log("SET_MAP_MARKER_COORDINATES");
+      console.log(action);
 
       newMarkersByActivity = Object.assign( {}, state.markersByActivity);
 

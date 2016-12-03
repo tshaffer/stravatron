@@ -308,33 +308,44 @@ function loadDetailedActivityFromDB(activityId, activity, markerCount, dbService
       dispatch(setMapLatitudeLongitude(startingLatitudeLongitude));
       dispatch(setMapStreamIndex(0));
 
-      // check markerCount
-      console.log("markerCount:", markerCount);
-
       let markers = [];
+      let marker0 = {};
+      let marker1 = {};
+
+      console.log("markers before any push");
+      console.log(markers);
+      debugger;
 
       if (markerCount > 0) {
 
-        const marker0 = {
+        marker0 = {
           color: "red",
-          coordinates: [0, 0]
+          // coordinates: [0, 0]
+          coordinates: [-122.030886, 36.988858]
         };
         markers.push(marker0);
+        console.log("markers after first push");
+        console.log(markers);
 
         if (markerCount > 1) {
-          const marker1 = {
+          marker1 = {
             color: "green",
-            coordinates: [0, 0]
+            // coordinates: [0, 0]
+            coordinates: [-122.063028, 37.024287]
           };
           markers.push(marker1);
+          console.log("markers after second push");
+          console.log(markers);
         }
       }
 
       if (markerCount > 0) {
+        console.log("dispatch addMapMarkers");
+        console.log(markers);
         dispatch(addMapMarkers(activity, markers));
-        dispatch(setMapMarkerCoordinates(activity.id, 0, startingLatitudeLongitude));
+        dispatch(setMapMarkerCoordinates(activity.id, 0, marker0.coordinates));
         if (markerCount > 1) {
-          dispatch(setMapMarkerCoordinates(activity.id, 1, startingLatitudeLongitude));
+          dispatch(setMapMarkerCoordinates(activity.id, 1, marker1.coordinates));
         }
       }
     });

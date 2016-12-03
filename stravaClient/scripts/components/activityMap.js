@@ -213,23 +213,6 @@ class ActivityMap extends Component {
     }
   }
 
-  // setMarkerPosition() {
-  //   if (this.props.markerCount > 0) {
-  //     const source = this.activityMap.getSource('markerLocation');
-  //     if (!source) return;
-  //
-  //     if (!this.markerPoint) {
-  //       this.markerPoint = {
-  //         "type": "Point",
-  //         "coordinates": []
-  //       };
-  //
-  //     }
-  //     this.markerPoint.coordinates = this.props.mapLatitudeLongitude;
-  //     source.setData(this.markerPoint);
-  //   }
-  // }
-
   createMapMarker() {
 
     const markersByActivity = this.props.mapMarkers.markersByActivity;
@@ -238,21 +221,34 @@ class ActivityMap extends Component {
         const markers = markersByActivity[activityId];
 
         markers.forEach( (marker, index) => {
+
+          let sourceName = "";
+
+          if (index === 0) {
+            sourceName = "flibbet";
+          }
+          else {
+            sourceName = "pooper";
+          }
+
           let coordinates = marker.coordinates;
+          console.log("createMapMarker");
+          console.log(coordinates);
 
           this.markerPoint = {
             "type": "Point",
             "coordinates": coordinates
           };
 
-          this.activityMap.addSource('markerLocation' + index.toString(), { type: 'geojson', data: this.markerPoint });
+          this.activityMap.addSource(sourceName, {type: 'geojson', data: this.markerPoint});
 
-          console.log("markerColor is: ", marker.color);
+          // console.log("markerColor is: ", marker.color);
 
           this.activityMap.addLayer({
-            "id": "markerCircle",
+            // "id": "markerCircle",
+            "id": sourceName,
             "type": "circle",
-            "source": "markerLocation" + index.toString(),
+            "source": sourceName,
             "paint": {
               "circle-radius": 8,
               "circle-color": marker.color,
@@ -260,7 +256,6 @@ class ActivityMap extends Component {
             }
           });
         });
-
       }
     }
   }
@@ -275,20 +270,33 @@ class ActivityMap extends Component {
         const markers = markersByActivity[activityId];
 
         markers.forEach( (marker, index) => {
+
+          let sourceName = "";
+
+          if (index === 0) {
+            sourceName = "flibbet";
+          }
+          else {
+            sourceName = "pooper";
+          }
+
           if (marker.coordinates[0] !== 0 && marker.coordinates[1] !== 0) {
-            const source = self.activityMap.getSource('markerLocation' + index.toString());
+            const source = self.activityMap.getSource(sourceName);
             if (source) {
               self.markerPoint.coordinates = marker.coordinates;
+
+              console.log("updateMapMarkers");
+              console.log(self.markerPoint.coordinates);
+
               source.setData(self.markerPoint);
 
-              console.log(source);
-              console.log(self.markerPoint);
+              // console.log(source);
+              // console.log(self.markerPoint);
 
               // debugger;
             }
           }
         });
-
       }
     }
   }
