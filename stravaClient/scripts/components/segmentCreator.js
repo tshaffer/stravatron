@@ -119,21 +119,10 @@ export default class SegmentCreator extends Component {
   handleSliderChange(sliderValues) {
 
     const selectedStartLocation = this.props.activityLocations[sliderValues[0]];
-    console.log("selectedStartLocation");
-    console.log(selectedStartLocation);
-
-    // this.props.onSetMapLatitudeLongitude(selectedStartLocation);
     this.props.onSetMapLatitudeLongitude(this.props.activity.id, 0, selectedStartLocation);
-
-
-
-
-    console.log("handleSliderChange:", selectedStartLocation);
 
     const selectedEndLocation = this.props.activityLocations[sliderValues[1]];
     this.props.onSetMapLatitudeLongitude(this.props.activity.id, 1, selectedEndLocation);
-
-    console.log("handleSliderChange:", selectedEndLocation);
   }
 
   updateSlider(boundsIndex, step) {
@@ -143,20 +132,7 @@ export default class SegmentCreator extends Component {
       bounds
     });
 
-    console.log("bounds[", boundsIndex, "]");
-    console.log(bounds[boundsIndex]);
-    console.log("location");
-    console.log(this.props.activityLocations[bounds[boundsIndex]]);
-
     this.props.onSetMapLatitudeLongitude(this.props.activity.id, boundsIndex, this.props.activityLocations[bounds[boundsIndex]]);
-
-    // console.log("updateSlider:", boundsIndex, " ",  this.props.activityLocations[bounds[boundsIndex]]);
-    // if (boundsIndex === 0) {
-    //   this.props.onSetMapLatitudeLongitude(this.props.activityLocations[bounds[boundsIndex]]);
-    // }
-    // else {
-    //   this.props.onSetSegmentEndPoint(this.props.activityLocations[bounds[boundsIndex]]);
-    // }
   }
 
   handleMoveStartForward() {

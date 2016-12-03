@@ -170,18 +170,8 @@ class ActivityMap extends Component {
 
         markers.forEach( (marker, index) => {
 
-          let sourceName = "";
-
-          if (index === 0) {
-            sourceName = "flibbet";
-          }
-          else {
-            sourceName = "pooper";
-          }
-
-          let coordinates = marker.coordinates;
-          console.log("createMapMarker");
-          console.log(coordinates);
+          const sourceName = "marker" + index.toString();
+          const coordinates = marker.coordinates;
 
           this.markerPoint = {
             "type": "Point",
@@ -216,14 +206,15 @@ class ActivityMap extends Component {
 
         markers.forEach( (marker, index) => {
 
-          let sourceName = "";
-
-          if (index === 0) {
-            sourceName = "flibbet";
-          }
-          else {
-            sourceName = "pooper";
-          }
+          let sourceName = "marker" + index.toString();
+          // let sourceName = "";
+          //
+          // if (index === 0) {
+          //   sourceName = "flibbet";
+          // }
+          // else {
+          //   sourceName = "pooper";
+          // }
 
           if (marker.coordinates[0] !== 0 && marker.coordinates[1] !== 0) {
             const source = self.activityMap.getSource(sourceName);

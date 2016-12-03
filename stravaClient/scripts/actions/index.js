@@ -343,6 +343,9 @@ function loadDetailedActivityFromDB(activityId, activity, markerCount, dbService
 }
 
 function loadDetailedActivityFromStrava(activityId, _, markerCount, dbServices, dispatch, getState) {
+
+  console.log("loadDetailedActivityFromStrava: markerCount = ", markerCount);
+
   fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
 
     // retrieve streams for this activity

@@ -2,8 +2,10 @@ import { connect } from 'react-redux';
 
 import ActivitySegmentCreator from '../components/activitySegmentCreator';
 
-import { loadDetailedActivity, setMapLatitudeLongitude,  } from '../actions/index';
-import { setSegmentEndPoint, setMapStreamIndex, setMapMarkerCoordinates } from '../actions/index';
+// import { loadDetailedActivity, setMapLatitudeLongitude,  } from '../actions/index';
+// import { setSegmentEndPoint, setMapStreamIndex, setMapMarkerCoordinates } from '../actions/index';
+import { loadDetailedActivity,  } from '../actions/index';
+import { setMapStreamIndex, setMapMarkerCoordinates } from '../actions/index';
 import { getActivity } from '../reducers/reducer_activities';
 import { getEffortsForActivitySegments } from '../reducers/reducer_segment_efforts';
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
