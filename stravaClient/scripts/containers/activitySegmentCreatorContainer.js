@@ -18,7 +18,8 @@ function mapStateToProps (state, ownProps) {
     mapLatitudeLongitude: state.mapLatitudeLongitude,
     segmentEndPoint: state.segmentEndPoint,
     mapStreamIndex: state.mapStreamIndex,
-    activityLocations: state.activityLocations
+    activityLocations: state.activityLocations,
+    mapMarkers: state.mapMarkers
   };
 }
 

@@ -72,6 +72,7 @@ export default class ActivitySegmentCreator extends Component {
           activityStartDateLocal={activity.startDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           activityLocations={this.props.activityLocations}
+          mapMarkers={this.props.mapMarkers}
         />
       </div>
     );
@@ -89,5 +90,6 @@ ActivitySegmentCreator.propTypes = {
   mapLatitudeLongitude: React.PropTypes.array.isRequired,
   segmentEndPoint: React.PropTypes.array.isRequired,
   mapStreamIndex: React.PropTypes.number.isRequired,
-  activityLocations: React.PropTypes.array.isRequired
+  activityLocations: React.PropTypes.array.isRequired,
+  mapMarkers: React.PropTypes.object.isRequired
 };

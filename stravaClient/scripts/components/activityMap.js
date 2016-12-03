@@ -71,7 +71,7 @@ class ActivityMap extends Component {
 //                 console.log(mouseEvent);
 //             });
 
-// polyline for activity
+// polylines for activities
 //       let activityCoordinates = [];
       for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
@@ -84,7 +84,9 @@ class ActivityMap extends Component {
           lineLayerName, segmentData.polyline, segmentData.strokeColor);
       }
 
-      self.createMapMarker();
+      if (self.props.markerCount > 0) {
+        self.createMapMarker();
+      }
 
 // create a GeoJSON point to serve as a starting point
 //       if (self.props.markerCount > 0) {
@@ -399,8 +401,8 @@ ActivityMap.propTypes = {
   activitiesData: React.PropTypes.array.isRequired,
   markerCount: React.PropTypes.number.isRequired,
   mapLatitudeLongitude: React.PropTypes.array.isRequired,
-  segmentEndPoint: React.PropTypes.array.isRequired,
-  activityLocations: React.PropTypes.array.isRequired,
+  // segmentEndPoint: React.PropTypes.array.isRequired,
+  // activityLocations: React.PropTypes.array.isRequired,
   mapMarkers: React.PropTypes.object.isRequired
 };
 
