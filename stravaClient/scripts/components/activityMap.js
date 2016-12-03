@@ -72,7 +72,6 @@ class ActivityMap extends Component {
 //             });
 
 // polylines for activities
-//       let activityCoordinates = [];
       for (let segmentIndex = 0; segmentIndex < self.props.activitiesData.length; segmentIndex++) {
 
         let sourceName = "segment" + segmentIndex.toString();
@@ -87,57 +86,6 @@ class ActivityMap extends Component {
       if (self.props.markerCount > 0) {
         self.createMapMarker();
       }
-
-// create a GeoJSON point to serve as a starting point
-//       if (self.props.markerCount > 0) {
-//         let coordinates = [longitudeCenter, latitudeCenter];
-//         if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
-//           coordinates = self.props.mapLatitudeLongitude;
-//         }
-//         coordinates = activityCoordinates[0];
-//
-//         self.markerPoint = {
-//           "type": "Point",
-//           "coordinates": coordinates
-//         };
-//         self.activityMap.addSource('markerLocation', { type: 'geojson', data: self.markerPoint });
-//
-//         self.activityMap.addLayer({
-//           "id": "markerCircle",
-//           "type": "circle",
-//           "source": "markerLocation",
-//           "paint": {
-//             "circle-radius": 8,
-//             "circle-color": "red",
-//             "circle-opacity": 0.8
-//           }
-//         });
-//       }
-
-      // if (self.props.markerCount > 1) {
-      //   let coordinates = [longitudeCenter, latitudeCenter];
-      //   if (self.props.mapLatitudeLongitude && self.props.mapLatitudeLongitude.length > 0) {
-      //     coordinates = self.props.mapLatitudeLongitude;
-      //   }
-      //   coordinates = self.props.activityLocations[Math.round(self.props.activityLocations.length / 2) - 1];
-      //
-      //   self.endMarkerPoint = {
-      //     "type": "Point",
-      //     "coordinates": coordinates
-      //   };
-      //   self.activityMap.addSource('endMarkerLocation', { type: 'geojson', data: self.endMarkerPoint });
-      //
-      //   self.activityMap.addLayer({
-      //     "id": "endMarkerCircle",
-      //     "type": "circle",
-      //     "source": "endMarkerLocation",
-      //     "paint": {
-      //       "circle-radius": 8,
-      //       "circle-color": "green",
-      //       "circle-opacity": 0.8
-      //     }
-      //   });
-      // }
     });
   }
 
@@ -242,10 +190,7 @@ class ActivityMap extends Component {
 
           this.activityMap.addSource(sourceName, {type: 'geojson', data: this.markerPoint});
 
-          // console.log("markerColor is: ", marker.color);
-
           this.activityMap.addLayer({
-            // "id": "markerCircle",
             "id": sourceName,
             "type": "circle",
             "source": sourceName,
@@ -284,16 +229,7 @@ class ActivityMap extends Component {
             const source = self.activityMap.getSource(sourceName);
             if (source) {
               self.markerPoint.coordinates = marker.coordinates;
-
-              console.log("updateMapMarkers");
-              console.log(self.markerPoint.coordinates);
-
               source.setData(self.markerPoint);
-
-              // console.log(source);
-              // console.log(self.markerPoint);
-
-              // debugger;
             }
           }
         });

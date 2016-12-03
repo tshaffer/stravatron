@@ -312,10 +312,6 @@ function loadDetailedActivityFromDB(activityId, activity, markerCount, dbService
       let marker0 = {};
       let marker1 = {};
 
-      console.log("markers before any push");
-      console.log(markers);
-      debugger;
-
       if (markerCount > 0) {
 
         marker0 = {
@@ -324,8 +320,6 @@ function loadDetailedActivityFromDB(activityId, activity, markerCount, dbService
           coordinates: [-122.030886, 36.988858]
         };
         markers.push(marker0);
-        console.log("markers after first push");
-        console.log(markers);
 
         if (markerCount > 1) {
           marker1 = {
@@ -334,14 +328,10 @@ function loadDetailedActivityFromDB(activityId, activity, markerCount, dbService
             coordinates: [-122.063028, 37.024287]
           };
           markers.push(marker1);
-          console.log("markers after second push");
-          console.log(markers);
         }
       }
 
       if (markerCount > 0) {
-        console.log("dispatch addMapMarkers");
-        console.log(markers);
         dispatch(addMapMarkers(activity, markers));
         dispatch(setMapMarkerCoordinates(activity.id, 0, marker0.coordinates));
         if (markerCount > 1) {
