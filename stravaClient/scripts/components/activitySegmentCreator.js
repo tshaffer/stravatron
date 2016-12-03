@@ -14,13 +14,13 @@ export default class ActivitySegmentCreator extends Component {
     this.props.onSetMapStreamIndex(streamIndex);
   }
 
-  handleSetMapLatitudeLongitude(mapLatitudeLongitude) {
-    this.props.onSetMapLatitudeLongitude(mapLatitudeLongitude);
+  handleSetMapLatitudeLongitude(activityId, markerIndex, mapLatitudeLongitude) {
+    this.props.onSetMapLatitudeLongitude(activityId, markerIndex, mapLatitudeLongitude);
   }
 
-  handleSetSegmentEndPoint(latitudeLongitude) {
-    this.props.onSetSegmentEndPoint(latitudeLongitude);
-  }
+  // handleSetSegmentEndPoint(latitudeLongitude) {
+  //   this.props.onSetSegmentEndPoint(latitudeLongitude);
+  // }
 
   render () {
 
@@ -55,7 +55,6 @@ export default class ActivitySegmentCreator extends Component {
           activity={this.props.activity}
           mapStreamIndex={this.props.mapStreamIndex}
           onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
-          onSetSegmentEndPoint={this.handleSetSegmentEndPoint.bind(this)}
           markerCount={2}
           activityLocations={this.props.activityLocations}
         />
@@ -66,7 +65,6 @@ export default class ActivitySegmentCreator extends Component {
           mapHeight={"400px"}
           markerCount={2}
           mapLatitudeLongitude={this.props.mapLatitudeLongitude}
-          segmentEndPoint={this.props.segmentEndPoint}
           streams={streams}
           onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
           onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
@@ -89,7 +87,6 @@ ActivitySegmentCreator.propTypes = {
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
   params: React.PropTypes.object.isRequired,
   mapLatitudeLongitude: React.PropTypes.array.isRequired,
-  segmentEndPoint: React.PropTypes.array.isRequired,
   mapStreamIndex: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
   mapMarkers: React.PropTypes.object.isRequired

@@ -2,7 +2,8 @@ import { connect } from 'react-redux';
 
 import ActivitySegmentCreator from '../components/activitySegmentCreator';
 
-import { loadDetailedActivity, setMapLatitudeLongitude, setSegmentEndPoint, setMapStreamIndex } from '../actions/index';
+import { loadDetailedActivity, setMapLatitudeLongitude,  } from '../actions/index';
+import { setSegmentEndPoint, setMapStreamIndex, setMapMarkerCoordinates } from '../actions/index';
 import { getActivity } from '../reducers/reducer_activities';
 import { getEffortsForActivitySegments } from '../reducers/reducer_segment_efforts';
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
@@ -28,12 +29,16 @@ function mapDispatchToProps(dispatch) {
     onLoadDetailedActivity: (activityId, markerCount) => {
       dispatch(loadDetailedActivity(activityId, markerCount));
     },
-    onSetMapLatitudeLongitude: (latitudeLongitude) => {
-      dispatch(setMapLatitudeLongitude(latitudeLongitude));
+    // onSetMapLatitudeLongitude: (latitudeLongitude) => {
+    //   dispatch(setMapLatitudeLongitude(latitudeLongitude));
+    // },
+    onSetMapLatitudeLongitude: (activityId, markerIndex, latitudeLongitude) => {
+      // dispatch(setMapLatitudeLongitude(latitudeLongitude));
+      dispatch(setMapMarkerCoordinates(activityId, markerIndex, latitudeLongitude));
     },
-    onSetSegmentEndPoint: (latitudeLongitude) => {
-      dispatch(setSegmentEndPoint(latitudeLongitude));
-    },
+    // onSetSegmentEndPoint: (latitudeLongitude) => {
+    //   dispatch(setSegmentEndPoint(latitudeLongitude));
+    // },
     onSetMapStreamIndex: (streamIndex) => {
       dispatch(setMapStreamIndex(streamIndex));
     }

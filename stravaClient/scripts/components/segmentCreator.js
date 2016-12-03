@@ -119,10 +119,18 @@ export default class SegmentCreator extends Component {
   handleSliderChange(sliderValues) {
 
     const selectedStartLocation = this.props.activityLocations[sliderValues[0]];
-    this.props.onSetMapLatitudeLongitude(selectedStartLocation);
+    // this.props.onSetMapLatitudeLongitude(selectedStartLocation);
+    this.props.onSetMapLatitudeLongitude(this.props.activity.id, 0, selectedStartLocation);
+
+
+
+
+    console.log("handleSliderChange:", selectedStartLocation);
 
     const selectedEndLocation = this.props.activityLocations[sliderValues[1]];
-    this.props.onSetSegmentEndPoint(selectedEndLocation);
+    this.props.onSetMapLatitudeLongitude(this.props.activity.id, 1, selectedEndLocation);
+
+    console.log("handleSliderChange:", selectedEndLocation);
   }
 
   updateSlider(boundsIndex, step) {
@@ -132,12 +140,15 @@ export default class SegmentCreator extends Component {
       bounds
     });
 
-    if (boundsIndex === 0) {
-      this.props.onSetMapLatitudeLongitude(this.props.activityLocations[bounds[boundsIndex]]);
-    }
-    else {
-      this.props.onSetSegmentEndPoint(this.props.activityLocations[bounds[boundsIndex]]);
-    }
+    this.props.onSetMapLatitudeLongitude(this.props.activity.id, boundsIndex, this.props.activityLocations[bounds[boundsIndex]]);
+
+    // console.log("updateSlider:", boundsIndex, " ",  this.props.activityLocations[bounds[boundsIndex]]);
+    // if (boundsIndex === 0) {
+    //   this.props.onSetMapLatitudeLongitude(this.props.activityLocations[bounds[boundsIndex]]);
+    // }
+    // else {
+    //   this.props.onSetSegmentEndPoint(this.props.activityLocations[bounds[boundsIndex]]);
+    // }
   }
 
   handleMoveStartForward() {
@@ -304,7 +315,7 @@ export default class SegmentCreator extends Component {
 SegmentCreator.propTypes = {
   activity: React.PropTypes.object.isRequired,
   onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
-  onSetSegmentEndPoint: React.PropTypes.func.isRequired,
   mapStreamIndex: React.PropTypes.number.isRequired,
-  activityLocations: React.PropTypes.array.isRequired
+  activityLocations: React.PropTypes.array.isRequired,
+  setMapMarkerCoordinates: React.PropTypes.func.isRequired
 };

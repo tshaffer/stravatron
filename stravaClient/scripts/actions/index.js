@@ -76,14 +76,14 @@ export function setMapLatitudeLongitude(latitudeLongitude) {
   };
 }
 
-export function setSegmentEndPoint(latitudeLongitude) {
-
-  return {
-    type: SET_SEGMENT_END_POINT,
-    latitudeLongitude
-  };
-}
-
+// export function setSegmentEndPoint(latitudeLongitude) {
+//
+//   return {
+//     type: SET_SEGMENT_END_POINT,
+//     latitudeLongitude
+//   };
+// }
+//
 export function setActivityLocations(activityLocations) {
 
   return {
@@ -311,12 +311,32 @@ function loadDetailedActivityFromDB(activityId, activity, markerCount, dbService
       // check markerCount
       console.log("markerCount:", markerCount);
 
-      const marker = {
-        color: "red",
-        coordinates: [0, 0]
-      };
-      dispatch(addMapMarkers(activity, [marker]));
-      dispatch(setMapMarkerCoordinates(activity.id, 0, startingLatitudeLongitude));
+      let markers = [];
+
+      if (markerCount > 0) {
+
+        const marker0 = {
+          color: "red",
+          coordinates: [0, 0]
+        };
+        markers.push(marker0);
+
+        if (markerCount > 1) {
+          const marker1 = {
+            color: "green",
+            coordinates: [0, 0]
+          };
+          markers.push(marker1);
+        }
+      }
+
+      if (markerCount > 0) {
+        dispatch(addMapMarkers(activity, markers));
+        dispatch(setMapMarkerCoordinates(activity.id, 0, startingLatitudeLongitude));
+        if (markerCount > 1) {
+          dispatch(setMapMarkerCoordinates(activity.id, 1, startingLatitudeLongitude));
+        }
+      }
     });
   });
 }

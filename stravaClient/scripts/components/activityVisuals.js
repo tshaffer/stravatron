@@ -14,7 +14,6 @@ export default class ActivityVisuals extends Component {
           mapHeight={"400px"}
           markerCount={this.props.markerCount}
           mapLatitudeLongitude={this.props.mapLatitudeLongitude}
-          segmentEndPoint={this.props.segmentEndPoint}
           activityLocations={this.props.activityLocations}
           mapMarkers={this.props.mapMarkers}
         />

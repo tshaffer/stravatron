@@ -10,8 +10,8 @@ export default function(state = initialState, action) {
 
     case SET_SEGMENT_END_POINT: {
       newState = Object.assign( [], action.latitudeLongitude);
-      console.log("reducer_segment_end_point");
-      console.log(action.latitudeLongitude);
+      // console.log("reducer_segment_end_point");
+      // console.log(action.latitudeLongitude);
       return newState;
     }
   }

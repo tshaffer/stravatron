@@ -29,9 +29,9 @@ function mapDispatchToProps(dispatch) {
     onLoadDetailedActivity: (activityId, markerCount) => {
       dispatch(loadDetailedActivity(activityId, markerCount));
     },
-    onSetMapLatitudeLongitude: (activityId, latitudeLongitude) => {
+    onSetMapLatitudeLongitude: (activityId, markerIndex, latitudeLongitude) => {
       // dispatch(setMapLatitudeLongitude(latitudeLongitude));
-      dispatch(setMapMarkerCoordinates(activityId, 0, latitudeLongitude));
+      dispatch(setMapMarkerCoordinates(activityId, markerIndex, latitudeLongitude));
     },
     onSetMapStreamIndex: (streamIndex) => {
       dispatch(setMapStreamIndex(streamIndex));

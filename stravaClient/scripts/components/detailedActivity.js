@@ -298,7 +298,7 @@ export default class DetailedActivity extends Component {
   }
 
   handleSetMapLatitudeLongitude(activityId, mapLatitudeLongitude) {
-    this.props.onSetMapLatitudeLongitude(activityId, mapLatitudeLongitude);
+    this.props.onSetMapLatitudeLongitude(activityId, 0, mapLatitudeLongitude);
   }
 
   render () {
@@ -341,7 +341,6 @@ export default class DetailedActivity extends Component {
           mapHeight={"400px"}
           markerCount={1}
           mapLatitudeLongitude={this.props.mapLatitudeLongitude}
-          segmentEndPoint={this.props.segmentEndPoint}
           streams={streams}
           onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
           onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}

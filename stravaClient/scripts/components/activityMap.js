@@ -237,27 +237,28 @@ class ActivityMap extends Component {
       if (markersByActivity.hasOwnProperty(activityId)) {
         const markers = markersByActivity[activityId];
 
-        // TODO - not the real solution - marker and name of marker needs to be based on which marker it is
-        const marker = markers[0];
-        let coordinates = marker.coordinates;
+        markers.forEach( (marker, index) => {
+          let coordinates = marker.coordinates;
 
-        this.markerPoint = {
-          "type": "Point",
-          "coordinates": coordinates
-        };
+          this.markerPoint = {
+            "type": "Point",
+            "coordinates": coordinates
+          };
 
-        this.activityMap.addSource('markerLocation', { type: 'geojson', data: this.markerPoint });
+          this.activityMap.addSource('markerLocation' + index.toString(), { type: 'geojson', data: this.markerPoint });
 
-        this.activityMap.addLayer({
-          "id": "markerCircle",
-          "type": "circle",
-          "source": "markerLocation",
-          "paint": {
-            "circle-radius": 8,
-            "circle-color": marker.color,
-            "circle-opacity": 0.8
-          }
+          this.activityMap.addLayer({
+            "id": "markerCircle",
+            "type": "circle",
+            "source": "markerLocation" + index.toString(),
+            "paint": {
+              "circle-radius": 8,
+              "circle-color": marker.color,
+              "circle-opacity": 0.8
+            }
+          });
         });
+
       }
     }
   }
@@ -269,18 +270,16 @@ class ActivityMap extends Component {
       if (markersByActivity.hasOwnProperty(activityId)) {
         const markers = markersByActivity[activityId];
 
-        // TODO - not the real solution - marker and name of marker needs to be based on which marker it is
-        const marker = markers[0];
-        if (marker.coordinates[0] === 0 && marker.coordinates[1] === 0) return;
+        markers.forEach( (marker, index) => {
+          if (marker.coordinates[0] !== 0 && marker.coordinates[1] !== 0) {
+            const source = this.activityMap.getSource('markerLocation' + index.toString());
+            if (source) {
+              this.markerPoint.coordinates = marker.coordinates;
+              source.setData(this.markerPoint);
+            }
+          }
+        });
 
-        const source = this.activityMap.getSource('markerLocation');
-        if (!source) {
-          return;
-        }
-        else {
-          this.markerPoint.coordinates = marker.coordinates;
-          source.setData(this.markerPoint);
-        }
       }
     }
   }

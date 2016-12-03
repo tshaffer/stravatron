@@ -8,14 +8,16 @@ const initialState =
 export default function(state = initialState, action) {
 
   let newState = null;
+  let newMarkersByActivity = null;
+  let markers = null;
 
   switch (action.type) {
 
     case ADD_MAP_MARKERS: {
 
-      let newMarkersByActivity = Object.assign( {}, state.markersByActivity);
+      newMarkersByActivity = Object.assign( {}, state.markersByActivity);
 
-      const markers = action.payload.markers;
+      markers = action.payload.markers;
       newMarkersByActivity[action.payload.activityId] = markers;
 
       newState = {
@@ -27,9 +29,9 @@ export default function(state = initialState, action) {
 
     case SET_MAP_MARKER_COORDINATES: {
 
-      let newMarkersByActivity = Object.assign( {}, state.markersByActivity);
+      newMarkersByActivity = Object.assign( {}, state.markersByActivity);
 
-      let markers = newMarkersByActivity[action.payload.activityId];
+      markers = newMarkersByActivity[action.payload.activityId];
       markers[action.payload.markerIndex].coordinates = action.payload.coordinates;
 
       newState = {
