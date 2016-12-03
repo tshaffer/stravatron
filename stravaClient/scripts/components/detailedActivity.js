@@ -10,7 +10,7 @@ import ActivityVisuals from './activityVisuals';
 export default class DetailedActivity extends Component {
 
   componentWillMount() {
-    this.props.onLoadDetailedActivity(this.props.params.id, 1);
+    this.props.onLoadDetailedActivity(this.props.params.id);
   }
 
   buildRideSummaryHeader(activity) {
@@ -101,10 +101,6 @@ export default class DetailedActivity extends Component {
   handleAllActivitiesWithThisSegment(segmentId) {
     console.log("handleAllActivitiesWithThisSegment: ", segmentId.toString());
     hashHistory.push('/segmentsSummaryActivitiesContainer/' + segmentId);
-  }
-
-  handleSetMapStreamIndex(streamIndex) {
-    this.props.onSetMapStreamIndex(streamIndex);
   }
 
   buildSegmentEffortRow(segmentEffort) {
@@ -297,10 +293,6 @@ export default class DetailedActivity extends Component {
     );
   }
 
-  handleSetMapLatitudeLongitude(activityId, mapLatitudeLongitude) {
-    this.props.onSetMapLatitudeLongitude(activityId, 0, mapLatitudeLongitude);
-  }
-
   render () {
 
     const activity = this.props.activity;
@@ -340,14 +332,12 @@ export default class DetailedActivity extends Component {
           totalActivities={1}
           mapHeight={"400px"}
           markerCount={1}
-          mapLatitudeLongitude={this.props.mapLatitudeLongitude}
           streams={streams}
-          onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
-          onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
           activityStartDateLocal={activity.startDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           activityLocations={this.props.activityLocations}
-          mapMarkers={this.props.mapMarkers}
+          onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
+          locationCoordinates={this.props.locationCoordinates}
         />
         {segmentEffortsTable}
       </div>
@@ -357,16 +347,14 @@ export default class DetailedActivity extends Component {
 
 DetailedActivity.propTypes = {
   onLoadDetailedActivity: React.PropTypes.func.isRequired,
-  onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
-  onSetMapStreamIndex: React.PropTypes.func.isRequired,
   activity: React.PropTypes.object.isRequired,
   segments: React.PropTypes.object.isRequired,
   segmentEfforts: React.PropTypes.object.isRequired,
   effortsForSegments: React.PropTypes.object.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
   params: React.PropTypes.object.isRequired,
-  mapLatitudeLongitude: React.PropTypes.array.isRequired,
   segmentEndPoint: React.PropTypes.array.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired
+  onSetLocationCoordinates: React.PropTypes.func.isRequired,
+  locationCoordinates: React.PropTypes.object.isRequired
 };

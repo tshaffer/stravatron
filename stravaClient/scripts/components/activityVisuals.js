@@ -13,17 +13,15 @@ export default class ActivityVisuals extends Component {
           totalActivities={1}
           mapHeight={"400px"}
           markerCount={this.props.markerCount}
-          mapLatitudeLongitude={this.props.mapLatitudeLongitude}
           activityLocations={this.props.activityLocations}
-          mapMarkers={this.props.mapMarkers}
+          locationCoordinates={this.props.locationCoordinates}
         />
         <ElevationChart
           activity={this.props.activity}
           streams={this.props.streams}
-          onSetMapLatitudeLongitude = {this.props.onSetMapLatitudeLongitude}
-          onSetMapStreamIndex={this.props.onSetMapStreamIndex}
           activityStartDateLocal={this.props.activityStartDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
+          onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
         />
       </div>
     );
@@ -33,14 +31,13 @@ export default class ActivityVisuals extends Component {
 ActivityVisuals.propTypes = {
   activity: React.PropTypes.object.isRequired,
   activitiesData: React.PropTypes.array.isRequired,
-  mapLatitudeLongitude: React.PropTypes.array.isRequired,
-  segmentEndPoint: React.PropTypes.array.isRequired,
   streams: React.PropTypes.array.isRequired,
   activityStartDateLocal: React.PropTypes.object.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
-  onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
-  onSetMapStreamIndex: React.PropTypes.func.isRequired,
   markerCount: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired
+
+  onSetLocationCoordinates: React.PropTypes.func.isRequired,
+  locationCoordinates: React.PropTypes.object.isRequired
+
 };

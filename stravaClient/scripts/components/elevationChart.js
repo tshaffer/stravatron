@@ -206,17 +206,13 @@ class ElevationChart extends Component {
 
       let item = chart.getSelection();
       if (item) {
-        var selectedItem = item[0];
+        const selectedItem = item[0];
 
         const d = dataTable.getValue(selectedItem.row, 0);
-        var selectedLocation = mapDistanceToLocation[d];
-        if (selectedLocation) {
-          self.props.onSetMapLatitudeLongitude(self.props.activity.id, 0, selectedLocation);
-        }
-
+        const selectedLocation = mapDistanceToLocation[d];
         const selectedStreamIndex = mapDistanceToStreamIndex[d];
-        if (selectedStreamIndex) {
-          self.props.onSetMapStreamIndex(selectedStreamIndex);
+        if (selectedLocation) {
+          self.props.onSetLocationCoordinates("elevationChart", selectedStreamIndex, selectedLocation);
         }
       }
     }
@@ -241,10 +237,11 @@ class ElevationChart extends Component {
 ElevationChart.propTypes = {
   activity: React.PropTypes.object.isRequired,
   streams: React.PropTypes.array.isRequired,
-  onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
-  onSetMapStreamIndex: React.PropTypes.func.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
-  activityStartDateLocal: React.PropTypes.object.isRequired
+  activityStartDateLocal: React.PropTypes.object.isRequired,
+
+  onSetLocationCoordinates: React.PropTypes.func.isRequired
+
 };
 
 

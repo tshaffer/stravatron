@@ -15,9 +15,6 @@ export default class SegmentCreator extends Component {
   constructor(props) {
     super(props);
 
-    this.startPointStreamIndex = -1;
-    this.endPointStreamIndex = -1;
-
     this.geoJSONCoordinates = [];
 
     this.clickStep = 1;
@@ -108,29 +105,13 @@ export default class SegmentCreator extends Component {
     });
   }
 
-  handleSetStartPoint() {
-    this.startPointStreamIndex = this.props.mapStreamIndex;
-  }
-
-  handleSetEndPoint() {
-    this.endPointStreamIndex = this.props.mapStreamIndex;
-  }
-
   handleSliderChange(sliderValues) {
 
     const selectedStartLocation = this.props.activityLocations[sliderValues[0]];
-    // this.props.onSetMapLatitudeLongitude(selectedStartLocation);
-    this.props.onSetMapLatitudeLongitude(this.props.activity.id, 0, selectedStartLocation);
-
-
-
-
-    console.log("handleSliderChange:", selectedStartLocation);
+    this.props.onSetLocationCoordinates("segmentCreationStart", sliderValues[0], selectedStartLocation);
 
     const selectedEndLocation = this.props.activityLocations[sliderValues[1]];
-    this.props.onSetMapLatitudeLongitude(this.props.activity.id, 1, selectedEndLocation);
-
-    console.log("handleSliderChange:", selectedEndLocation);
+    this.props.onSetLocationCoordinates("segmentCreationEnd", sliderValues[1], selectedEndLocation);
   }
 
   updateSlider(boundsIndex, step) {
@@ -140,15 +121,15 @@ export default class SegmentCreator extends Component {
       bounds
     });
 
-    this.props.onSetMapLatitudeLongitude(this.props.activity.id, boundsIndex, this.props.activityLocations[bounds[boundsIndex]]);
+    // this.props.onSetMapLatitudeLongitude(this.props.activity.id, boundsIndex, this.props.activityLocations[bounds[boundsIndex]]);
 
-    // console.log("updateSlider:", boundsIndex, " ",  this.props.activityLocations[bounds[boundsIndex]]);
-    // if (boundsIndex === 0) {
-    //   this.props.onSetMapLatitudeLongitude(this.props.activityLocations[bounds[boundsIndex]]);
-    // }
-    // else {
-    //   this.props.onSetSegmentEndPoint(this.props.activityLocations[bounds[boundsIndex]]);
-    // }
+    const location = this.props.activityLocations[bounds[boundsIndex]];
+    if (boundsIndex === 0) {
+      this.props.onSetLocationCoordinates("segmentCreationStart", bounds[boundsIndex], location);
+    }
+    else {
+      this.props.onSetLocationCoordinates("segmentCreationEnd", bounds[boundsIndex], location);
+    }
   }
 
   handleMoveStartForward() {
@@ -185,8 +166,27 @@ export default class SegmentCreator extends Component {
       }
     }
 
+    let startPointStreamIndex;
+    let endPointStreamIndex;
+    
+    const startPointStreamLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+    if (startPointStreamLocation) {
+      startPointStreamIndex = startPointStreamLocation.index;
+    }
+    else {
+      startPointStreamIndex = this.initialStartIndex;
+    }
+
+    const endPointStreamLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+    if (endPointStreamLocation) {
+      endPointStreamIndex = endPointStreamLocation.index;
+    }
+    else {
+      endPointStreamIndex = this.initialEndIndex;
+    }
+
     let segmentLocations = [];
-    for (let i = this.startPointStreamIndex; i <= this.endPointStreamIndex; i++) {
+    for (let i = startPointStreamIndex; i <= endPointStreamIndex; i++) {
 
       const stravaLocation = locations[i];
       const latitude = stravaLocation[0];
@@ -234,6 +234,9 @@ export default class SegmentCreator extends Component {
     //   width: "128px"
     // };
 
+    this.initialStartIndex = Math.round(self.props.activityLocations.length / 3);
+    this.initialEndIndex = this.initialStartIndex * 2;
+
     return (
 
       <MuiThemeProvider>
@@ -247,7 +250,7 @@ export default class SegmentCreator extends Component {
               max={self.props.activityLocations.length - 1}
               range={true}
               allowCross={false}
-              defaultValue={[0, Math.round(self.props.activityLocations.length / 2) - 1]}
+              defaultValue={[this.initialStartIndex, this.initialEndIndex]}
               tipFormatter={null}
               onChange={self.handleSliderChange.bind(self)} />
 
@@ -314,8 +317,7 @@ export default class SegmentCreator extends Component {
 
 SegmentCreator.propTypes = {
   activity: React.PropTypes.object.isRequired,
-  onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
-  mapStreamIndex: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  setMapMarkerCoordinates: React.PropTypes.func.isRequired
+  onSetLocationCoordinates: React.PropTypes.func.isRequired,
+  locationCoordinates: React.PropTypes.object.isRequired
 };
