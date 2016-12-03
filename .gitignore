@@ -1,6 +1,9 @@
+.idea
+
 stravaClient/node_modules
 stravaClient/build
 stravaClient/scripts/platform
+stravaClient/.idea
 
 stravaServer/.idea/jsLibraryMappings.xml
 stravaServer/.idea/misc.xml
