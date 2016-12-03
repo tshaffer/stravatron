@@ -25,8 +25,8 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onLoadDetailedActivity: (activityId) => {
-      dispatch(loadDetailedActivity(activityId));
+    onLoadDetailedActivity: (activityId, markerCount) => {
+      dispatch(loadDetailedActivity(activityId, markerCount));
     },
     onSetMapLatitudeLongitude: (latitudeLongitude) => {
       dispatch(setMapLatitudeLongitude(latitudeLongitude));

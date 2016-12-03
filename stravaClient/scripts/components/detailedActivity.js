@@ -10,7 +10,7 @@ import ActivityVisuals from './activityVisuals';
 export default class DetailedActivity extends Component {
 
   componentWillMount() {
-    this.props.onLoadDetailedActivity(this.props.params.id);
+    this.props.onLoadDetailedActivity(this.props.params.id, 1);
   }
 
   buildRideSummaryHeader(activity) {

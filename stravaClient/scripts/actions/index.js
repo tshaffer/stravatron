@@ -222,7 +222,7 @@ export function loadActivityMap(activityId) {
   };
 }
 
-function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) {
+function loadDetailedActivityFromDB(activityId, activity, markerCount, dbServices, dispatch) {
 
   // retrieve segments for this activity
   const getSegmentsForActivityPromise = dbServices.getSegmentsForActivity(activityId);
@@ -308,6 +308,9 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
       dispatch(setMapLatitudeLongitude(startingLatitudeLongitude));
       dispatch(setMapStreamIndex(0));
 
+      // check markerCount
+      console.log("markerCount:", markerCount);
+
       const marker = {
         color: "red",
         coordinates: [0, 0]
@@ -318,7 +321,7 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
   });
 }
 
-function loadDetailedActivityFromStrava(activityId, _, dbServices, dispatch, getState) {
+function loadDetailedActivityFromStrava(activityId, _, markerCount, dbServices, dispatch, getState) {
   fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
 
     // retrieve streams for this activity
@@ -485,7 +488,7 @@ function loadDetailedActivityFromStrava(activityId, _, dbServices, dispatch, get
   });
 }
 
-export function loadDetailedActivity(activityId) {
+export function loadDetailedActivity(activityId, markerCount) {
 
   return function(dispatch, getState) {
 
@@ -497,10 +500,10 @@ export function loadDetailedActivity(activityId) {
     // check to see if detailed data exists for activity - if not, fetch it.
     // I think the following is kind of a hack - how about if (activity.detailsExist())
     if (activity.mapPolyline && activity.mapPolyline !== "") {
-      loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, getState);
+      loadDetailedActivityFromDB(activityId, activity, markerCount, dbServices, dispatch, getState);
     }
     else {
-      loadDetailedActivityFromStrava(activityId, activity, dbServices, dispatch, getState);
+      loadDetailedActivityFromStrava(activityId, activity, markerCount, dbServices, dispatch, getState);
     }
   };
 }

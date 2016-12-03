@@ -7,7 +7,7 @@ import SegmentCreator from './segmentCreator';
 export default class ActivitySegmentCreator extends Component {
 
   componentWillMount() {
-    this.props.onLoadDetailedActivity(this.props.params.id);
+    this.props.onLoadDetailedActivity(this.props.params.id, 2);
   }
 
   handleSetMapStreamIndex(streamIndex) {
@@ -60,6 +60,7 @@ export default class ActivitySegmentCreator extends Component {
           activityLocations={this.props.activityLocations}
         />
         <ActivityVisuals
+          activity={this.props.activity}
           activitiesData={activitiesData}
           totalActivities={1}
           mapHeight={"400px"}
