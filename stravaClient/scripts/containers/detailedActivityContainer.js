@@ -20,15 +20,14 @@ function mapStateToProps (state, ownProps) {
     segmentEndPoint: state.segmentEndPoint,
     mapStreamIndex: state.mapStreamIndex,
     activityLocations: state.activityLocations,
-    mapMarkers: state.mapMarkers,
     locationCoordinates: state.locationCoordinates
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onLoadDetailedActivity: (activityId, markerCount) => {
-      dispatch(loadDetailedActivity(activityId, markerCount));
+    onLoadDetailedActivity: (activityId) => {
+      dispatch(loadDetailedActivity(activityId));
     },
     onSetMapStreamIndex: (streamIndex) => {
       dispatch(setMapStreamIndex(streamIndex));

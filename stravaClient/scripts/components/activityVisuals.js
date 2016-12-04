@@ -14,7 +14,6 @@ export default class ActivityVisuals extends Component {
           mapHeight={"400px"}
           markerCount={this.props.markerCount}
           activityLocations={this.props.activityLocations}
-          mapMarkers={this.props.mapMarkers}
           locationCoordinates={this.props.locationCoordinates}
         />
         <ElevationChart
@@ -40,7 +39,6 @@ ActivityVisuals.propTypes = {
   onSetMapStreamIndex: React.PropTypes.func.isRequired,
   markerCount: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired,
 
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired

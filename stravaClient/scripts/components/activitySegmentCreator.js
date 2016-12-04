@@ -7,7 +7,7 @@ import SegmentCreator from './segmentCreator';
 export default class ActivitySegmentCreator extends Component {
 
   componentWillMount() {
-    this.props.onLoadDetailedActivity(this.props.params.id, 2);
+    this.props.onLoadDetailedActivity(this.props.params.id);
   }
 
   handleSetMapStreamIndex(streamIndex) {
@@ -65,7 +65,6 @@ export default class ActivitySegmentCreator extends Component {
           activityStartDateLocal={activity.startDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           activityLocations={this.props.activityLocations}
-          mapMarkers={this.props.mapMarkers}
           locationCoordinates={this.props.locationCoordinates}
           onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
         />
@@ -83,7 +82,6 @@ ActivitySegmentCreator.propTypes = {
   params: React.PropTypes.object.isRequired,
   mapStreamIndex: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired,
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired
 };

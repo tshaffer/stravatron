@@ -10,7 +10,7 @@ import ActivityVisuals from './activityVisuals';
 export default class DetailedActivity extends Component {
 
   componentWillMount() {
-    this.props.onLoadDetailedActivity(this.props.params.id, 1);
+    this.props.onLoadDetailedActivity(this.props.params.id);
   }
 
   buildRideSummaryHeader(activity) {
@@ -341,7 +341,6 @@ export default class DetailedActivity extends Component {
           activityStartDateLocal={activity.startDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           activityLocations={this.props.activityLocations}
-          mapMarkers={this.props.mapMarkers}
           onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
           locationCoordinates={this.props.locationCoordinates}
         />
@@ -362,7 +361,6 @@ DetailedActivity.propTypes = {
   params: React.PropTypes.object.isRequired,
   segmentEndPoint: React.PropTypes.array.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired,
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired
 };

@@ -7,7 +7,6 @@ const fs = require('fs');
 import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
-import * as Converters from '../utilities/converters';
 
 export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
 export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
@@ -22,8 +21,6 @@ export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
 export const SET_MAP_STREAM_INDEX = 'SET_MAP_STREAM_INDEX';
 export const SET_SEGMENT_END_POINT = 'SET_SEGMENT_END_POINT';
 export const SET_ACTIVITY_LOCATIONS = 'SET_ACTIVITY_LOCATIONS';
-export const ADD_MAP_MARKERS = 'ADD_MAP_MARKERS';
-export const SET_MAP_MARKER_COORDINATES = 'SET_MAP_MARKER_COORDINATES';
 export const SET_COORDINATES = 'SET_COORDINATES';
 
 export function setSelectedAthlete(athlete) {
@@ -214,7 +211,7 @@ export function loadActivityMap(activityId) {
   };
 }
 
-function loadDetailedActivityFromDB(activityId, activity, markerCount, dbServices, dispatch) {
+function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) {
 
   // retrieve segments for this activity
   const getSegmentsForActivityPromise = dbServices.getSegmentsForActivity(activityId);
@@ -276,10 +273,6 @@ function loadDetailedActivityFromDB(activityId, activity, markerCount, dbService
       stream.type = "latlng";
       stream.data = streamData.locationData;
       streams.push(stream);
-      const initialLatitudeLongitude = streamData.locationData[0];
-      const latitude = initialLatitudeLongitude[0];
-      const longitude = initialLatitudeLongitude[1];
-      const startingLatitudeLongitude = Converters.stravatronCoordinateFromLatLng(latitude, longitude);
 
       dispatch(setActivityLocations(streamData.locationData));
 
@@ -299,58 +292,11 @@ function loadDetailedActivityFromDB(activityId, activity, markerCount, dbService
 
       dispatch(setMapStreamIndex(0));
 
-      let markers = [];
-      let marker0 = {};
-      let marker1 = {};
-
-      let mapMarker0Coordinates = [];
-      let mapMarker1Coordinates = [];
-      const locations = streamData.locationData;
-
-      let location0Index, location1Index;
-
-      if (markerCount === 1) {
-        location0Index = 0;
-        mapMarker0Coordinates = startingLatitudeLongitude;
-      }
-      else if (markerCount === 2) {
-        location0Index = Math.floor(locations.length / 3);
-        location1Index = location0Index * 2;
-        mapMarker0Coordinates = Converters.stravatronCoordinateFromLatLng(locations[location0Index][0], locations[location0Index][1]);
-        mapMarker1Coordinates = Converters.stravatronCoordinateFromLatLng(locations[location1Index][0], locations[location1Index][1]);
-      }
-
-      if (markerCount > 0) {
-
-        marker0 = {
-          color: "red",
-          coordinates: mapMarker0Coordinates,
-        };
-        markers.push(marker0);
-
-        if (markerCount > 1) {
-          marker1 = {
-            color: "green",
-            coordinates: mapMarker1Coordinates,
-          };
-          markers.push(marker1);
-        }
-      }
-
-      if (markerCount > 0) {
-        dispatch(addMapMarkers(activity, markers));
-        dispatch(setMapMarkerCoordinates(activity.id, 0, marker0.coordinates, location0Index));
-        if (markerCount > 1) {
-          dispatch(setMapMarkerCoordinates(activity.id, 1, marker1.coordinates, location1Index));
-        }
-      }
     });
   });
 }
 
-function loadDetailedActivityFromStrava(activityId, _, markerCount, dbServices, dispatch, getState) {
-
-  console.log("loadDetailedActivityFromStrava: markerCount = ", markerCount);
+function loadDetailedActivityFromStrava(activityId, _, dbServices, dispatch, getState) {
 
   fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
 
@@ -518,7 +464,7 @@ function loadDetailedActivityFromStrava(activityId, _, markerCount, dbServices, 
   });
 }
 
-export function loadDetailedActivity(activityId, markerCount) {
+export function loadDetailedActivity(activityId) {
 
   return function(dispatch, getState) {
 
@@ -530,10 +476,10 @@ export function loadDetailedActivity(activityId, markerCount) {
     // check to see if detailed data exists for activity - if not, fetch it.
     // I think the following is kind of a hack - how about if (activity.detailsExist())
     if (activity.mapPolyline && activity.mapPolyline !== "") {
-      loadDetailedActivityFromDB(activityId, activity, markerCount, dbServices, dispatch, getState);
+      loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch, getState);
     }
     else {
-      loadDetailedActivityFromStrava(activityId, activity, markerCount, dbServices, dispatch, getState);
+      loadDetailedActivityFromStrava(activityId, activity, dbServices, dispatch, getState);
     }
   };
 }
@@ -784,32 +730,6 @@ export function retrieveBaseMapSegments() {
         dispatch(SetBaseMapSegments(baseMapSegments));
       });
     });
-  };
-}
-
-
-export function addMapMarkers(activity, markers) {
-
-  return {
-    type: ADD_MAP_MARKERS,
-    payload: {
-      activityId: activity.id,
-      markers
-    }
-  };
-}
-
-
-export function setMapMarkerCoordinates(activityId, markerIndex, coordinates, locationIndex) {
-
-  return {
-    type: SET_MAP_MARKER_COORDINATES,
-    payload: {
-      activityId,
-      markerIndex,
-      coordinates,
-      locationIndex
-    }
   };
 }
 

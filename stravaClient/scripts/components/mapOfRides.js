@@ -72,7 +72,6 @@ class MapOfRides extends Component {
           totalActivities={this.state.activityIds.length}
           mapHeight={"760px"}
           markerCount={0}
-          mapMarkers={this.props.mapMarkers}
         />
       </div>
     );
@@ -82,7 +81,6 @@ class MapOfRides extends Component {
 function mapStateToProps (state) {
   return {
     activities: state.activities,
-    mapMarkers: state.mapMarkers
   };
 }
 
@@ -95,7 +93,6 @@ MapOfRides.propTypes = {
   params: React.PropTypes.object.isRequired,
   loadActivityMap: React.PropTypes.func.isRequired,
   activities: React.PropTypes.object.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired
 };
 
 

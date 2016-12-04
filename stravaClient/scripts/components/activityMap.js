@@ -319,7 +319,6 @@ ActivityMap.propTypes = {
   markerCount: React.PropTypes.number.isRequired,
   // segmentEndPoint: React.PropTypes.array.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired,
 
   locationCoordinates: React.PropTypes.object.isRequired
 };
