@@ -137,7 +137,7 @@ export default class SegmentCreator extends Component {
     // this.props.onSetMapLatitudeLongitude(this.props.activity.id, boundsIndex, this.props.activityLocations[bounds[boundsIndex]]);
 
     const location = this.props.activityLocations[bounds[boundsIndex]];
-    if (boundsIndex == 0) {
+    if (boundsIndex === 0) {
       this.props.onSetLocationCoordinates("segmentCreationStart", location);
     }
     else {
@@ -228,6 +228,9 @@ export default class SegmentCreator extends Component {
     //   width: "128px"
     // };
 
+    const startPoint = Math.round(self.props.activityLocations.length / 3);
+    const endPoint = startPoint * 2;
+
     return (
 
       <MuiThemeProvider>
@@ -241,7 +244,7 @@ export default class SegmentCreator extends Component {
               max={self.props.activityLocations.length - 1}
               range={true}
               allowCross={false}
-              defaultValue={[0, Math.round(self.props.activityLocations.length / 2) - 1]}
+              defaultValue={[startPoint, endPoint]}
               tipFormatter={null}
               onChange={self.handleSliderChange.bind(self)} />
 
