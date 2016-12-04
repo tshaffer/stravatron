@@ -348,6 +348,8 @@ export default class DetailedActivity extends Component {
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           activityLocations={this.props.activityLocations}
           mapMarkers={this.props.mapMarkers}
+          onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
+          locationCoordinates={this.props.locationCoordinates}
         />
         {segmentEffortsTable}
       </div>
@@ -368,5 +370,8 @@ DetailedActivity.propTypes = {
   mapLatitudeLongitude: React.PropTypes.array.isRequired,
   segmentEndPoint: React.PropTypes.array.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired
+  mapMarkers: React.PropTypes.object.isRequired,
+
+  onSetLocationCoordinates: React.PropTypes.func.isRequired,
+  locationCoordinates: React.PropTypes.object.isRequired
 };

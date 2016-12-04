@@ -197,35 +197,36 @@ class ActivityMap extends Component {
 
   updateMapMarkers() {
 
-    const self = this;
-    
-    const markersByActivity = self.props.mapMarkers.markersByActivity;
-    for (let activityId in markersByActivity) {
-      if (markersByActivity.hasOwnProperty(activityId)) {
-        const markers = markersByActivity[activityId];
-
-        markers.forEach( (marker, index) => {
-
-          let sourceName = "marker" + index.toString();
-          // let sourceName = "";
-          //
-          // if (index === 0) {
-          //   sourceName = "flibbet";
-          // }
-          // else {
-          //   sourceName = "pooper";
-          // }
-
-          if (marker.coordinates[0] !== 0 && marker.coordinates[1] !== 0) {
-            const source = self.activityMap.getSource(sourceName);
-            if (source) {
-              self.markerPoint.coordinates = marker.coordinates;
-              source.setData(self.markerPoint);
-            }
-          }
-        });
+    const elevationChartCoordinates = this.props.locationCoordinates.coordinatesByUIElement["elevationChart"];
+    if (elevationChartCoordinates) {
+      let sourceName = "marker0";
+      const source = this.activityMap.getSource(sourceName);
+      if (source) {
+        this.markerPoint.coordinates = elevationChartCoordinates;
+        source.setData(this.markerPoint);
       }
     }
+
+
+    // const markersByActivity = self.props.mapMarkers.markersByActivity;
+    // for (let activityId in markersByActivity) {
+    //   if (markersByActivity.hasOwnProperty(activityId)) {
+    //     const markers = markersByActivity[activityId];
+    //
+    //     markers.forEach( (marker, index) => {
+    //
+    //       let sourceName = "marker" + index.toString();
+    //
+    //       if (marker.coordinates[0] !== 0 && marker.coordinates[1] !== 0) {
+    //         const source = self.activityMap.getSource(sourceName);
+    //         if (source) {
+    //           self.markerPoint.coordinates = marker.coordinates;
+    //           source.setData(self.markerPoint);
+    //         }
+    //       }
+    //     });
+    //   }
+    // }
   }
 
   buildMapLegend(activitiesData) {
@@ -292,14 +293,6 @@ class ActivityMap extends Component {
     //   this.setSegmentEndPointPosition();
     // }
 
-    // for (var property in object) {
-    //   if (object.hasOwnProperty(property)) {
-    //     // do stuff
-    //   }
-    // }
-
-    // Object.keys(obj).length
-
     // if (Object.keys(this.props.mapMarkers.markersByActivity).length > 0) {
     if (this.activityMap && this.mapBoxMap) {
       this.updateMapMarkers();
@@ -328,7 +321,9 @@ ActivityMap.propTypes = {
   mapLatitudeLongitude: React.PropTypes.array.isRequired,
   // segmentEndPoint: React.PropTypes.array.isRequired,
   // activityLocations: React.PropTypes.array.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired
+  mapMarkers: React.PropTypes.object.isRequired,
+
+  locationCoordinates: React.PropTypes.object.isRequired
 };
 
 

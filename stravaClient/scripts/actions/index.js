@@ -25,6 +25,7 @@ export const SET_SEGMENT_END_POINT = 'SET_SEGMENT_END_POINT';
 export const SET_ACTIVITY_LOCATIONS = 'SET_ACTIVITY_LOCATIONS';
 export const ADD_MAP_MARKERS = 'ADD_MAP_MARKERS';
 export const SET_MAP_MARKER_COORDINATES = 'SET_MAP_MARKER_COORDINATES';
+export const SET_COORDINATES = 'SET_COORDINATES';
 
 export function setSelectedAthlete(athlete) {
   return {
@@ -820,4 +821,16 @@ export function setMapMarkerCoordinates(activityId, markerIndex, coordinates, lo
       locationIndex
     }
   };
+}
+
+export function setLocationCoordinates(uiElement, coordinates) {
+
+  return {
+    type: SET_COORDINATES,
+    payload: {
+      uiElement,
+      coordinates
+    }
+  };
+
 }
