@@ -119,10 +119,10 @@ export default class SegmentCreator extends Component {
   handleSliderChange(sliderValues) {
 
     const selectedStartLocation = this.props.activityLocations[sliderValues[0]];
-    this.props.onSetLocationCoordinates("segmentCreationStart", selectedStartLocation);
+    this.props.onSetLocationCoordinates("segmentCreationStart", sliderValues[0], selectedStartLocation);
 
     const selectedEndLocation = this.props.activityLocations[sliderValues[1]];
-    this.props.onSetLocationCoordinates("segmentCreationEnd", selectedEndLocation);
+    this.props.onSetLocationCoordinates("segmentCreationEnd", sliderValues[1], selectedEndLocation);
   }
 
   updateSlider(boundsIndex, step) {
@@ -136,10 +136,10 @@ export default class SegmentCreator extends Component {
 
     const location = this.props.activityLocations[bounds[boundsIndex]];
     if (boundsIndex === 0) {
-      this.props.onSetLocationCoordinates("segmentCreationStart", location);
+      this.props.onSetLocationCoordinates("segmentCreationStart", bounds[boundsIndex], location);
     }
     else {
-      this.props.onSetLocationCoordinates("segmentCreationEnd", location);
+      this.props.onSetLocationCoordinates("segmentCreationEnd", bounds[boundsIndex], location);
     }
   }
 

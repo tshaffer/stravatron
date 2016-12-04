@@ -2,7 +2,8 @@ import { SET_COORDINATES } from '../actions/index';
 
 const initialState =
   {
-    coordinatesByUIElement: {}
+    // coordinatesByUIElement: {},
+    locationsByUIElement: {}
   };
 
 export default function(state = initialState, action) {
@@ -11,20 +12,24 @@ export default function(state = initialState, action) {
 
     case SET_COORDINATES: {
 
-      let newCoordinatesByUIElement = Object.assign( {}, state.coordinatesByUIElement);
+      let newLocationsByUIElement = Object.assign( {}, state.locationsByUIElement);
+
+      let location = {};
+      location.index = action.payload.index || 0;
+      location.coordinates = action.payload.coordinates || [0, 0];
 
       switch (action.payload.uiElement) {
 
         case "elevationChart":
-          newCoordinatesByUIElement["elevationChart"] = action.payload.coordinates;
+          newLocationsByUIElement["elevationChart"] = location;
           break;
 
         case "segmentCreationStart":
-          newCoordinatesByUIElement["segmentCreationStart"] = action.payload.coordinates;
+          newLocationsByUIElement["segmentCreationStart"] = location;
           break;
 
         case "segmentCreationEnd":
-          newCoordinatesByUIElement["segmentCreationEnd"] = action.payload.coordinates;
+          newLocationsByUIElement["segmentCreationEnd"] = location;
           break;
 
         default:
@@ -32,7 +37,7 @@ export default function(state = initialState, action) {
       }
 
       return {
-        coordinatesByUIElement: newCoordinatesByUIElement
+        locationsByUIElement: newLocationsByUIElement
       };
     }
   }

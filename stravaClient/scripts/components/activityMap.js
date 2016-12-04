@@ -206,34 +206,43 @@ class ActivityMap extends Component {
 
     // one marker => elevation chart
     if (this.props.markerCount === 1) {
-      const elevationChartCoordinates = this.props.locationCoordinates.coordinatesByUIElement["elevationChart"];
-      if (elevationChartCoordinates) {
-        let sourceName = "marker0";
-        const source = this.activityMap.getSource(sourceName);
-        if (source) {
-          this.markerPoint.coordinates = elevationChartCoordinates;
-          source.setData(this.markerPoint);
+      const elevationChartLocation = this.props.locationCoordinates.locationsByUIElement["elevationChart"];
+      if (elevationChartLocation) {
+        const elevationChartCoordinates = this.props.locationCoordinates.locationsByUIElement["elevationChart"].coordinates;
+        if (elevationChartCoordinates) {
+          let sourceName = "marker0";
+          const source = this.activityMap.getSource(sourceName);
+          if (source) {
+            this.markerPoint.coordinates = elevationChartCoordinates;
+            source.setData(this.markerPoint);
+          }
         }
       }
     }
     // two markers => create segment
     else if (this.props.markerCount === 2) {
-      const segmentCreationStartCoordinates = this.props.locationCoordinates.coordinatesByUIElement["segmentCreationStart"];
-      if (segmentCreationStartCoordinates) {
-        let sourceName = "marker0";
-        const source = this.activityMap.getSource(sourceName);
-        if (source) {
-          this.markerPoint.coordinates = segmentCreationStartCoordinates;
-          source.setData(this.markerPoint);
+      const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+      if (segmentCreationStartLocation) {
+        const segmentCreationStartCoordinates = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"].coordinates;
+        if (segmentCreationStartCoordinates) {
+          let sourceName = "marker0";
+          const source = this.activityMap.getSource(sourceName);
+          if (source) {
+            this.markerPoint.coordinates = segmentCreationStartCoordinates;
+            source.setData(this.markerPoint);
+          }
         }
       }
-      const segmentCreationEndCoordinates = this.props.locationCoordinates.coordinatesByUIElement["segmentCreationEnd"];
-      if (segmentCreationEndCoordinates) {
-        let sourceName = "marker1";
-        const source = this.activityMap.getSource(sourceName);
-        if (source) {
-          this.markerPoint.coordinates = segmentCreationEndCoordinates;
-          source.setData(this.markerPoint);
+      const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+      if (segmentCreationEndLocation) {
+        const segmentCreationEndCoordinates = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"].coordinates;
+        if (segmentCreationEndCoordinates) {
+          let sourceName = "marker1";
+          const source = this.activityMap.getSource(sourceName);
+          if (source) {
+            this.markerPoint.coordinates = segmentCreationEndCoordinates;
+            source.setData(this.markerPoint);
+          }
         }
       }
     }

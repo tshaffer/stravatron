@@ -733,12 +733,13 @@ export function retrieveBaseMapSegments() {
   };
 }
 
-export function setLocationCoordinates(uiElement, coordinates) {
+export function setLocationCoordinates(uiElement, index, coordinates) {
 
   return {
     type: SET_COORDINATES,
     payload: {
       uiElement,
+      index,
       coordinates
     }
   };

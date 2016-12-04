@@ -32,8 +32,8 @@ function mapDispatchToProps(dispatch) {
     onSetMapStreamIndex: (streamIndex) => {
       dispatch(setMapStreamIndex(streamIndex));
     },
-    onSetLocationCoordinates: (uiElement, coordinates) => {
-      dispatch(setLocationCoordinates(uiElement, coordinates));
+    onSetLocationCoordinates: (uiElement, index, coordinates) => {
+      dispatch(setLocationCoordinates(uiElement, index, coordinates));
     }
   };
 }

@@ -210,14 +210,14 @@ class ElevationChart extends Component {
 
         const d = dataTable.getValue(selectedItem.row, 0);
         const selectedLocation = mapDistanceToLocation[d];
+        const selectedStreamIndex = mapDistanceToStreamIndex[d];
         if (selectedLocation) {
-          self.props.onSetLocationCoordinates("elevationChart", selectedLocation);
+          self.props.onSetLocationCoordinates("elevationChart", selectedStreamIndex, selectedLocation);
         }
 
-        const selectedStreamIndex = mapDistanceToStreamIndex[d];
-        if (selectedStreamIndex) {
-          self.props.onSetMapStreamIndex(selectedStreamIndex);
-        }
+        // if (selectedStreamIndex) {
+        //   self.props.onSetMapStreamIndex(selectedStreamIndex);
+        // }
       }
     }
 
