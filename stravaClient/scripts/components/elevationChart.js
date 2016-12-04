@@ -102,9 +102,6 @@ class ElevationChart extends Component {
     console.log("activityStartDateLocal: ", this.props.activityStartDateLocal);
     const activityStartTime = this.props.activityStartDateLocal.getTime();
 
-
-    // distances.length = 1278
-
     for (let i = 0; i < distances.length; i++) {
 
       let distance = distances[i];
@@ -113,38 +110,13 @@ class ElevationChart extends Component {
       let location = locations[i];
 
       let distanceInMiles = Converters.metersToMiles(distance);
-
-      let elevationInUse, elevationInFeetPre, elevationInFeet, elevationInFeetPost;
-      if (i < (distances.length / 3)) {
-        elevationInFeetPre = Converters.metersToFeet(elevation);
-        elevationInFeet = 0;
-        elevationInFeetPost = 0;
-
-        elevationInUse = elevationInFeetPre;
-      }
-      else if (i < (distances.length * 2 / 3)) {
-        elevationInFeet = Converters.metersToFeet(elevation);
-        elevationInFeetPre = 0;
-        elevationInFeetPost = 0;
-
-        elevationInUse = elevationInFeet;
-      }
-      else {
-        elevationInFeetPost = Converters.metersToFeet(elevation);
-        elevationInFeetPre = 0;
-        elevationInFeet = 0;
-
-        elevationInUse = elevationInFeetPost;
-      }
+      let elevationInFeet = Converters.metersToFeet(elevation);
 
       row = [];
       row.push(distanceInMiles);
-      // row.push(elevationInFeetPre);
-      // row.push(elevationInFeet);
-      // row.push(elevationInFeetPost);
-      row.push(elevationInUse);
-      row.push(elevationInUse);
-      row.push(elevationInUse);
+      row.push(elevationInFeet);
+      row.push(elevationInFeet);
+      row.push(elevationInFeet);
 
       let segmentEffortsAtTimeLabel = "";
 
@@ -172,7 +144,7 @@ class ElevationChart extends Component {
       }
 
       let ttHtml = '<div style="padding:5px 5px 5px 5px;">Distance:<b>' + distanceInMiles.toFixed(1);
-      ttHtml += 'mi</b><br>Elevation:<b>' + elevationInUse.toFixed(0)
+      ttHtml += 'mi</b><br>Elevation:<b>' + elevationInFeet.toFixed(0)
         + 'ft</b><br>Grade:<b>' + gradient.toFixed(1) + '%</b>';
       ttHtml += segmentEffortsAtTimeLabel + '</div>';
       row.push(ttHtml);
@@ -216,9 +188,8 @@ class ElevationChart extends Component {
     // var chart = new window.google.visualization.LineChart(elevationChart);
     let chart = new window.google.visualization.AreaChart(elevationChart);
 
-    // chart.draw(dataTable, options);
-    this.chart = chart;
     this.dataTable = dataTable;
+    this.chart = chart;
     this.options = options;
     this.distances = distances;
     let dataView = new window.google.visualization.DataView(this.dataTable);
@@ -285,7 +256,7 @@ class ElevationChart extends Component {
           let dataView = new window.google.visualization.DataView(this.dataTable);
 
           dataView.setColumns([0, {calc: this.getPreRow, type: 'number'}, {calc: this.getRow, type: 'number'},
-            {calc: this.getPostRow, type: 'number'} ]);
+            {calc: this.getPostRow, type: 'number'}, 4]);
           this.chart.draw(dataView, this.options);
         }
       }
