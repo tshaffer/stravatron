@@ -19,7 +19,6 @@ export const ADD_DETAILED_SEGMENT_ATTRIBUTES = 'ADD_DETAILED_SEGMENT_ATTRIBUTES'
 export const ADD_SEGMENT_EFFORTS = 'ADD_SEGMENT_EFFORTS';
 export const SET_CUSTOM_MAP_SEGMENTS = 'SET_CUSTOM_MAP_SEGMENTS';
 export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
-export const SET_MAP_LATITUDE_LONGITUDE = 'SET_MAP_LATITUDE_LONGITUDE';
 export const SET_MAP_STREAM_INDEX = 'SET_MAP_STREAM_INDEX';
 export const SET_SEGMENT_END_POINT = 'SET_SEGMENT_END_POINT';
 export const SET_ACTIVITY_LOCATIONS = 'SET_ACTIVITY_LOCATIONS';
@@ -66,14 +65,6 @@ export function addDetailedActivityAttributes(activityId, detailedActivityAttrib
     type: ADD_DETAILED_ACTIVITY_ATTRIBUTES,
     activityId,
     detailedActivityAttributes
-  };
-}
-
-export function setMapLatitudeLongitude(latitudeLongitude) {
-
-  return {
-    type: SET_MAP_LATITUDE_LONGITUDE,
-    latitudeLongitude
   };
 }
 
@@ -306,7 +297,6 @@ function loadDetailedActivityFromDB(activityId, activity, markerCount, dbService
         };
       dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
 
-      dispatch(setMapLatitudeLongitude(startingLatitudeLongitude));
       dispatch(setMapStreamIndex(0));
 
       let markers = [];

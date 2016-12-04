@@ -119,11 +119,9 @@ export default class SegmentCreator extends Component {
   handleSliderChange(sliderValues) {
 
     const selectedStartLocation = this.props.activityLocations[sliderValues[0]];
-    // this.props.onSetMapLatitudeLongitude(this.props.activity.id, 0, selectedStartLocation);
     this.props.onSetLocationCoordinates("segmentCreationStart", selectedStartLocation);
 
     const selectedEndLocation = this.props.activityLocations[sliderValues[1]];
-    // this.props.onSetMapLatitudeLongitude(this.props.activity.id, 1, selectedEndLocation);
     this.props.onSetLocationCoordinates("segmentCreationEnd", selectedEndLocation);
   }
 
@@ -311,7 +309,6 @@ export default class SegmentCreator extends Component {
 
 SegmentCreator.propTypes = {
   activity: React.PropTypes.object.isRequired,
-  onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
   mapStreamIndex: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
   // setMapMarkerCoordinates: React.PropTypes.func.isRequired

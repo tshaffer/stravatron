@@ -230,28 +230,6 @@ class ActivityMap extends Component {
         }
       }
     }
-    
-
-
-    // const markersByActivity = self.props.mapMarkers.markersByActivity;
-    // for (let activityId in markersByActivity) {
-    //   if (markersByActivity.hasOwnProperty(activityId)) {
-    //     const markers = markersByActivity[activityId];
-    //
-    //     markers.forEach( (marker, index) => {
-    //
-    //       let sourceName = "marker" + index.toString();
-    //
-    //       if (marker.coordinates[0] !== 0 && marker.coordinates[1] !== 0) {
-    //         const source = self.activityMap.getSource(sourceName);
-    //         if (source) {
-    //           self.markerPoint.coordinates = marker.coordinates;
-    //           source.setData(self.markerPoint);
-    //         }
-    //       }
-    //     });
-    //   }
-    // }
   }
 
   buildMapLegend(activitiesData) {
@@ -309,20 +287,9 @@ class ActivityMap extends Component {
 
     let self = this;
 
-    // if (this.activityMap && this.props.markerCount > 0 && this.props.mapLatitudeLongitude
-    //   && this.props.mapLatitudeLongitude.length > 0) {
-    //   this.setMarkerPosition();
-    // }
-    // if (this.activityMap && this.props.markerCount > 1 && this.props.segmentEndPoint
-    //   && this.props.segmentEndPoint.length > 0) {
-    //   this.setSegmentEndPointPosition();
-    // }
-
-    // if (Object.keys(this.props.mapMarkers.markersByActivity).length > 0) {
     if (this.activityMap && this.mapBoxMap) {
       this.updateMapMarkers();
     }
-    // }
 
     const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);
 
@@ -343,7 +310,6 @@ ActivityMap.propTypes = {
   mapHeight: React.PropTypes.string.isRequired,
   activitiesData: React.PropTypes.array.isRequired,
   markerCount: React.PropTypes.number.isRequired,
-  mapLatitudeLongitude: React.PropTypes.array.isRequired,
   // segmentEndPoint: React.PropTypes.array.isRequired,
   // activityLocations: React.PropTypes.array.isRequired,
   mapMarkers: React.PropTypes.object.isRequired,

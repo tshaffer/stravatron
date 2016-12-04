@@ -241,7 +241,6 @@ class ElevationChart extends Component {
 ElevationChart.propTypes = {
   activity: React.PropTypes.object.isRequired,
   streams: React.PropTypes.array.isRequired,
-  onSetMapLatitudeLongitude: React.PropTypes.func.isRequired,
   onSetMapStreamIndex: React.PropTypes.func.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
   activityStartDateLocal: React.PropTypes.object.isRequired,
