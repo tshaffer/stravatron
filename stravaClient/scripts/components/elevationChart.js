@@ -181,11 +181,8 @@ class ElevationChart extends Component {
     // chart.draw(dataTable, options);
 
     let dataView = new window.google.visualization.DataView(dataTable);
-    // dataView.setRows(dataView.getFilteredRows([{column: 1, minValue: 300}]));
-    dataView.setRows(dataView.getFilteredRows([{column: 0, minValue: 2, maxValue: 10}]));
     chart.draw(dataView, options);
     this.dataTable = dataTable;
-    this.dataView = dataView;
     this.chart = chart;
     this.options = options;
     this.distances = distances;
@@ -250,9 +247,9 @@ class ElevationChart extends Component {
 
           console.log(startDistance, " : ", endDistance);
 
-          this.dataView = new window.google.visualization.DataView(this.dataTable);
-          this.dataView.setRows(this.dataView.getFilteredRows([{column: 0, minValue: startDistance, maxValue: endDistance}]));
-          this.chart.draw(this.dataView, this.options);
+          let dataView = new window.google.visualization.DataView(this.dataTable);
+          dataView.setRows(dataView.getFilteredRows([{column: 0, minValue: startDistance, maxValue: endDistance}]));
+          this.chart.draw(dataView, this.options);
         }
       }
     }
