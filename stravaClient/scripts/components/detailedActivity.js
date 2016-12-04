@@ -103,10 +103,6 @@ export default class DetailedActivity extends Component {
     hashHistory.push('/segmentsSummaryActivitiesContainer/' + segmentId);
   }
 
-  handleSetMapStreamIndex(streamIndex) {
-    this.props.onSetMapStreamIndex(streamIndex);
-  }
-
   buildSegmentEffortRow(segmentEffort) {
 
     let self = this;
@@ -337,7 +333,6 @@ export default class DetailedActivity extends Component {
           mapHeight={"400px"}
           markerCount={1}
           streams={streams}
-          onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
           activityStartDateLocal={activity.startDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           activityLocations={this.props.activityLocations}
@@ -352,7 +347,6 @@ export default class DetailedActivity extends Component {
 
 DetailedActivity.propTypes = {
   onLoadDetailedActivity: React.PropTypes.func.isRequired,
-  onSetMapStreamIndex: React.PropTypes.func.isRequired,
   activity: React.PropTypes.object.isRequired,
   segments: React.PropTypes.object.isRequired,
   segmentEfforts: React.PropTypes.object.isRequired,

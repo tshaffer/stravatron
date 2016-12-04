@@ -19,7 +19,6 @@ export default class ActivityVisuals extends Component {
         <ElevationChart
           activity={this.props.activity}
           streams={this.props.streams}
-          onSetMapStreamIndex={this.props.onSetMapStreamIndex}
           activityStartDateLocal={this.props.activityStartDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
@@ -32,11 +31,9 @@ export default class ActivityVisuals extends Component {
 ActivityVisuals.propTypes = {
   activity: React.PropTypes.object.isRequired,
   activitiesData: React.PropTypes.array.isRequired,
-  // segmentEndPoint: React.PropTypes.array.isRequired,
   streams: React.PropTypes.array.isRequired,
   activityStartDateLocal: React.PropTypes.object.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
-  onSetMapStreamIndex: React.PropTypes.func.isRequired,
   markerCount: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
 

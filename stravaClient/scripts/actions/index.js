@@ -18,7 +18,6 @@ export const ADD_DETAILED_SEGMENT_ATTRIBUTES = 'ADD_DETAILED_SEGMENT_ATTRIBUTES'
 export const ADD_SEGMENT_EFFORTS = 'ADD_SEGMENT_EFFORTS';
 export const SET_CUSTOM_MAP_SEGMENTS = 'SET_CUSTOM_MAP_SEGMENTS';
 export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
-export const SET_MAP_STREAM_INDEX = 'SET_MAP_STREAM_INDEX';
 export const SET_SEGMENT_END_POINT = 'SET_SEGMENT_END_POINT';
 export const SET_ACTIVITY_LOCATIONS = 'SET_ACTIVITY_LOCATIONS';
 export const SET_COORDINATES = 'SET_COORDINATES';
@@ -78,14 +77,6 @@ export function setActivityLocations(activityLocations) {
   return {
     type: SET_ACTIVITY_LOCATIONS,
     payload: activityLocations
-  };
-}
-
-export function setMapStreamIndex(streamIndex) {
-
-  return {
-    type: SET_MAP_STREAM_INDEX,
-    streamIndex
   };
 }
 
@@ -289,9 +280,6 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
           "streams": streams
         };
       dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
-
-      dispatch(setMapStreamIndex(0));
-
     });
   });
 }

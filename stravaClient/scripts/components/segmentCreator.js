@@ -15,9 +15,6 @@ export default class SegmentCreator extends Component {
   constructor(props) {
     super(props);
 
-    this.startPointStreamIndex = -1;
-    this.endPointStreamIndex = -1;
-
     this.geoJSONCoordinates = [];
 
     this.clickStep = 1;
@@ -108,14 +105,6 @@ export default class SegmentCreator extends Component {
     });
   }
 
-  handleSetStartPoint() {
-    this.startPointStreamIndex = this.props.mapStreamIndex;
-  }
-
-  handleSetEndPoint() {
-    this.endPointStreamIndex = this.props.mapStreamIndex;
-  }
-
   handleSliderChange(sliderValues) {
 
     const selectedStartLocation = this.props.activityLocations[sliderValues[0]];
@@ -177,8 +166,6 @@ export default class SegmentCreator extends Component {
       }
     }
 
-    debugger;
-
     let startPointStreamIndex;
     let endPointStreamIndex;
     
@@ -208,8 +195,6 @@ export default class SegmentCreator extends Component {
 
       segmentLocations.push(stravatronLocation);
     }
-
-    debugger;
 
     fs.readFile('segments.geojson', (_, data) => {
 
@@ -332,9 +317,7 @@ export default class SegmentCreator extends Component {
 
 SegmentCreator.propTypes = {
   activity: React.PropTypes.object.isRequired,
-  mapStreamIndex: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  // setMapMarkerCoordinates: React.PropTypes.func.isRequired
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired
 };

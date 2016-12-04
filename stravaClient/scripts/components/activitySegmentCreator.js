@@ -10,14 +10,6 @@ export default class ActivitySegmentCreator extends Component {
     this.props.onLoadDetailedActivity(this.props.params.id);
   }
 
-  handleSetMapStreamIndex(streamIndex) {
-    this.props.onSetMapStreamIndex(streamIndex);
-  }
-
-  // handleSetSegmentEndPoint(latitudeLongitude) {
-  //   this.props.onSetSegmentEndPoint(latitudeLongitude);
-  // }
-
   render () {
 
     const activity = this.props.activity;
@@ -49,7 +41,6 @@ export default class ActivitySegmentCreator extends Component {
         <br/>
         <SegmentCreator
           activity={this.props.activity}
-          mapStreamIndex={this.props.mapStreamIndex}
           markerCount={2}
           activityLocations={this.props.activityLocations}
           locationCoordinates={this.props.locationCoordinates}
@@ -62,7 +53,6 @@ export default class ActivitySegmentCreator extends Component {
           mapHeight={"400px"}
           markerCount={2}
           streams={streams}
-          onSetMapStreamIndex={this.handleSetMapStreamIndex.bind(this)}
           activityStartDateLocal={activity.startDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           activityLocations={this.props.activityLocations}
@@ -76,12 +66,9 @@ export default class ActivitySegmentCreator extends Component {
 
 ActivitySegmentCreator.propTypes = {
   onLoadDetailedActivity: React.PropTypes.func.isRequired,
-  // onSetSegmentEndPoint: React.PropTypes.func.isRequired,
-  onSetMapStreamIndex: React.PropTypes.func.isRequired,
   activity: React.PropTypes.object.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
   params: React.PropTypes.object.isRequired,
-  mapStreamIndex: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired
