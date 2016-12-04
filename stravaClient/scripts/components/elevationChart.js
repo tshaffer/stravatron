@@ -139,9 +139,12 @@ class ElevationChart extends Component {
 
       row = [];
       row.push(distanceInMiles);
-      row.push(elevationInFeetPre);
-      row.push(elevationInFeet);
-      row.push(elevationInFeetPost);
+      // row.push(elevationInFeetPre);
+      // row.push(elevationInFeet);
+      // row.push(elevationInFeetPost);
+      row.push(elevationInUse);
+      row.push(elevationInUse);
+      row.push(elevationInUse);
 
       let segmentEffortsAtTimeLabel = "";
 
