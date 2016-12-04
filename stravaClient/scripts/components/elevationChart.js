@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 
 import * as Converters from '../utilities/converters';
 
+let segmentStartDistance = null;
+let segmentEndDistance = null;
+
 class ElevationChart extends Component {
 
   constructor(props) {
@@ -13,7 +16,7 @@ class ElevationChart extends Component {
 
   shouldComponentUpdate() {
 
-    if (this.chartDrawn) return false;
+    // if (this.chartDrawn) return false;
 
     return true;
   }
@@ -171,7 +174,6 @@ class ElevationChart extends Component {
       ttHtml += segmentEffortsAtTimeLabel + '</div>';
       row.push(ttHtml);
 
-      console.log(i);
       dataTable.addRow(row);
 
       const distanceIndex = Converters.metersToMiles(distance).toString();
@@ -211,7 +213,14 @@ class ElevationChart extends Component {
     // var chart = new window.google.visualization.LineChart(elevationChart);
     let chart = new window.google.visualization.AreaChart(elevationChart);
 
-    chart.draw(dataTable, options);
+    // chart.draw(dataTable, options);
+    this.chart = chart;
+    this.dataTable = dataTable;
+    this.options = options;
+    this.distances = distances;
+    let dataView = new window.google.visualization.DataView(this.dataTable);
+    this.chart.draw(dataView, this.options);
+
     this.chartDrawn = true;
 
     // Add our over/out handlers.
@@ -256,9 +265,69 @@ class ElevationChart extends Component {
     }
   }
 
+  redrawChart() {
+
+    if (this.props.markerCount === 2) {
+      const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+      if (segmentCreationStartLocation) {
+        const segmentCreationStartIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"].index;
+
+        const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+        if (segmentCreationEndLocation) {
+          const segmentCreationEndIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"].index;
+
+          segmentStartDistance = Converters.metersToMiles(this.distances[segmentCreationStartIndex]);
+          segmentEndDistance = Converters.metersToMiles(this.distances[segmentCreationEndIndex]);
+
+          let dataView = new window.google.visualization.DataView(this.dataTable);
+
+          dataView.setColumns([0, {calc: this.getPreRow, type: 'number'}, {calc: this.getRow, type: 'number'},
+            {calc: this.getPostRow, type: 'number'} ]);
+          this.chart.draw(dataView, this.options);
+        }
+      }
+    }
+  }
+
+  getPreRow(dataTable, rowNum) {
+    let distance = dataTable.getValue(rowNum, 0);
+    if (distance < segmentStartDistance) {
+      let val = dataTable.getValue(rowNum, 1);
+      return val;
+    }
+    else {
+      return 0;
+    }
+  }
+
+  getRow(dataTable, rowNum) {
+    let distance = dataTable.getValue(rowNum, 0);
+    if (distance >= segmentStartDistance && distance <= segmentEndDistance) {
+      let val = dataTable.getValue(rowNum, 2);
+      return val;
+    }
+    else {
+      return 0;
+    }
+  }
+
+  getPostRow(dataTable, rowNum) {
+    let distance = dataTable.getValue(rowNum, 0);
+    if (distance >= segmentEndDistance) {
+      let val = dataTable.getValue(rowNum, 3);
+      return val;
+    }
+    else {
+      return 0;
+    }
+  }
+
   render() {
 
-    if (this.elevationChart && this.props.streams.length > 0) {
+    if (this.chartDrawn) {
+      this.redrawChart();
+    }
+    else if (this.elevationChart && this.props.streams.length > 0) {
       this.buildElevationGraph(this.props.streams);
     }
 
@@ -268,13 +337,17 @@ class ElevationChart extends Component {
   }
 }
 
+
+
 ElevationChart.propTypes = {
   activity: React.PropTypes.object.isRequired,
   streams: React.PropTypes.array.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
   activityStartDateLocal: React.PropTypes.object.isRequired,
 
-  onSetLocationCoordinates: React.PropTypes.func.isRequired
+  onSetLocationCoordinates: React.PropTypes.func.isRequired,
+  locationCoordinates: React.PropTypes.object.isRequired,
+  markerCount: React.PropTypes.number.isRequired
 
 };
 

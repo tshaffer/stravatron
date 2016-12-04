@@ -22,6 +22,8 @@ export default class ActivityVisuals extends Component {
           activityStartDateLocal={this.props.activityStartDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
+          locationCoordinates={this.props.locationCoordinates}
+          markerCount={this.props.markerCount}
         />
       </div>
     );
