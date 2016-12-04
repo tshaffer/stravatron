@@ -197,15 +197,40 @@ class ActivityMap extends Component {
 
   updateMapMarkers() {
 
-    const elevationChartCoordinates = this.props.locationCoordinates.coordinatesByUIElement["elevationChart"];
-    if (elevationChartCoordinates) {
-      let sourceName = "marker0";
-      const source = this.activityMap.getSource(sourceName);
-      if (source) {
-        this.markerPoint.coordinates = elevationChartCoordinates;
-        source.setData(this.markerPoint);
+    // if one marker, it's from the elevation chart
+    if (this.props.markerCount === 1) {
+      const elevationChartCoordinates = this.props.locationCoordinates.coordinatesByUIElement["elevationChart"];
+      if (elevationChartCoordinates) {
+        let sourceName = "marker0";
+        const source = this.activityMap.getSource(sourceName);
+        if (source) {
+          this.markerPoint.coordinates = elevationChartCoordinates;
+          source.setData(this.markerPoint);
+        }
       }
     }
+    // if two markers, they're set by the segment creator
+    else if (this.props.markerCount === 2) {
+      const segmentCreationStartCoordinates = this.props.locationCoordinates.coordinatesByUIElement["segmentCreationStart"];
+      if (segmentCreationStartCoordinates) {
+        let sourceName = "marker0";
+        const source = this.activityMap.getSource(sourceName);
+        if (source) {
+          this.markerPoint.coordinates = segmentCreationStartCoordinates;
+          source.setData(this.markerPoint);
+        }
+      }
+      const segmentCreationEndCoordinates = this.props.locationCoordinates.coordinatesByUIElement["segmentCreationEnd"];
+      if (segmentCreationEndCoordinates) {
+        let sourceName = "marker1";
+        const source = this.activityMap.getSource(sourceName);
+        if (source) {
+          this.markerPoint.coordinates = segmentCreationEndCoordinates;
+          source.setData(this.markerPoint);
+        }
+      }
+    }
+    
 
 
     // const markersByActivity = self.props.mapMarkers.markersByActivity;

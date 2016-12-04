@@ -371,7 +371,6 @@ DetailedActivity.propTypes = {
   segmentEndPoint: React.PropTypes.array.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
   mapMarkers: React.PropTypes.object.isRequired,
-
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired
 };

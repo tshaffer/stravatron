@@ -57,6 +57,7 @@ export default class ActivitySegmentCreator extends Component {
           onSetMapLatitudeLongitude = {this.handleSetMapLatitudeLongitude.bind(this)}
           markerCount={2}
           activityLocations={this.props.activityLocations}
+          onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
         />
         <ActivityVisuals
           activity={this.props.activity}
@@ -72,6 +73,8 @@ export default class ActivitySegmentCreator extends Component {
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           activityLocations={this.props.activityLocations}
           mapMarkers={this.props.mapMarkers}
+          locationCoordinates={this.props.locationCoordinates}
+          onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
         />
       </div>
     );
@@ -89,5 +92,7 @@ ActivitySegmentCreator.propTypes = {
   mapLatitudeLongitude: React.PropTypes.array.isRequired,
   mapStreamIndex: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-  mapMarkers: React.PropTypes.object.isRequired
+  mapMarkers: React.PropTypes.object.isRequired,
+  onSetLocationCoordinates: React.PropTypes.func.isRequired,
+  locationCoordinates: React.PropTypes.object.isRequired
 };

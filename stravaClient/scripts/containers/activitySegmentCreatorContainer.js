@@ -9,6 +9,7 @@ import { setMapStreamIndex, setMapMarkerCoordinates } from '../actions/index';
 import { getActivity } from '../reducers/reducer_activities';
 import { getEffortsForActivitySegments } from '../reducers/reducer_segment_efforts';
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
+import { setLocationCoordinates } from '../actions/index';
 
 function mapStateToProps (state, ownProps) {
   return {
@@ -22,7 +23,8 @@ function mapStateToProps (state, ownProps) {
     segmentEndPoint: state.segmentEndPoint,
     mapStreamIndex: state.mapStreamIndex,
     activityLocations: state.activityLocations,
-    mapMarkers: state.mapMarkers
+    mapMarkers: state.mapMarkers,
+    locationCoordinates: state.locationCoordinates
   };
 }
 
@@ -36,6 +38,9 @@ function mapDispatchToProps(dispatch) {
     },
     onSetMapStreamIndex: (streamIndex) => {
       dispatch(setMapStreamIndex(streamIndex));
+    },
+    onSetLocationCoordinates: (uiElement, coordinates) => {
+      dispatch(setLocationCoordinates(uiElement, coordinates));
     }
   };
 }
