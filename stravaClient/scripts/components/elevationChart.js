@@ -84,32 +84,61 @@ class ElevationChart extends Component {
       return;
     }
 
-    var dataTable = new window.google.visualization.DataTable();
+    let dataTable = new window.google.visualization.DataTable();
     dataTable.addColumn('number', 'Distance');
+    dataTable.addColumn('number', 'ElevationPre');
     dataTable.addColumn('number', 'Elevation');
+    dataTable.addColumn('number', 'ElevationPost');
     dataTable.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
 
-    var row = [];
-    var mapDistanceToLocation = {};
+    let row = [];
+    let mapDistanceToLocation = {};
     let mapDistanceToStreamIndex = {};
 
     console.log("segmentEffortsForActivity length:", this.props.segmentEffortsForActivity.length);
     console.log("activityStartDateLocal: ", this.props.activityStartDateLocal);
     const activityStartTime = this.props.activityStartDateLocal.getTime();
 
+
+    // distances.length = 1278
+
     for (let i = 0; i < distances.length; i++) {
 
-      var distance = distances[i];
-      var elevation = elevations[i];
-      var gradient = gradients[i];
-      var location = locations[i];
+      let distance = distances[i];
+      let elevation = elevations[i];
+      let gradient = gradients[i];
+      let location = locations[i];
 
-      var distanceInMiles = Converters.metersToMiles(distance);
-      var elevationInFeet = Converters.metersToFeet(elevation);
+      let distanceInMiles = Converters.metersToMiles(distance);
+
+      let elevationInUse, elevationInFeetPre, elevationInFeet, elevationInFeetPost;
+      if (i < (distances.length / 3)) {
+        elevationInFeetPre = Converters.metersToFeet(elevation);
+        elevationInFeet = 0;
+        elevationInFeetPost = 0;
+
+        elevationInUse = elevationInFeetPre;
+      }
+      else if (i < (distances.length * 2 / 3)) {
+        elevationInFeet = Converters.metersToFeet(elevation);
+        elevationInFeetPre = 0;
+        elevationInFeetPost = 0;
+
+        elevationInUse = elevationInFeet;
+      }
+      else {
+        elevationInFeetPost = Converters.metersToFeet(elevation);
+        elevationInFeetPre = 0;
+        elevationInFeet = 0;
+
+        elevationInUse = elevationInFeetPost;
+      }
 
       row = [];
       row.push(distanceInMiles);
+      row.push(elevationInFeetPre);
       row.push(elevationInFeet);
+      row.push(elevationInFeetPost);
 
       let segmentEffortsAtTimeLabel = "";
 
@@ -136,12 +165,13 @@ class ElevationChart extends Component {
         }
       }
 
-      var ttHtml = '<div style="padding:5px 5px 5px 5px;">Distance:<b>' + distanceInMiles.toFixed(1);
-      ttHtml += 'mi</b><br>Elevation:<b>' + elevationInFeet.toFixed(0)
+      let ttHtml = '<div style="padding:5px 5px 5px 5px;">Distance:<b>' + distanceInMiles.toFixed(1);
+      ttHtml += 'mi</b><br>Elevation:<b>' + elevationInUse.toFixed(0)
         + 'ft</b><br>Grade:<b>' + gradient.toFixed(1) + '%</b>';
       ttHtml += segmentEffortsAtTimeLabel + '</div>';
       row.push(ttHtml);
 
+      console.log(i);
       dataTable.addRow(row);
 
       const distanceIndex = Converters.metersToMiles(distance).toString();
@@ -149,7 +179,7 @@ class ElevationChart extends Component {
       mapDistanceToStreamIndex[distanceIndex] = i;
     }
 
-    var options = {
+    let options = {
       chartArea: { left: 60, top: 10, height: 160 },
       hAxis: {
         format: '## mi',
@@ -171,11 +201,15 @@ class ElevationChart extends Component {
       },
       // width: 1800
       // width of 1500 looks best on laptop
-      width: 1500
+      width: 1500,
+      // colors: ["red", "green", "blue"],
+      colors: ['#000000', "green", '#000000'],
+      isStacked: false
     };
 
     let elevationChart = this.elevationChart;
-    var chart = new window.google.visualization.LineChart(elevationChart);
+    // var chart = new window.google.visualization.LineChart(elevationChart);
+    let chart = new window.google.visualization.AreaChart(elevationChart);
 
     chart.draw(dataTable, options);
     this.chartDrawn = true;
