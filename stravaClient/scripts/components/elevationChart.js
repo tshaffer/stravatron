@@ -13,7 +13,7 @@ class ElevationChart extends Component {
 
   shouldComponentUpdate() {
 
-    if (this.chartDrawn) return false;
+    // if (this.chartDrawn) return false;
 
     return true;
   }
@@ -109,6 +109,7 @@ class ElevationChart extends Component {
 
       row = [];
       row.push(distanceInMiles);
+      console.log("distanceInMiles: ", distanceInMiles);
       row.push(elevationInFeet);
 
       let segmentEffortsAtTimeLabel = "";
@@ -177,7 +178,18 @@ class ElevationChart extends Component {
     let elevationChart = this.elevationChart;
     var chart = new window.google.visualization.LineChart(elevationChart);
 
-    chart.draw(dataTable, options);
+    // chart.draw(dataTable, options);
+
+    let dataView = new window.google.visualization.DataView(dataTable);
+    // dataView.setRows(dataView.getFilteredRows([{column: 1, minValue: 300}]));
+    dataView.setRows(dataView.getFilteredRows([{column: 0, minValue: 2, maxValue: 10}]));
+    chart.draw(dataView, options);
+    this.dataTable = dataTable;
+    this.dataView = dataView;
+    this.chart = chart;
+    this.options = options;
+    this.distances = distances;
+
     this.chartDrawn = true;
 
     // Add our over/out handlers.
@@ -222,9 +234,36 @@ class ElevationChart extends Component {
     }
   }
 
+  redrawChart() {
+
+    if (this.props.markerCount === 2) {
+      const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+      if (segmentCreationStartLocation) {
+        const segmentCreationStartIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"].index;
+
+        const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+        if (segmentCreationEndLocation) {
+          const segmentCreationEndIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"].index;
+
+          const startDistance = Converters.metersToMiles(this.distances[segmentCreationStartIndex]);
+          const endDistance = Converters.metersToMiles(this.distances[segmentCreationEndIndex]);
+
+          console.log(startDistance, " : ", endDistance);
+
+          this.dataView = new window.google.visualization.DataView(this.dataTable);
+          this.dataView.setRows(this.dataView.getFilteredRows([{column: 0, minValue: startDistance, maxValue: endDistance}]));
+          this.chart.draw(this.dataView, this.options);
+        }
+      }
+    }
+  }
+
   render() {
 
-    if (this.elevationChart && this.props.streams.length > 0) {
+    if (this.chartDrawn) {
+      this.redrawChart();
+    }
+    else if (this.elevationChart && this.props.streams.length > 0) {
       this.buildElevationGraph(this.props.streams);
     }
 
@@ -240,8 +279,9 @@ ElevationChart.propTypes = {
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
   activityStartDateLocal: React.PropTypes.object.isRequired,
 
-  onSetLocationCoordinates: React.PropTypes.func.isRequired
-
+  onSetLocationCoordinates: React.PropTypes.func.isRequired,
+  locationCoordinates: React.PropTypes.object.isRequired,
+  markerCount: React.PropTypes.number.isRequired
 };
 
 
