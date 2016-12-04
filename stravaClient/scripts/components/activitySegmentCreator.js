@@ -52,6 +52,7 @@ export default class ActivitySegmentCreator extends Component {
           mapStreamIndex={this.props.mapStreamIndex}
           markerCount={2}
           activityLocations={this.props.activityLocations}
+          locationCoordinates={this.props.locationCoordinates}
           onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
         />
         <ActivityVisuals

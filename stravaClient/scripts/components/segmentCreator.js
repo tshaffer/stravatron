@@ -177,8 +177,29 @@ export default class SegmentCreator extends Component {
       }
     }
 
+    debugger;
+
+    let startPointStreamIndex;
+    let endPointStreamIndex;
+    
+    const startPointStreamLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+    if (startPointStreamLocation) {
+      startPointStreamIndex = startPointStreamLocation.index;
+    }
+    else {
+      startPointStreamIndex = this.initialStartIndex;
+    }
+
+    const endPointStreamLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+    if (endPointStreamLocation) {
+      endPointStreamIndex = endPointStreamLocation.index;
+    }
+    else {
+      endPointStreamIndex = this.initialEndIndex;
+    }
+
     let segmentLocations = [];
-    for (let i = this.startPointStreamIndex; i <= this.endPointStreamIndex; i++) {
+    for (let i = startPointStreamIndex; i <= endPointStreamIndex; i++) {
 
       const stravaLocation = locations[i];
       const latitude = stravaLocation[0];
@@ -187,6 +208,8 @@ export default class SegmentCreator extends Component {
 
       segmentLocations.push(stravatronLocation);
     }
+
+    debugger;
 
     fs.readFile('segments.geojson', (_, data) => {
 
@@ -226,8 +249,8 @@ export default class SegmentCreator extends Component {
     //   width: "128px"
     // };
 
-    const startPoint = Math.round(self.props.activityLocations.length / 3);
-    const endPoint = startPoint * 2;
+    this.initialStartIndex = Math.round(self.props.activityLocations.length / 3);
+    this.initialEndIndex = this.initialStartIndex * 2;
 
     return (
 
@@ -242,7 +265,7 @@ export default class SegmentCreator extends Component {
               max={self.props.activityLocations.length - 1}
               range={true}
               allowCross={false}
-              defaultValue={[startPoint, endPoint]}
+              defaultValue={[this.initialStartIndex, this.initialEndIndex]}
               tipFormatter={null}
               onChange={self.handleSliderChange.bind(self)} />
 
@@ -312,5 +335,6 @@ SegmentCreator.propTypes = {
   mapStreamIndex: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
   // setMapMarkerCoordinates: React.PropTypes.func.isRequired
-  onSetLocationCoordinates: React.PropTypes.func.isRequired
+  onSetLocationCoordinates: React.PropTypes.func.isRequired,
+  locationCoordinates: React.PropTypes.object.isRequired
 };
