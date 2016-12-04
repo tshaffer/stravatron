@@ -24,6 +24,7 @@ export default class ActivityVisuals extends Component {
           onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
           locationCoordinates={this.props.locationCoordinates}
           markerCount={this.props.markerCount}
+          activityLocations={this.props.activityLocations}
         />
       </div>
     );
