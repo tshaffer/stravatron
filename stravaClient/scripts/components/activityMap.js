@@ -161,34 +161,35 @@ class ActivityMap extends Component {
     }
   }
 
+  addMapMarker(sourceName, coordinates, color) {
+
+    this.markerPoint = {
+      "type": "Point",
+      "coordinates": coordinates
+    };
+
+    this.activityMap.addSource(sourceName, {type: 'geojson', data: this.markerPoint});
+
+    this.activityMap.addLayer({
+      "id": sourceName,
+      "type": "circle",
+      "source": sourceName,
+      "paint": {
+        "circle-radius": 8,
+        "circle-color": color,
+        "circle-opacity": 0.8
+      }
+    });
+  }
   createMapMarker() {
 
     const locations = this.props.activityLocations;
 
-    // if one marker, it's from the elevation chart
+    // one marker => elevation chart
     if (this.props.markerCount === 1) {
-      let sourceName = "marker0";
-
-      const coordinates = locations[0];
-
-      this.markerPoint = {
-        "type": "Point",
-        "coordinates": coordinates
-      };
-
-      this.activityMap.addSource(sourceName, {type: 'geojson', data: this.markerPoint});
-
-      this.activityMap.addLayer({
-        "id": sourceName,
-        "type": "circle",
-        "source": sourceName,
-        "paint": {
-          "circle-radius": 8,
-          "circle-color": "red",
-          "circle-opacity": 0.8
-        }
-      });
+      this.addMapMarker("marker0", locations[0], "red");
     }
+    // two markers => create segment
     else if (this.props.markerCount === 2) {
 
       let location0Index = Math.floor(locations.length / 3);
@@ -196,87 +197,14 @@ class ActivityMap extends Component {
       let mapMarker0Coordinates = locations[location0Index];
       let mapMarker1Coordinates = locations[location1Index];
 
-      let sourceName = "marker0";
-
-      let coordinates = mapMarker0Coordinates;
-
-      this.markerPoint = {
-        "type": "Point",
-        "coordinates": coordinates
-      };
-
-      this.activityMap.addSource(sourceName, {type: 'geojson', data: this.markerPoint});
-
-      this.activityMap.addLayer({
-        "id": sourceName,
-        "type": "circle",
-        "source": sourceName,
-        "paint": {
-          "circle-radius": 8,
-          "circle-color": "green",
-          "circle-opacity": 0.8
-        }
-      });
-
-      sourceName = "marker1";
-
-      coordinates = mapMarker1Coordinates;
-
-      this.markerPoint = {
-        "type": "Point",
-        "coordinates": coordinates
-      };
-
-      this.activityMap.addSource(sourceName, {type: 'geojson', data: this.markerPoint});
-
-      this.activityMap.addLayer({
-        "id": sourceName,
-        "type": "circle",
-        "source": sourceName,
-        "paint": {
-          "circle-radius": 8,
-          "circle-color": "red",
-          "circle-opacity": 0.8
-        }
-      });
-
+      this.addMapMarker("marker0", mapMarker0Coordinates, "green");
+      this.addMapMarker("marker1", mapMarker1Coordinates, "red");
     }
-
-
-    // const markersByActivity = this.props.mapMarkers.markersByActivity;
-    // for (let activityId in markersByActivity) {
-    //   if (markersByActivity.hasOwnProperty(activityId)) {
-    //     const markers = markersByActivity[activityId];
-    //
-    //     markers.forEach( (marker, index) => {
-    //
-    //       const sourceName = "marker" + index.toString();
-    //       const coordinates = marker.coordinates;
-    //
-    //       this.markerPoint = {
-    //         "type": "Point",
-    //         "coordinates": coordinates
-    //       };
-    //
-    //       this.activityMap.addSource(sourceName, {type: 'geojson', data: this.markerPoint});
-    //
-    //       this.activityMap.addLayer({
-    //         "id": sourceName,
-    //         "type": "circle",
-    //         "source": sourceName,
-    //         "paint": {
-    //           "circle-radius": 8,
-    //           "circle-color": marker.color,
-    //           "circle-opacity": 0.8
-    //         }
-    //       });
-    //     });
-    //   }
   }
 
   updateMapMarkers() {
 
-    // if one marker, it's from the elevation chart
+    // one marker => elevation chart
     if (this.props.markerCount === 1) {
       const elevationChartCoordinates = this.props.locationCoordinates.coordinatesByUIElement["elevationChart"];
       if (elevationChartCoordinates) {
@@ -288,7 +216,7 @@ class ActivityMap extends Component {
         }
       }
     }
-    // if two markers, they're set by the segment creator
+    // two markers => create segment
     else if (this.props.markerCount === 2) {
       const segmentCreationStartCoordinates = this.props.locationCoordinates.coordinatesByUIElement["segmentCreationStart"];
       if (segmentCreationStartCoordinates) {
