@@ -16,7 +16,7 @@ class ElevationChart extends Component {
 
   shouldComponentUpdate() {
 
-    // if (this.chartDrawn) return false;
+    if (this.props.markerCount === 1 && this.chartDrawn) return false;
 
     return true;
   }
@@ -89,9 +89,13 @@ class ElevationChart extends Component {
 
     let dataTable = new window.google.visualization.DataTable();
     dataTable.addColumn('number', 'Distance');
-    dataTable.addColumn('number', 'ElevationPre');
+    if (this.props.markerCount > 1) {
+      dataTable.addColumn('number', 'ElevationPre');
+    }
     dataTable.addColumn('number', 'Elevation');
-    dataTable.addColumn('number', 'ElevationPost');
+    if (this.props.markerCount > 1) {
+      dataTable.addColumn('number', 'ElevationPost');
+    }
     dataTable.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
 
     let row = [];
@@ -115,8 +119,11 @@ class ElevationChart extends Component {
       row = [];
       row.push(distanceInMiles);
       row.push(elevationInFeet);
-      row.push(elevationInFeet);
-      row.push(elevationInFeet);
+
+      if (this.props.markerCount === 2) {
+        row.push(elevationInFeet);
+        row.push(elevationInFeet);
+      }
 
       let segmentEffortsAtTimeLabel = "";
 
@@ -179,21 +186,25 @@ class ElevationChart extends Component {
       // width: 1800
       // width of 1500 looks best on laptop
       width: 1500,
-      // colors: ["red", "green", "blue"],
-      colors: ['#000000', "green", '#000000'],
-      isStacked: false
+      // colors: ['#000000', "green", '#000000'],
+      // isStacked: false
     };
 
     let elevationChart = this.elevationChart;
-    // var chart = new window.google.visualization.LineChart(elevationChart);
-    let chart = new window.google.visualization.AreaChart(elevationChart);
 
-    this.dataTable = dataTable;
-    this.chart = chart;
-    this.options = options;
-    this.distances = distances;
-    this.redrawChart();
-
+    let chart;
+    if (this.props.markerCount === 1) {
+      chart = new window.google.visualization.LineChart(elevationChart);
+      chart.draw(dataTable, options);
+    }
+    else {
+      chart = new window.google.visualization.AreaChart(elevationChart);
+      this.dataTable = dataTable;
+      this.chart = chart;
+      this.options = options;
+      this.distances = distances;
+      this.redrawChart();
+    }
     this.chartDrawn = true;
 
     // Add our over/out handlers.
@@ -212,6 +223,7 @@ class ElevationChart extends Component {
     }
 
     function chartMouseDown(e) {
+
       console.log("chartMouseDown");
       console.log(e.targetID);
     }
@@ -240,10 +252,7 @@ class ElevationChart extends Component {
 
   redrawChart() {
 
-    if (this.props.markerCount === 1) {
-      this.chart.draw(this.dataTable, this.options);
-    }
-    else if (this.props.markerCount === 2) {
+    if (this.props.markerCount === 2) {
 
       let segmentCreationStartIndex;
       let segmentCreationEndIndex;
@@ -313,7 +322,7 @@ class ElevationChart extends Component {
     this.initialStartPointStreamIndex = Math.round(this.props.activityLocations.length / 3);
     this.initialEndPointStreamIndex = this.initialStartPointStreamIndex * 2;
 
-    if (this.chartDrawn) {
+    if (this.chartDrawn && this.markerCount > 1) {
       this.redrawChart();
     }
     else if (this.elevationChart && this.props.streams.length > 0) {
