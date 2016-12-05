@@ -240,7 +240,10 @@ class ElevationChart extends Component {
 
   redrawChart() {
 
-    if (this.props.markerCount === 2) {
+    if (this.props.markerCount === 1) {
+      this.chart.draw(this.dataTable, this.options);
+    }
+    else if (this.props.markerCount === 2) {
 
       let segmentCreationStartIndex;
       let segmentCreationEndIndex;
