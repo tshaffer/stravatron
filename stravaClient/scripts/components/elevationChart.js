@@ -186,8 +186,8 @@ class ElevationChart extends Component {
       // width: 1800
       // width of 1500 looks best on laptop
       width: 1500,
-      // colors: ['#000000', "green", '#000000'],
-      // isStacked: false
+      colors: ['#000000', "green", '#000000'],
+      isStacked: false
     };
 
     let elevationChart = this.elevationChart;
