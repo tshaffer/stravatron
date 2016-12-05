@@ -322,7 +322,7 @@ class ElevationChart extends Component {
     this.initialStartPointStreamIndex = Math.round(this.props.activityLocations.length / 3);
     this.initialEndPointStreamIndex = this.initialStartPointStreamIndex * 2;
 
-    if (this.chartDrawn && this.markerCount > 1) {
+    if (this.chartDrawn && this.props.markerCount > 1) {
       this.redrawChart();
     }
     else if (this.elevationChart && this.props.streams.length > 0) {
