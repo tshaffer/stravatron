@@ -187,7 +187,7 @@ class ElevationChart extends Component {
 
     let chart;
     if (this.props.markerCount === 1) {
-      chart = new window.google.visualization.LineChart(elevationChart);
+      chart = new window.google.visualization.AreaChart(elevationChart);
       chart.draw(dataTable, options);
     }
     else {
