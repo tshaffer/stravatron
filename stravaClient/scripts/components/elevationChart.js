@@ -14,13 +14,6 @@ class ElevationChart extends Component {
     this.chartDrawn = false;
   }
 
-  shouldComponentUpdate() {
-
-    if (this.props.markerCount === 1 && this.chartDrawn) return false;
-
-    return true;
-  }
-
   getSegmentsFromTime(timeOffset) {
 
     let segmentEffortsAtTime = [];
