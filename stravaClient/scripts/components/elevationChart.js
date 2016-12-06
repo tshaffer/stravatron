@@ -325,12 +325,15 @@ class ElevationChart extends Component {
     if (this.chartDrawn && this.props.markerCount > 1) {
       this.redrawChart();
     }
-    else if (this.elevationChart && this.props.streams.length > 0) {
+    else if (!this.chartDrawn && this.elevationChart && this.props.streams.length > 0) {
       this.buildElevationGraph(this.props.streams);
     }
 
     return (
-      <div id="elevationChart" ref={(c) => { this.elevationChart = c; }}/>
+      <div
+        id="elevationChart"
+        ref={(c) => { this.elevationChart = c; }}
+      />
     );
   }
 }
