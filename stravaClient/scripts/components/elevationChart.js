@@ -82,11 +82,11 @@ class ElevationChart extends Component {
 
     let dataTable = new window.google.visualization.DataTable();
     dataTable.addColumn('number', 'Distance');
-    if (this.props.markerCount > 1) {
+    if (this.props.numColumns > 1) {
       dataTable.addColumn('number', 'ElevationPre');
     }
     dataTable.addColumn('number', 'Elevation');
-    if (this.props.markerCount > 1) {
+    if (this.props.numColumns > 1) {
       dataTable.addColumn('number', 'ElevationPost');
     }
     dataTable.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
@@ -111,10 +111,8 @@ class ElevationChart extends Component {
 
       row = [];
       row.push(distanceInMiles);
-      row.push(elevationInFeet);
 
-      if (this.props.markerCount === 2) {
-        row.push(elevationInFeet);
+      for (let j = 0; j <= (this.props.numColumns - 1); j++) {
         row.push(elevationInFeet);
       }
 
@@ -186,7 +184,7 @@ class ElevationChart extends Component {
     let elevationChart = this.elevationChart;
 
     let chart;
-    if (this.props.markerCount === 1) {
+    if (this.props.numColumns === 1) {
       chart = new window.google.visualization.AreaChart(elevationChart);
       chart.draw(dataTable, options);
     }
@@ -245,7 +243,7 @@ class ElevationChart extends Component {
 
   redrawChart() {
 
-    if (this.props.markerCount === 2) {
+    if (this.props.numColumns > 1) {
 
       let segmentCreationStartIndex;
       let segmentCreationEndIndex;
@@ -315,7 +313,11 @@ class ElevationChart extends Component {
     this.initialStartPointStreamIndex = Math.round(this.props.activityLocations.length / 3);
     this.initialEndPointStreamIndex = this.initialStartPointStreamIndex * 2;
 
-    if (this.chartDrawn && this.props.markerCount > 1) {
+    console.log("initialStartPointStreamIndex:", this.initialStartPointStreamIndex);
+    console.log("initialEndPointStreamIndex:", this.initialEndPointStreamIndex);
+    console.log("activityLocations.length:", this.props.activityLocations.length);
+
+    if (this.chartDrawn && this.props.numColumns > 1) {
       this.redrawChart();
     }
     else if (!this.chartDrawn && this.elevationChart && this.props.streams.length > 0) {
@@ -341,8 +343,8 @@ ElevationChart.propTypes = {
 
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired,
-  markerCount: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
+  numColumns: React.PropTypes.number.isRequired,
 };
 
 

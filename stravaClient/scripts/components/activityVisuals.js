@@ -6,6 +6,16 @@ import ElevationChart from './elevationChart';
 export default class ActivityVisuals extends Component {
 
   render() {
+
+    // temp
+    let numChartColumns;
+    if (this.props.markerCount === 1) {
+      numChartColumns = 1;
+    }
+    else {
+      numChartColumns = 3;
+    }
+
     return (
       <div>
         <ActivityMap
@@ -23,8 +33,8 @@ export default class ActivityVisuals extends Component {
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
           onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
           locationCoordinates={this.props.locationCoordinates}
-          markerCount={this.props.markerCount}
           activityLocations={this.props.activityLocations}
+          numColumns={numChartColumns}
         />
       </div>
     );
