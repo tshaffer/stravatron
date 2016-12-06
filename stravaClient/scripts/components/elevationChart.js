@@ -82,10 +82,11 @@ class ElevationChart extends Component {
 
     let dataTable = new window.google.visualization.DataTable();
     dataTable.addColumn('number', 'Distance');
-    if (this.props.numColumns > 1) {
+    // if (this.props.numColumns > 1) {
+    //   dataTable.addColumn('number', 'ElevationPre');
+    // }
+    // dataTable.addColumn('number', 'Elevation');
       dataTable.addColumn('number', 'ElevationPre');
-    }
-    dataTable.addColumn('number', 'Elevation');
     if (this.props.numColumns > 1) {
       dataTable.addColumn('number', 'ElevationPost');
     }
@@ -183,13 +184,19 @@ class ElevationChart extends Component {
 
     let elevationChart = this.elevationChart;
 
-    let chart;
+    let chart = new window.google.visualization.AreaChart(elevationChart);
     if (this.props.numColumns === 1) {
-      chart = new window.google.visualization.AreaChart(elevationChart);
-      chart.draw(dataTable, options);
+      // chart.draw(dataTable, options);
+      this.dataTable = dataTable;
+      this.chart = chart;
+      this.options = options;
+      this.distances = distances;
+      // this.initialStartPointStreamIndex = Math.round(this.props.activityLocations.length / 3);
+      // this.initialEndPointStreamIndex = this.initialStartPointStreamIndex * 2;
+
+      this.redrawChart(0, this.props.activityLocations.length - 1);
     }
     else {
-      chart = new window.google.visualization.AreaChart(elevationChart);
       this.dataTable = dataTable;
       this.chart = chart;
       this.options = options;
@@ -241,39 +248,53 @@ class ElevationChart extends Component {
     }
   }
 
-  redrawChart() {
+  redrawChart(startIndex, endIndex) {
 
-    if (this.props.numColumns > 1) {
+    segmentStartDistance = Converters.metersToMiles(this.distances[startIndex]);
+    segmentEndDistance = Converters.metersToMiles(this.distances[endIndex]);
 
-      let segmentCreationStartIndex;
-      let segmentCreationEndIndex;
+    let dataView = new window.google.visualization.DataView(this.dataTable);
 
-      const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
-      if (segmentCreationStartLocation) {
-        segmentCreationStartIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"].index;
-      }
-      else {
-        segmentCreationStartIndex = this.initialStartPointStreamIndex;
-      }
-
-      const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
-      if (segmentCreationEndLocation) {
-        segmentCreationEndIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"].index;
-      }
-      else {
-        segmentCreationEndIndex = this.initialEndPointStreamIndex;
-      }
-
-      segmentStartDistance = Converters.metersToMiles(this.distances[segmentCreationStartIndex]);
-      segmentEndDistance = Converters.metersToMiles(this.distances[segmentCreationEndIndex]);
-
-      let dataView = new window.google.visualization.DataView(this.dataTable);
-
-      dataView.setColumns([0, {calc: this.getPreRow, type: 'number'}, {calc: this.getRow, type: 'number'},
-        {calc: this.getPostRow, type: 'number'}, 4]);
-      this.chart.draw(dataView, this.options);
-    }
+    // HACK HERE
+    dataView.setColumns([0, 1, 2]);
+    this.chart.draw(dataView, this.options);
   }
+// dataView.setColumns([0, {calc: this.getPreRow, type: 'number'}, {calc: this.getRow, type: 'number'},
+// {calc: this.getPostRow, type: 'number'}, 4]);
+
+  // redrawChart() {
+  //
+  //   if (this.props.numColumns > 1) {
+  //
+  //     let segmentCreationStartIndex;
+  //     let segmentCreationEndIndex;
+  //
+  //     const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+  //     if (segmentCreationStartLocation) {
+  //       segmentCreationStartIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"].index;
+  //     }
+  //     else {
+  //       segmentCreationStartIndex = this.initialStartPointStreamIndex;
+  //     }
+  //
+  //     const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+  //     if (segmentCreationEndLocation) {
+  //       segmentCreationEndIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"].index;
+  //     }
+  //     else {
+  //       segmentCreationEndIndex = this.initialEndPointStreamIndex;
+  //     }
+  //
+  //     segmentStartDistance = Converters.metersToMiles(this.distances[segmentCreationStartIndex]);
+  //     segmentEndDistance = Converters.metersToMiles(this.distances[segmentCreationEndIndex]);
+  //
+  //     let dataView = new window.google.visualization.DataView(this.dataTable);
+  //
+  //     dataView.setColumns([0, {calc: this.getPreRow, type: 'number'}, {calc: this.getRow, type: 'number'},
+  //       {calc: this.getPostRow, type: 'number'}, 4]);
+  //     this.chart.draw(dataView, this.options);
+  //   }
+  // }
 
   getPreRow(dataTable, rowNum) {
     let distance = dataTable.getValue(rowNum, 0);
