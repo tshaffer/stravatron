@@ -20,6 +20,18 @@ export default class SegmentCreator extends Component {
     this.clickStep = 1;
   }
 
+  componentWillMount() {
+
+    const initialStartIndex = Math.round(this.props.activityLocations.length / 3);
+    const initialEndIndex = initialStartIndex * 2;
+
+    const selectedStartLocation = this.props.activityLocations[initialStartIndex];
+    const selectedEndLocation = this.props.activityLocations[initialEndIndex];
+
+    this.props.onSetLocationCoordinates("segmentCreationStart", initialStartIndex, selectedStartLocation);
+    this.props.onSetLocationCoordinates("segmentCreationEnd", initialEndIndex, selectedEndLocation);
+  }
+
   addGeoJSONSegment(segmentName, segmentCoordinates) {
 
     const segmentPointInterval = 10;
@@ -121,8 +133,6 @@ export default class SegmentCreator extends Component {
       bounds
     });
 
-    // this.props.onSetMapLatitudeLongitude(this.props.activity.id, boundsIndex, this.props.activityLocations[bounds[boundsIndex]]);
-
     const location = this.props.activityLocations[bounds[boundsIndex]];
     if (boundsIndex === 0) {
       this.props.onSetLocationCoordinates("segmentCreationStart", bounds[boundsIndex], location);
@@ -166,24 +176,11 @@ export default class SegmentCreator extends Component {
       }
     }
 
-    let startPointStreamIndex;
-    let endPointStreamIndex;
-    
     const startPointStreamLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
-    if (startPointStreamLocation) {
-      startPointStreamIndex = startPointStreamLocation.index;
-    }
-    else {
-      startPointStreamIndex = this.initialStartIndex;
-    }
+    const startPointStreamIndex = startPointStreamLocation.index;
 
     const endPointStreamLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
-    if (endPointStreamLocation) {
-      endPointStreamIndex = endPointStreamLocation.index;
-    }
-    else {
-      endPointStreamIndex = this.initialEndIndex;
-    }
+    const endPointStreamIndex = endPointStreamLocation.index;
 
     let segmentLocations = [];
     for (let i = startPointStreamIndex; i <= endPointStreamIndex; i++) {
@@ -222,6 +219,14 @@ export default class SegmentCreator extends Component {
       );
     }
 
+    const startPointStreamLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+    const endPointStreamLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+    if (!startPointStreamLocation || !endPointStreamLocation) {
+      return (
+        <noscript/>
+      );
+    }
+
     const style = { width: 600, margin: 10 };
 
     const buttonStyle = {
@@ -234,8 +239,8 @@ export default class SegmentCreator extends Component {
     //   width: "128px"
     // };
 
-    this.initialStartIndex = Math.round(self.props.activityLocations.length / 3);
-    this.initialEndIndex = this.initialStartIndex * 2;
+    const startPointStreamIndex = startPointStreamLocation.index;
+    const endPointStreamIndex = endPointStreamLocation.index;
 
     return (
 
@@ -250,7 +255,7 @@ export default class SegmentCreator extends Component {
               max={self.props.activityLocations.length - 1}
               range={true}
               allowCross={false}
-              defaultValue={[this.initialStartIndex, this.initialEndIndex]}
+              defaultValue={[startPointStreamIndex, endPointStreamIndex]}
               tipFormatter={null}
               onChange={self.handleSliderChange.bind(self)} />
 

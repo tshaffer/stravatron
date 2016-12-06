@@ -14,6 +14,16 @@ class ElevationChart extends Component {
     this.chartDrawn = false;
   }
 
+  componentWillMount() {
+
+    if (this.props.markerCount === 1) {
+
+      const index = 0;
+      const location = this.props.activityLocations[index];
+      this.props.onSetLocationCoordinates("elevationChart", index, location);
+    }
+  }
+
   shouldComponentUpdate() {
 
     if (this.props.markerCount === 1 && this.chartDrawn) return false;
@@ -254,24 +264,11 @@ class ElevationChart extends Component {
 
     if (this.props.markerCount === 2) {
 
-      let segmentCreationStartIndex;
-      let segmentCreationEndIndex;
-
       const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
-      if (segmentCreationStartLocation) {
-        segmentCreationStartIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"].index;
-      }
-      else {
-        segmentCreationStartIndex = this.initialStartPointStreamIndex;
-      }
+      const segmentCreationStartIndex = segmentCreationStartLocation.index;
 
       const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
-      if (segmentCreationEndLocation) {
-        segmentCreationEndIndex = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"].index;
-      }
-      else {
-        segmentCreationEndIndex = this.initialEndPointStreamIndex;
-      }
+      const segmentCreationEndIndex = segmentCreationEndLocation.index;
 
       segmentStartDistance = Converters.metersToMiles(this.distances[segmentCreationStartIndex]);
       segmentEndDistance = Converters.metersToMiles(this.distances[segmentCreationEndIndex]);
@@ -319,18 +316,43 @@ class ElevationChart extends Component {
 
   render() {
 
-    this.initialStartPointStreamIndex = Math.round(this.props.activityLocations.length / 3);
-    this.initialEndPointStreamIndex = this.initialStartPointStreamIndex * 2;
+    let self = this;
 
-    if (this.chartDrawn && this.props.markerCount > 1) {
+    if (this.props.markerCount === 1) {
+      const elevationLocation = this.props.locationCoordinates.locationsByUIElement["elevationChart"];
+      if (!elevationLocation) {
+        return (
+          <noscript/>
+        );
+      }
+    }
+    else if (this.props.markerCount === 2) {
+      const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+      const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+      if (!segmentCreationStartLocation || !segmentCreationEndLocation) {
+        return (
+          <noscript/>
+        );
+      }
+    }
+
+    if (this.chartDrawn && this.props.markerCount === 2) {
       this.redrawChart();
     }
-    else if (this.elevationChart && this.props.streams.length > 0) {
+    else if (this.elevationChart) {
       this.buildElevationGraph(this.props.streams);
     }
 
     return (
-      <div id="elevationChart" ref={(c) => { this.elevationChart = c; }}/>
+      <div
+        id="elevationChart"
+        ref={(c) => {
+          self.elevationChart = c;
+          if (!self.chartDrawn) {
+            self.buildElevationGraph(self.props.streams);
+          }
+        }}
+      />
     );
   }
 }

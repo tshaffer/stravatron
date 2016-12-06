@@ -301,12 +301,12 @@ export default class DetailedActivity extends Component {
       return <div>Loading...</div>;
     }
 
-    const rideSummaryHeader = this.buildRideSummaryHeader(activity);
-    const segmentEffortsTable = this.buildSegmentEffortsTable();
-
     let mapPolyline = "";
     if (activity.mapPolyline) {
       mapPolyline = activity.mapPolyline;
+    }
+    else {
+      return <div>Loading...</div>;
     }
 
     const activityData =
@@ -320,6 +320,12 @@ export default class DetailedActivity extends Component {
     if (activity.streams) {
       streams = activity.streams;
     }
+    else {
+      return <div>Loading...</div>;
+    }
+
+    const rideSummaryHeader = this.buildRideSummaryHeader(activity);
+    const segmentEffortsTable = this.buildSegmentEffortsTable();
 
     return (
       <div>

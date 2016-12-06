@@ -22,7 +22,9 @@ export default class ActivitySegmentCreator extends Component {
     if (activity.mapPolyline) {
       mapPolyline = activity.mapPolyline;
     }
-
+    else {
+      return <div>Loading...</div>;
+    }
     const activityData =
       {
         polyline: mapPolyline,
@@ -33,6 +35,9 @@ export default class ActivitySegmentCreator extends Component {
     let streams = [];
     if (activity.streams) {
       streams = activity.streams;
+    }
+    else {
+      return <div>Loading...</div>;
     }
 
     return (
