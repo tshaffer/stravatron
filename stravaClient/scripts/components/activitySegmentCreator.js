@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 
-import ActivityVisuals from './activityVisuals';
+import ActivityMap from './activityMap';
+import ElevationChartDisplay from './elevationChartDisplay';
+
 import SegmentCreator from './segmentCreator';
 
 export default class ActivitySegmentCreator extends Component {
@@ -51,19 +53,21 @@ export default class ActivitySegmentCreator extends Component {
           locationCoordinates={this.props.locationCoordinates}
           onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
         />
-        <ActivityVisuals
-          activity={this.props.activity}
+        <ActivityMap
           activitiesData={activitiesData}
           totalActivities={1}
           mapHeight={"400px"}
           markerCount={2}
+          activityLocations={this.props.activityLocations}
+          locationCoordinates={this.props.locationCoordinates}
+        />
+        <ElevationChartDisplay
           streams={streams}
           activityStartDateLocal={activity.startDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
-          activityLocations={this.props.activityLocations}
           locationCoordinates={this.props.locationCoordinates}
-          onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
         />
+
       </div>
     );
   }

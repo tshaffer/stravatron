@@ -5,30 +5,13 @@ import * as Converters from '../utilities/converters';
 let segmentStartDistance = null;
 let segmentEndDistance = null;
 
-class ElevationChart extends Component {
+class ElevationChartDisplay extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
     };
     this.chartDrawn = false;
-  }
-
-  componentWillMount() {
-
-    if (this.props.markerCount === 1) {
-
-      const index = 0;
-      const location = this.props.activityLocations[index];
-      this.props.onSetLocationCoordinates("elevationChart", index, location);
-    }
-  }
-
-  shouldComponentUpdate() {
-
-    if (this.props.markerCount === 1 && this.chartDrawn) return false;
-
-    return true;
   }
 
   getSegmentsFromTime(timeOffset) {
@@ -99,13 +82,9 @@ class ElevationChart extends Component {
 
     let dataTable = new window.google.visualization.DataTable();
     dataTable.addColumn('number', 'Distance');
-    if (this.props.markerCount > 1) {
-      dataTable.addColumn('number', 'ElevationPre');
-    }
+    dataTable.addColumn('number', 'ElevationPre');
     dataTable.addColumn('number', 'Elevation');
-    if (this.props.markerCount > 1) {
-      dataTable.addColumn('number', 'ElevationPost');
-    }
+    dataTable.addColumn('number', 'ElevationPost');
     dataTable.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
 
     let row = [];
@@ -129,11 +108,8 @@ class ElevationChart extends Component {
       row = [];
       row.push(distanceInMiles);
       row.push(elevationInFeet);
-
-      if (this.props.markerCount === 2) {
-        row.push(elevationInFeet);
-        row.push(elevationInFeet);
-      }
+      row.push(elevationInFeet);
+      row.push(elevationInFeet);
 
       let segmentEffortsAtTimeLabel = "";
 
@@ -203,82 +179,30 @@ class ElevationChart extends Component {
     let elevationChart = this.elevationChart;
 
     let chart;
-    if (this.props.markerCount === 1) {
-      chart = new window.google.visualization.LineChart(elevationChart);
-      chart.draw(dataTable, options);
-    }
-    else {
-      chart = new window.google.visualization.AreaChart(elevationChart);
-      this.dataTable = dataTable;
-      this.chart = chart;
-      this.options = options;
-      this.distances = distances;
-      this.redrawChart();
-    }
+    chart = new window.google.visualization.AreaChart(elevationChart);
+    this.dataTable = dataTable;
+    this.chart = chart;
+    this.options = options;
+    this.distances = distances;
+    this.redrawChart();
     this.chartDrawn = true;
-
-    // Add our over/out handlers.
-    window.google.visualization.events.addListener(chart, 'onmouseover', chartMouseOver);
-    window.google.visualization.events.addListener(chart, 'onmouseout', chartMouseOut);
-    window.google.visualization.events.addListener(chart, 'onmousedown', chartMouseDown);
-    window.google.visualization.events.addListener(chart, 'click', chartClick);
-
-    let self = this;
-
-    function chartClick(e) {
-      console.log("chartClick");
-      console.log(e.targetID);
-
-      // e.targetID = "point#0#64" - point 64 in the chart data?
-    }
-
-    function chartMouseDown(e) {
-
-      console.log("chartMouseDown");
-      console.log(e.targetID);
-    }
-
-    function chartMouseOver(e) {
-
-      chart.setSelection([e]);
-
-      let item = chart.getSelection();
-      if (item) {
-        const selectedItem = item[0];
-
-        const d = dataTable.getValue(selectedItem.row, 0);
-        const selectedLocation = mapDistanceToLocation[d];
-        const selectedStreamIndex = mapDistanceToStreamIndex[d];
-        if (selectedLocation) {
-          self.props.onSetLocationCoordinates("elevationChart", selectedStreamIndex, selectedLocation);
-        }
-      }
-    }
-
-    function chartMouseOut() {
-      // chart.setSelection([{ 'row': null, 'column': null }]);
-    }
   }
 
   redrawChart() {
+    const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+    const segmentCreationStartIndex = segmentCreationStartLocation.index;
 
-    if (this.props.markerCount === 2) {
+    const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+    const segmentCreationEndIndex = segmentCreationEndLocation.index;
 
-      const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
-      const segmentCreationStartIndex = segmentCreationStartLocation.index;
+    segmentStartDistance = Converters.metersToMiles(this.distances[segmentCreationStartIndex]);
+    segmentEndDistance = Converters.metersToMiles(this.distances[segmentCreationEndIndex]);
 
-      const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
-      const segmentCreationEndIndex = segmentCreationEndLocation.index;
+    let dataView = new window.google.visualization.DataView(this.dataTable);
 
-      segmentStartDistance = Converters.metersToMiles(this.distances[segmentCreationStartIndex]);
-      segmentEndDistance = Converters.metersToMiles(this.distances[segmentCreationEndIndex]);
-
-      let dataView = new window.google.visualization.DataView(this.dataTable);
-
-      dataView.setColumns([0, {calc: this.getPreRow, type: 'number'}, {calc: this.getRow, type: 'number'},
-        {calc: this.getPostRow, type: 'number'}, 4]);
-      this.chart.draw(dataView, this.options);
-    }
+    dataView.setColumns([0, {calc: this.getPreRow, type: 'number'}, {calc: this.getRow, type: 'number'},
+      {calc: this.getPostRow, type: 'number'}, 4]);
+    this.chart.draw(dataView, this.options);
   }
 
   getPreRow(dataTable, rowNum) {
@@ -318,29 +242,16 @@ class ElevationChart extends Component {
 
     let self = this;
 
-    if (this.props.markerCount === 1) {
-      const elevationLocation = this.props.locationCoordinates.locationsByUIElement["elevationChart"];
-      if (!elevationLocation) {
-        return (
-          <noscript/>
-        );
-      }
-    }
-    else if (this.props.markerCount === 2) {
-      const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
-      const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
-      if (!segmentCreationStartLocation || !segmentCreationEndLocation) {
-        return (
-          <noscript/>
-        );
-      }
+    const segmentCreationStartLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationStart"];
+    const segmentCreationEndLocation = this.props.locationCoordinates.locationsByUIElement["segmentCreationEnd"];
+    if (!segmentCreationStartLocation || !segmentCreationEndLocation) {
+      return (
+        <noscript/>
+      );
     }
 
-    if (this.chartDrawn && this.props.markerCount === 2) {
+    if (this.chartDrawn) {
       this.redrawChart();
-    }
-    else if (this.elevationChart) {
-      this.buildElevationGraph(this.props.streams);
     }
 
     return (
@@ -358,18 +269,12 @@ class ElevationChart extends Component {
 }
 
 
-
-ElevationChart.propTypes = {
-  activity: React.PropTypes.object.isRequired,
+ElevationChartDisplay.propTypes = {
   streams: React.PropTypes.array.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
   activityStartDateLocal: React.PropTypes.object.isRequired,
-
-  onSetLocationCoordinates: React.PropTypes.func.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired,
-  markerCount: React.PropTypes.number.isRequired,
-  activityLocations: React.PropTypes.array.isRequired,
 };
 
 
-export default ElevationChart;
+export default ElevationChartDisplay;

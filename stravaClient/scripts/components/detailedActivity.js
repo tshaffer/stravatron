@@ -5,7 +5,8 @@ let moment = require('moment');
 
 import * as Converters from '../utilities/converters';
 
-import ActivityVisuals from './activityVisuals';
+import ActivityMap from './activityMap';
+import InteractiveElevationChart from './interactiveElevationChart';
 
 export default class DetailedActivity extends Component {
 
@@ -332,19 +333,23 @@ export default class DetailedActivity extends Component {
         <Link to="/allSummaryActivitiesContainer" id="backFromDetailedActivityButton">Back</Link>
         <br/>
         {rideSummaryHeader}
-        <ActivityVisuals
-          activity={this.props.activity}
+
+        <ActivityMap
           activitiesData={activitiesData}
           totalActivities={1}
           mapHeight={"400px"}
           markerCount={1}
+          activityLocations={this.props.activityLocations}
+          locationCoordinates={this.props.locationCoordinates}
+        />
+        <InteractiveElevationChart
           streams={streams}
           activityStartDateLocal={activity.startDateLocal}
           segmentEffortsForActivity={this.props.segmentEffortsForActivity}
-          activityLocations={this.props.activityLocations}
           onSetLocationCoordinates={this.props.onSetLocationCoordinates.bind(this)}
-          locationCoordinates={this.props.locationCoordinates}
+          activityLocations={this.props.activityLocations}
         />
+
         {segmentEffortsTable}
       </div>
     );
@@ -359,7 +364,6 @@ DetailedActivity.propTypes = {
   effortsForSegments: React.PropTypes.object.isRequired,
   segmentEffortsForActivity: React.PropTypes.array.isRequired,
   params: React.PropTypes.object.isRequired,
-  segmentEndPoint: React.PropTypes.array.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired
