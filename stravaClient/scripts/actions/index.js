@@ -240,7 +240,6 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
       }
     });
 
-
     const getStreamsPromise = dbServices.getStream(activityId);
     getStreamsPromise.then( (streamData) => {
 
@@ -640,19 +639,40 @@ export function fetchActivitiesNearLocation(targetRegion) {
 
   return function(dispatch, getState) {
 
-    debugger;
     console.log("fetchActivitiesNearLocation");
     console.log(targetRegion);
 
     const { location, distance } = targetRegion;
 
-    // const state = getState();
-    // const dbServices = state.db.dbServices;
-    //
-    // dbServices.getActivitiesWithSegment(segmentId).then( (stravaSummaryActivities) => {
-    //   const activityData = parseDbSummaryActivities(stravaSummaryActivities);
-    //   dispatch(setActivities(activityData.activities));
-    // });
+    const state = getState();
+
+    /*
+          iterate through
+            state.activities.activitiesById
+          to get each activity
+
+          if detailed information for an activity has been loaded, activity.streams will not be undefined.
+          if it's undefined, load it
+
+          then, after all the streams have been loaded, iterate through activities
+          get latlng stream
+
+          iterate through each point in stream
+            check distance between each point in stream and target region's location
+            if distance is less than specified distance, we have a winner. track it and exit this loop
+
+
+     */
+
+    for (let activityId in state.activities.activitiesById) {
+      if (state.activities.activitiesById.hasOwnProperty(activityId)) {
+        const activity = state.activities.activitiesById[activityId];
+        if (!(activity.streams && activity.streams.length > 0)) {
+          let foo = dispatch(loadDetailedActivity(activityId));
+          debugger;
+        }
+      }
+    }
   };
 }
 
