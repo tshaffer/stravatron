@@ -21,6 +21,7 @@ export const SET_BASE_MAP_SEGMENTS = 'SET_BASE_MAP_SEGMENTS';
 export const SET_SEGMENT_END_POINT = 'SET_SEGMENT_END_POINT';
 export const SET_ACTIVITY_LOCATIONS = 'SET_ACTIVITY_LOCATIONS';
 export const SET_COORDINATES = 'SET_COORDINATES';
+export const TOGGLE_REPORT_CLICK_LOCATION = 'TOGGLE_REPORT_CLICK_LOCATION';
 
 export function setSelectedAthlete(athlete) {
   return {
@@ -731,5 +732,10 @@ export function setLocationCoordinates(uiElement, index, coordinates) {
       coordinates
     }
   };
+}
 
+export function toggleReportClickLocation() {
+  return {
+    type: TOGGLE_REPORT_CLICK_LOCATION,
+  };
 }

@@ -7,6 +7,7 @@ import { getActivity } from '../reducers/reducer_activities';
 import { getEffortsForActivitySegments } from '../reducers/reducer_segment_efforts';
 import { getSegmentEffortsForActivity} from '../reducers/reducer_segment_efforts';
 import { setLocationCoordinates } from '../actions/index';
+import { toggleReportClickLocation } from '../actions/index';
 
 function mapStateToProps (state, ownProps) {
   return {
@@ -29,6 +30,9 @@ function mapDispatchToProps(dispatch) {
     },
     onSetLocationCoordinates: (uiElement, index, coordinates) => {
       dispatch(setLocationCoordinates(uiElement, index, coordinates));
+    },
+    onToggleReportClickLocation: () => {
+      dispatch(toggleReportClickLocation());
     }
   };
 }

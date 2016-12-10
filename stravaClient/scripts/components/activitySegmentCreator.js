@@ -60,6 +60,7 @@ export default class ActivitySegmentCreator extends Component {
           markerCount={2}
           activityLocations={this.props.activityLocations}
           locationCoordinates={this.props.locationCoordinates}
+          reportClickLocation={false}
         />
         <ElevationChartDisplay
           streams={streams}
@@ -80,5 +81,5 @@ ActivitySegmentCreator.propTypes = {
   params: React.PropTypes.object.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
-  locationCoordinates: React.PropTypes.object.isRequired
+  locationCoordinates: React.PropTypes.object.isRequired,
 };

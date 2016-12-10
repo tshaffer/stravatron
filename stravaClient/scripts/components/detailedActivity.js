@@ -10,6 +10,13 @@ import InteractiveElevationChart from './interactiveElevationChart';
 
 export default class DetailedActivity extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      reportClickLocation: false
+    };
+  }
+
   componentWillMount() {
     this.props.onLoadDetailedActivity(this.props.params.id);
   }
@@ -102,6 +109,12 @@ export default class DetailedActivity extends Component {
   handleAllActivitiesWithThisSegment(segmentId) {
     console.log("handleAllActivitiesWithThisSegment: ", segmentId.toString());
     hashHistory.push('/segmentsSummaryActivitiesContainer/' + segmentId);
+  }
+
+  handleToggleShowNearby() {
+    console.log("handleShowNearby invoked");
+    // this.props.onToggleReportClickLocation();
+    this.setState({reportClickLocation: !this.state.reportClickLocation});
   }
 
   buildSegmentEffortRow(segmentEffort) {
@@ -296,6 +309,8 @@ export default class DetailedActivity extends Component {
 
   render () {
 
+    const self = this;
+
     const activity = this.props.activity;
 
     if (!activity || this.props.segmentEffortsForActivity.length === 0) {
@@ -334,6 +349,9 @@ export default class DetailedActivity extends Component {
         <br/>
         {rideSummaryHeader}
 
+        <button onClick={self.handleToggleShowNearby.bind(self)}>
+          Show Nearby
+        </button>
         <ActivityMap
           activitiesData={activitiesData}
           totalActivities={1}
@@ -341,6 +359,7 @@ export default class DetailedActivity extends Component {
           markerCount={1}
           activityLocations={this.props.activityLocations}
           locationCoordinates={this.props.locationCoordinates}
+          reportClickLocation={this.state.reportClickLocation}
         />
         <InteractiveElevationChart
           streams={streams}
@@ -366,5 +385,6 @@ DetailedActivity.propTypes = {
   params: React.PropTypes.object.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
   onSetLocationCoordinates: React.PropTypes.func.isRequired,
-  locationCoordinates: React.PropTypes.object.isRequired
+  locationCoordinates: React.PropTypes.object.isRequired,
+  // onToggleReportClickLocation: React.PropTypes.func.isRequired
 };

@@ -86,6 +86,12 @@ class ActivityMap extends Component {
       if (self.props.markerCount > 0) {
         self.createMapMarker();
       }
+
+      self.activityMap.on('mousedown', (mouseEvent) => {
+        console.log("mousedown event occurred");
+        console.log(mouseEvent);
+        console.log(self.props.reportClickLocation);
+      });
     });
   }
 
@@ -326,10 +332,9 @@ ActivityMap.propTypes = {
   mapHeight: React.PropTypes.string.isRequired,
   activitiesData: React.PropTypes.array.isRequired,
   markerCount: React.PropTypes.number.isRequired,
-  // segmentEndPoint: React.PropTypes.array.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
-
-  locationCoordinates: React.PropTypes.object.isRequired
+  locationCoordinates: React.PropTypes.object.isRequired,
+  reportClickLocation: React.PropTypes.bool.isRequired
 };
 
 

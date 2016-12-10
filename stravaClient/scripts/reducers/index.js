@@ -10,6 +10,7 @@ import SelectedAthleteReducer from './reducer_selected_athlete';
 import SegmentEndPointReducer from './reducer_segment_end_point';
 import ActivityLocationsReducers from './reducer_activity_locations';
 import LocationCoordinatesReducer from './reducer_location_coordinates';
+import ReportClickLocationReducer from './reducer_report_click_location';
 
 const rootReducer = combineReducers({
   activities: ActivitiesReducer,
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   selectedAthlete: SelectedAthleteReducer,
   segmentEndPoint: SegmentEndPointReducer,
   activityLocations: ActivityLocationsReducers,
-  locationCoordinates: LocationCoordinatesReducer
+  locationCoordinates: LocationCoordinatesReducer,
+  reportClickLocation: ReportClickLocationReducer,
 });
 
 export default rootReducer;

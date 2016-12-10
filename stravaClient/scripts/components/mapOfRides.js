@@ -72,6 +72,7 @@ class MapOfRides extends Component {
           totalActivities={this.state.activityIds.length}
           mapHeight={"760px"}
           markerCount={0}
+          reportClickLocation={false}
         />
       </div>
     );

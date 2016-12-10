@@ -70,6 +70,7 @@ class MapStarredSegments extends Component {
             location={[]}
             totalActivities={self.props.baseMapSegments.length}
             mapHeight={"760px"}
+            reportClickLocation={false}
           />
         </div>
       );
@@ -86,6 +87,7 @@ class MapStarredSegments extends Component {
           location={[]}
           totalActivities={69}
           mapHeight={"760px"}
+          reportClickLocation={false}
         />
       </div>
     );
