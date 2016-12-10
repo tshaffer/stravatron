@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import * as Converters from '../utilities/converters';
 
 class ActivityMap extends Component {
 
@@ -91,6 +92,12 @@ class ActivityMap extends Component {
         console.log("mousedown event occurred");
         console.log(mouseEvent);
         console.log(self.props.reportClickLocation);
+        if (self.props.reportClickLocation) {
+          const stravatronLocation = Converters.stravatronCoordinateFromLatLng(mouseEvent.lngLat.lat, mouseEvent.lngLat.lng);
+          if (self.props.onMapClick) {
+            self.props.onMapClick(stravatronLocation);
+          }
+        }
       });
     });
   }
@@ -334,7 +341,8 @@ ActivityMap.propTypes = {
   markerCount: React.PropTypes.number.isRequired,
   activityLocations: React.PropTypes.array.isRequired,
   locationCoordinates: React.PropTypes.object.isRequired,
-  reportClickLocation: React.PropTypes.bool.isRequired
+  reportClickLocation: React.PropTypes.bool.isRequired,
+  onMapClick: React.PropTypes.func,
 };
 
 

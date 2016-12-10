@@ -117,6 +117,11 @@ export default class DetailedActivity extends Component {
     this.setState({reportClickLocation: !this.state.reportClickLocation});
   }
 
+  handleMapClick(coordinates) {
+    console.log("handleClickLocation");
+    console.log(coordinates);
+  }
+
   buildSegmentEffortRow(segmentEffort) {
 
     let self = this;
@@ -360,6 +365,7 @@ export default class DetailedActivity extends Component {
           activityLocations={this.props.activityLocations}
           locationCoordinates={this.props.locationCoordinates}
           reportClickLocation={this.state.reportClickLocation}
+          onMapClick={this.handleMapClick.bind(this)}
         />
         <InteractiveElevationChart
           streams={streams}
