@@ -1,5 +1,9 @@
+const fs = require('fs');
+
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+
+const https = require('https');
 
 class ActivityMap extends Component {
 
@@ -9,7 +13,93 @@ class ActivityMap extends Component {
     this.activityMap = null;
   }
 
+  fetchMapboxDatasets() {
+
+    // this method contains the correct access token!!
+    
+    // GET /datasets/v1/{username}
+    var options = {
+      host: 'api.mapbox.com',
+      path: '/datasets/v1/tedshaffer?access_token=sk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXYxYzB4dHowMDlhMnptcGlnaGdkM2s5In0.MR9A5fBMJUhLvyTGjre1sQ',
+      port: 443
+    };
+
+    var datasetsAsStr = "";
+    
+    https.get(options, function (res) {
+      res.on('data', function (d) {
+        datasetsAsStr += d;
+      });
+      res.on('end', function () {
+        console.log(datasetsAsStr);
+        const datasets = JSON.parse(datasetsAsStr);
+        debugger;
+      });
+
+    }).on('error', function (err) {
+      console.log('Caught exception: ' + err);
+    });
+  }
+
+  fetchMapboxStyle() {
+
+    // list styles
+    // curl "https://api.mapbox.com/styles/v1/{username}?access_token=your-access-token"
+    // var options = {
+    //     host: 'api.mapbox.com',
+    //     path: '/styles/v1/tedshaffer?' + 'access_token=' + 'sk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXYxYzB4dHowMDlhMnptcGlnaGdkM2s5In0.MR9A5fBMJUhLvyTGjre1sQ',
+    //     port: 443
+    // };
+    //
+
+    // retrieve a style
+    // curl "https://api.mapbox.com/styles/v1/{username}/{style_id}?access_token=your-access-token"
+    // curl "https://api.mapbox.com/styles/v1/tedshaffer/ciuzwjznu00lk2jqnhaoble89?access_token=sk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXYxYzB4dHowMDlhMnptcGlnaGdkM2s5In0.MR9A5fBMJUhLvyTGjre1sQ'"
+    // curl "https://api.mapbox.com/styles/v1/tedshaffer/ciuzwjznu00lk2jqnhaoble89?access_token=pk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXN2cjR4dXIwMjgwMm9wZ282cmk0aTgzIn0.9EtSUOr_ofLcwCDLM6FUHw"
+
+    // path: '/styles/v1/tedshaffer/' + 'ciuzwjznu00lk2jqnhaoble89' + '?access_token=' + 'sk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXYxYzB4dHowMDlhMnptcGlnaGdkM2s5In0.MR9A5fBMJUhLvyTGjre1sQ',
+
+    var options = {
+      host: 'api.mapbox.com',
+      path: '/styles/v1/tedshaffer/' + 'ciuzwjznu00lk2jqnhaoble89' + '?access_token=' + 'pk.eyJ1IjoidGVkc2hhZmZlciIsImEiOiJjaXN2cjR4dXIwMjgwMm9wZ282cmk0aTgzIn0.9EtSUOr_ofLcwCDLM6FUHw',
+      port: 443
+    };
+
+    var styleAsStr = "";
+
+    // let self = this;
+
+    https.get(options, function (res) {
+      res.on('data', function (d) {
+        styleAsStr += d;
+      });
+      res.on('end', function () {
+        console.log(styleAsStr);
+        var data = JSON.parse(styleAsStr);
+        console.log(data);
+        // self.updateStyle(data);
+        // self.addStyle(data);
+
+        const fileName = "myStyle.json";
+        console.log("save file ", fileName);
+        fs.writeFile(fileName, styleAsStr, (err) => {
+          if (err) debugger;
+          console.log(fileName, " write complete");
+        });
+      });
+
+    }).on('error', function (err) {
+      console.log('Caught exception: ' + err);
+    });
+  }
+
+
+
+
   initializeMap() {
+
+    this.fetchMapboxDatasets();
+    this.fetchMapboxStyle();
 
     let self = this;
 
