@@ -663,28 +663,10 @@ export function fetchSegmentsActivities(segmentId) {
 export function fetchActivitiesNearLocation(targetRegion) {
 
   return function(dispatch, getState) {
-
-    console.log("fetchActivitiesNearLocation");
-
+    
     const { location, distance } = targetRegion;
 
     const state = getState();
-
-    /*
-          iterate through
-            state.activities.activitiesById
-          to get each activity
-
-          if detailed information for an activity has been loaded, activity.streams will not be undefined.
-          if it's undefined, load it
-
-          then, after all the streams have been loaded, iterate through activities
-          get latlng stream
-
-          iterate through each point in stream
-            check distance between each point in stream and target region's location
-            if distance is less than specified distance, we have a winner. track it and exit this loop
-     */
 
     // clear old activities
     dispatch(clearActivities());
@@ -694,7 +676,7 @@ export function fetchActivitiesNearLocation(targetRegion) {
         const activity = state.activities.activitiesById[activityId];
         getMinimumDistanceToTargetLocation(activity, location, state).then( (minDistanceFromTarget) => {
           if (minDistanceFromTarget < distance) {
-            console.log("activity: ", activity.name, " is within ", minDistanceFromTarget, " and will be added to the list");
+            // add each activity as it's found
             dispatch(addActivity(activity));
           }
         },
@@ -710,26 +692,11 @@ function getMinimumDistanceToTargetLocation(activity, location, state) {
 
   return new Promise((resolve, reject) => {
 
-    let minDistanceFromTarget = Number.MAX_VALUE;
-
     if (!(activity.streams && activity.streams.length > 0)) {
       let getStreamsPromise = state.db.dbServices.getStream(activity.id);
       getStreamsPromise.then((streamData) => {
         let streams = getStreamsFromStreamData(streamData);
-        streams.forEach((stream) => {
-          if (stream.type === "latlng") {
-            stream.data.forEach((streamLocation) => {
-              const stravatronLocation = Converters.stravatronCoordinateFromLatLng(streamLocation[0], streamLocation[1]);
-              const distanceFromTarget = distanceBetweenPoints(
-                stravatronLocation[0],
-                stravatronLocation[1],
-                location[0],
-                location[1],
-                "K");
-              minDistanceFromTarget = Math.min(minDistanceFromTarget, distanceFromTarget);
-            });
-          }
-        });
+        let minDistanceFromTarget = getMinimumDistanceFromStream(streams, location);
         resolve(minDistanceFromTarget);
       },
       (reason) => {
@@ -737,9 +704,32 @@ function getMinimumDistanceToTargetLocation(activity, location, state) {
       });
     }
     else {
-      reject("stream already exists for activity: ", activity.name);
+      let minDistanceFromTarget = getMinimumDistanceFromStream(activity.streams, location);
+      resolve(minDistanceFromTarget);
     }
   });
+}
+
+function getMinimumDistanceFromStream(streams, location) {
+
+  let minDistanceFromTarget = Number.MAX_VALUE;
+
+  streams.forEach((stream) => {
+    if (stream.type === "latlng") {
+      stream.data.forEach((streamLocation) => {
+        const stravatronLocation = Converters.stravatronCoordinateFromLatLng(streamLocation[0], streamLocation[1]);
+        const distanceFromTarget = distanceBetweenPoints(
+          stravatronLocation[0],
+          stravatronLocation[1],
+          location[0],
+          location[1],
+          "K");
+        minDistanceFromTarget = Math.min(minDistanceFromTarget, distanceFromTarget);
+      });
+    }
+  });
+
+  return minDistanceFromTarget;
 }
 
 function distanceBetweenPoints(lat1, lon1, lat2, lon2, unit) {
