@@ -117,9 +117,18 @@ export default class DetailedActivity extends Component {
     this.setState({reportClickLocation: !this.state.reportClickLocation});
   }
 
-  handleMapClick(coordinates) {
+  handleMapClick(location) {
     console.log("handleClickLocation");
-    console.log(coordinates);
+    console.log(location);
+
+    let targetRegion = {};
+    targetRegion.location = location;
+    targetRegion.distance = 10;
+
+    // double check that user is in a 'Show Nearby' operation
+    if (this.state.reportClickLocation) {
+      hashHistory.push('/nearLocationSummaryActivitiesContainer/' + JSON.stringify(targetRegion));
+    }
   }
 
   buildSegmentEffortRow(segmentEffort) {

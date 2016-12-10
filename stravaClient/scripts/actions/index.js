@@ -636,6 +636,25 @@ export function fetchSegmentsActivities(segmentId) {
   };
 }
 
+export function fetchActivitiesNearLocation(targetRegion) {
+
+  return function(dispatch, getState) {
+
+    debugger;
+    console.log("fetchActivitiesNearLocation");
+    console.log(targetRegion);
+
+    const { location, distance } = targetRegion;
+
+    // const state = getState();
+    // const dbServices = state.db.dbServices;
+    //
+    // dbServices.getActivitiesWithSegment(segmentId).then( (stravaSummaryActivities) => {
+    //   const activityData = parseDbSummaryActivities(stravaSummaryActivities);
+    //   dispatch(setActivities(activityData.activities));
+    // });
+  };
+}
 
 export function SetCustomMapSegments(customMapSegments) {
 

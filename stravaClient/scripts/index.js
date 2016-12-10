@@ -17,6 +17,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import App from './components/app';
 import AllSummaryActivitiesContainer from './containers/allSummaryActivitiesContainer';
 import SegmentsSummaryActivitiesContainer from './containers/segmentsSummaryActivitiesContainer';
+import NearLocationSummaryActivitiesContainer from './containers/nearLocationSummaryActivitiesContainer';
 import DetailedActivityContainer from './containers/detailedActivityContainer';
 import ActivitySegmentCreatorContainer from './containers/activitySegmentCreatorContainer';
 import MapOfRides from './components/mapOfRides';
@@ -40,6 +41,7 @@ ReactDOM.render(
       <Route path="/" component={App} />
       <Route path="/allSummaryActivitiesContainer" component={AllSummaryActivitiesContainer} />
       <Route path="/segmentsSummaryActivitiesContainer/:id" component={SegmentsSummaryActivitiesContainer} />
+      <Route path="/nearLocationSummaryActivitiesContainer/:targetRegion" component={NearLocationSummaryActivitiesContainer} />
       <Route path="/detailedActivityContainer/:id" component={DetailedActivityContainer} />
       <Route path="/activitySegmentCreatorContainer/:id" component={ActivitySegmentCreatorContainer} />
       <Route path="/mapOfRides/:ids" component={MapOfRides} />
