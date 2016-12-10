@@ -123,7 +123,8 @@ export default class DetailedActivity extends Component {
 
     let targetRegion = {};
     targetRegion.location = location;
-    targetRegion.distance = 10;
+
+    targetRegion.distance = Number(this.txtBoxDistance.value);
 
     // double check that user is in a 'Show Nearby' operation
     if (this.state.reportClickLocation) {
@@ -366,6 +367,11 @@ export default class DetailedActivity extends Component {
         <button onClick={self.handleToggleShowNearby.bind(self)}>
           Show Nearby
         </button>
+        Distance:
+        <input type="text" id="txtBoxDistance" className="distanceText" ref={(c) => {
+          self.txtBoxDistance = c;
+        }}/>
+
         <ActivityMap
           activitiesData={activitiesData}
           totalActivities={1}
