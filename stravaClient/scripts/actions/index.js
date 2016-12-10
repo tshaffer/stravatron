@@ -669,42 +669,56 @@ export function fetchActivitiesNearLocation(targetRegion) {
             if distance is less than specified distance, we have a winner. track it and exit this loop
      */
 
-    let minDistanceFromTarget = Number.MAX_VALUE;
-
     for (let activityId in state.activities.activitiesById) {
       if (state.activities.activitiesById.hasOwnProperty(activityId)) {
         const activity = state.activities.activitiesById[activityId];
-        if (!(activity.streams && activity.streams.length > 0)) {
-          let getStreamsPromise = state.db.dbServices.getStream(activityId);
-          getStreamsPromise.then( (streamData) => {
-            let streams = getStreamsFromStreamData(streamData);
-            streams.forEach( (stream) => {
-              if (stream.type === "latlng") {
-                stream.data.forEach( (streamLocation) => {
-                  const stravatronLocation = Converters.stravatronCoordinateFromLatLng(streamLocation[0], streamLocation[1]);
-                  // console.log("stream location:", stravatronLocation);
-                  // console.log("target region location:", location);
-                  const distanceFromTarget = distanceBetweenPoints(
-                    stravatronLocation[0],
-                    stravatronLocation[1],
-                    location[0],
-                    location[1],
-                    "K");
-                  // console.log("distanceFromTarget: ", distanceFromTarget);
-                  minDistanceFromTarget = Math.min(minDistanceFromTarget, distanceFromTarget);
-                });
-              }
-            });
-
-            console.log("min distance (in feet) from target for this activity is:", Converters.kilometersToFeet(minDistanceFromTarget));
-          },
-          (reason) => {
-            console.log("stream promise failed for reason: ", reason);
-          });
-        }
+        getMinimumDistanceToTargetLocation(activity, location, state).then( (minDistanceFromTarget) => {
+          if (minDistanceFromTarget < distance) {
+            console.log("activity: ", activity.name, " is within ", minDistanceFromTarget, " and will be added to the list");
+          }
+        },
+        (reason) => {
+          console.log("getMinimumDistanceToTargetLocation promise failed for reason: ", reason);
+        });
       }
     }
   };
+}
+
+function getMinimumDistanceToTargetLocation(activity, location, state) {
+
+  return new Promise((resolve, reject) => {
+
+    let minDistanceFromTarget = Number.MAX_VALUE;
+
+    if (!(activity.streams && activity.streams.length > 0)) {
+      let getStreamsPromise = state.db.dbServices.getStream(activity.id);
+      getStreamsPromise.then((streamData) => {
+        let streams = getStreamsFromStreamData(streamData);
+        streams.forEach((stream) => {
+          if (stream.type === "latlng") {
+            stream.data.forEach((streamLocation) => {
+              const stravatronLocation = Converters.stravatronCoordinateFromLatLng(streamLocation[0], streamLocation[1]);
+              const distanceFromTarget = distanceBetweenPoints(
+                stravatronLocation[0],
+                stravatronLocation[1],
+                location[0],
+                location[1],
+                "K");
+              minDistanceFromTarget = Math.min(minDistanceFromTarget, distanceFromTarget);
+            });
+          }
+        });
+        resolve(minDistanceFromTarget);
+      },
+      (reason) => {
+        reject("stream promise failed for reason: ", reason);
+      });
+    }
+    else {
+      reject("stream already exists for activity: ", activity.name);
+    }
+  });
 }
 
 function distanceBetweenPoints(lat1, lon1, lat2, lon2, unit) {
@@ -718,7 +732,9 @@ function distanceBetweenPoints(lat1, lon1, lat2, lon2, unit) {
   dist = dist * 60 * 1.1515;
   if (unit === "K") { dist = dist * 1.609344; }
   if (unit === "N") { dist = dist * 0.8684; }
-  return dist;
+
+  return Converters.kilometersToFeet(dist);
+  // return dist;
 }
 export function SetCustomMapSegments(customMapSegments) {
 
