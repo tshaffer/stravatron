@@ -1,4 +1,11 @@
-import { ADD_ACTIVITIES, SET_ACTIVITIES, ADD_DETAILED_ACTIVITY_ATTRIBUTES, ADD_ACTIVITY_MAP } from '../actions/index';
+import {
+  CLEAR_ACTIVITIES,
+  ADD_ACTIVITY,
+  ADD_ACTIVITIES,
+  SET_ACTIVITIES,
+  ADD_DETAILED_ACTIVITY_ATTRIBUTES,
+  ADD_ACTIVITY_MAP
+} from '../actions/index';
 import Activity from '../entities/activity';
 
 const initialState =
@@ -12,6 +19,28 @@ let newState = null;
 export default function(state = initialState, action) {
 
   switch (action.type) {
+
+    case CLEAR_ACTIVITIES: {
+
+      newActivitiesById = {};
+
+      newState = {
+        activitiesById: newActivitiesById
+      };
+      return newState;
+
+    }
+
+    case ADD_ACTIVITY: {
+
+      newActivitiesById = Object.assign( {}, state.activitiesById);
+      newActivitiesById[action.activity.id] = action.activity;
+
+      newState = {
+        activitiesById: newActivitiesById
+      };
+      return newState;
+    }
 
     case ADD_ACTIVITIES: {
       newActivitiesById = Object.assign( {}, state.activitiesById);

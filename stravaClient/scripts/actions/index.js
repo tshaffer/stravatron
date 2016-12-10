@@ -11,6 +11,8 @@ import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
 
 export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
+export const CLEAR_ACTIVITIES = 'CLEAR_ACTIVITIES';
+export const ADD_ACTIVITY = 'ADD_ACTIVITY';
 export const ADD_ACTIVITIES = 'ADD_ACTIVITIES';
 export const SET_ACTIVITIES = 'SET_ACTIVITIES';
 export const ADD_ACTIVITY_MAP = 'ADD_ACTIVITY_MAP';
@@ -31,6 +33,22 @@ export function setSelectedAthlete(athlete) {
     athlete
   };
 }
+
+export function clearActivities() {
+
+  return {
+    type: CLEAR_ACTIVITIES
+  };
+}
+
+export function addActivity(activity) {
+
+  return {
+    type: ADD_ACTIVITY,
+    activity
+  };
+}
+
 
 export function addActivities(activities) {
 
@@ -647,7 +665,6 @@ export function fetchActivitiesNearLocation(targetRegion) {
   return function(dispatch, getState) {
 
     console.log("fetchActivitiesNearLocation");
-    console.log(targetRegion);
 
     const { location, distance } = targetRegion;
 
@@ -669,12 +686,16 @@ export function fetchActivitiesNearLocation(targetRegion) {
             if distance is less than specified distance, we have a winner. track it and exit this loop
      */
 
+    // clear old activities
+    dispatch(clearActivities());
+
     for (let activityId in state.activities.activitiesById) {
       if (state.activities.activitiesById.hasOwnProperty(activityId)) {
         const activity = state.activities.activitiesById[activityId];
         getMinimumDistanceToTargetLocation(activity, location, state).then( (minDistanceFromTarget) => {
           if (minDistanceFromTarget < distance) {
             console.log("activity: ", activity.name, " is within ", minDistanceFromTarget, " and will be added to the list");
+            dispatch(addActivity(activity));
           }
         },
         (reason) => {
