@@ -4,6 +4,8 @@
 const https = require('https');
 const fs = require('fs');
 
+import * as Converters from '../utilities/converters';
+
 import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
@@ -132,7 +134,7 @@ function fetchStravaData(endPoint, state) {
 
     const athleteData = getAthleteData(state);
 
-    var options = {
+    let options = {
       host: 'www.strava.com',
       path: '/api/v3/' + endPoint,
       port: 443,
@@ -141,14 +143,14 @@ function fetchStravaData(endPoint, state) {
       }
     };
 
-    var str = "";
+    let str = "";
 
     https.get(options, function (res) {
       res.on('data', function (d) {
         str += d;
       });
       res.on('end', function () {
-        var data = JSON.parse(str);
+        let data = JSON.parse(str);
         resolve(data);
       });
 
@@ -197,7 +199,7 @@ export function loadActivityMap(activityId) {
 
   return function(dispatch, getState) {
 
-    fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
+    return fetchStravaData("activities/" + activityId, getState()).then((stravaDetailedActivity)=> {
       dispatch(addActivityMap(stravaDetailedActivity.id, stravaDetailedActivity.map.polyline));
     });
   };
@@ -243,34 +245,8 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
     const getStreamsPromise = dbServices.getStream(activityId);
     getStreamsPromise.then( (streamData) => {
 
-      let streams = [];
-
-      let stream = {};
-      stream.type = "time";
-      stream.data = streamData.timeData;
-      streams.push(stream);
-
-      stream = {};
-      stream.type = "distance";
-      stream.data = streamData.distanceData;
-      streams.push(stream);
-
-      stream = {};
-      stream.type = "altitude";
-      stream.data = streamData.elevationData;
-      streams.push(stream);
-
-      stream = {};
-      stream.type = "latlng";
-      stream.data = streamData.locationData;
-      streams.push(stream);
-
+      let streams = getStreamsFromStreamData(streamData);
       dispatch(setActivityLocations(streamData.locationData));
-
-      stream = {};
-      stream.type = "grade_smooth";
-      stream.data = streamData.gradientData;
-      streams.push(stream);
 
       const detailedActivityAttributes =
         {
@@ -282,6 +258,37 @@ function loadDetailedActivityFromDB(activityId, activity, dbServices, dispatch) 
       dispatch(addDetailedActivityAttributes(activityId, detailedActivityAttributes));
     });
   });
+}
+
+function getStreamsFromStreamData(streamData) {
+  let streams = [];
+
+  let stream = {};
+  stream.type = "time";
+  stream.data = streamData.timeData;
+  streams.push(stream);
+
+  stream = {};
+  stream.type = "distance";
+  stream.data = streamData.distanceData;
+  streams.push(stream);
+
+  stream = {};
+  stream.type = "altitude";
+  stream.data = streamData.elevationData;
+  streams.push(stream);
+
+  stream = {};
+  stream.type = "latlng";
+  stream.data = streamData.locationData;
+  streams.push(stream);
+
+  stream = {};
+  stream.type = "grade_smooth";
+  stream.data = streamData.gradientData;
+  streams.push(stream);
+
+  return streams;
 }
 
 function loadDetailedActivityFromStrava(activityId, _, dbServices, dispatch, getState) {
@@ -660,22 +667,59 @@ export function fetchActivitiesNearLocation(targetRegion) {
           iterate through each point in stream
             check distance between each point in stream and target region's location
             if distance is less than specified distance, we have a winner. track it and exit this loop
-
-
      */
+
+    let minDistanceFromTarget = Number.MAX_VALUE;
 
     for (let activityId in state.activities.activitiesById) {
       if (state.activities.activitiesById.hasOwnProperty(activityId)) {
         const activity = state.activities.activitiesById[activityId];
         if (!(activity.streams && activity.streams.length > 0)) {
-          let foo = dispatch(loadDetailedActivity(activityId));
-          debugger;
+          let getStreamsPromise = state.db.dbServices.getStream(activityId);
+          getStreamsPromise.then( (streamData) => {
+            let streams = getStreamsFromStreamData(streamData);
+            streams.forEach( (stream) => {
+              if (stream.type === "latlng") {
+                stream.data.forEach( (streamLocation) => {
+                  const stravatronLocation = Converters.stravatronCoordinateFromLatLng(streamLocation[0], streamLocation[1]);
+                  // console.log("stream location:", stravatronLocation);
+                  // console.log("target region location:", location);
+                  const distanceFromTarget = distanceBetweenPoints(
+                    stravatronLocation[0],
+                    stravatronLocation[1],
+                    location[0],
+                    location[1],
+                    "K");
+                  // console.log("distanceFromTarget: ", distanceFromTarget);
+                  minDistanceFromTarget = Math.min(minDistanceFromTarget, distanceFromTarget);
+                });
+              }
+            });
+
+            console.log("min distance (in feet) from target for this activity is:", Converters.kilometersToFeet(minDistanceFromTarget));
+          },
+          (reason) => {
+            console.log("stream promise failed for reason: ", reason);
+          });
         }
       }
     }
   };
 }
 
+function distanceBetweenPoints(lat1, lon1, lat2, lon2, unit) {
+  let radlat1 = Math.PI * lat1 / 180;
+  let radlat2 = Math.PI * lat2 / 180;
+  let theta = lon1 - lon2;
+  let radtheta = Math.PI * theta / 180;
+  let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+  dist = Math.acos(dist);
+  dist = dist * 180 / Math.PI;
+  dist = dist * 60 * 1.1515;
+  if (unit === "K") { dist = dist * 1.609344; }
+  if (unit === "N") { dist = dist * 0.8684; }
+  return dist;
+}
 export function SetCustomMapSegments(customMapSegments) {
 
   return {
@@ -773,8 +817,8 @@ export function setLocationCoordinates(uiElement, index, coordinates) {
   };
 }
 
-export function toggleReportClickLocation() {
-  return {
-    type: TOGGLE_REPORT_CLICK_LOCATION,
-  };
-}
+// export function toggleReportClickLocation() {
+//   return {
+//     type: TOGGLE_REPORT_CLICK_LOCATION,
+//   };
+// }

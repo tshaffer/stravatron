@@ -39,6 +39,11 @@ export function metersToFeet(meters) {
   return meters * 3.28084;
 }
 
+export function kilometersToFeet(meters) {
+  return meters * 1000 * 3.28084;
+}
+
+
 export function metersPerSecondToMilesPerHour(speed) {
   return speed * 2.23694;
 }
