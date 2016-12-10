@@ -663,7 +663,7 @@ export function fetchSegmentsActivities(segmentId) {
 export function fetchActivitiesNearLocation(targetRegion) {
 
   return function(dispatch, getState) {
-    
+
     const { location, distance } = targetRegion;
 
     const state = getState();
@@ -674,7 +674,7 @@ export function fetchActivitiesNearLocation(targetRegion) {
     for (let activityId in state.activities.activitiesById) {
       if (state.activities.activitiesById.hasOwnProperty(activityId)) {
         const activity = state.activities.activitiesById[activityId];
-        getMinimumDistanceToTargetLocation(activity, location, state).then( (minDistanceFromTarget) => {
+        getMinimumDistanceToTargetLocation(activity, location, distance, state).then( (minDistanceFromTarget) => {
           if (minDistanceFromTarget < distance) {
             // add each activity as it's found
             dispatch(addActivity(activity));
@@ -688,7 +688,7 @@ export function fetchActivitiesNearLocation(targetRegion) {
   };
 }
 
-function getMinimumDistanceToTargetLocation(activity, location, state) {
+function getMinimumDistanceToTargetLocation(activity, location, distance, state) {
 
   return new Promise((resolve, reject) => {
 
@@ -696,7 +696,7 @@ function getMinimumDistanceToTargetLocation(activity, location, state) {
       let getStreamsPromise = state.db.dbServices.getStream(activity.id);
       getStreamsPromise.then((streamData) => {
         let streams = getStreamsFromStreamData(streamData);
-        let minDistanceFromTarget = getMinimumDistanceFromStream(streams, location);
+        let minDistanceFromTarget = getMinimumDistanceFromStream(streams, location, distance);
         resolve(minDistanceFromTarget);
       },
       (reason) => {
@@ -710,13 +710,14 @@ function getMinimumDistanceToTargetLocation(activity, location, state) {
   });
 }
 
-function getMinimumDistanceFromStream(streams, location) {
+function getMinimumDistanceFromStream(streams, location, targetDistance) {
 
   let minDistanceFromTarget = Number.MAX_VALUE;
+  let maxDistance = 5280 * 10; // 10 miles
 
-  streams.forEach((stream) => {
+  for (let stream of streams) {
     if (stream.type === "latlng") {
-      stream.data.forEach((streamLocation) => {
+      for (let streamLocation of stream.data) {
         const stravatronLocation = Converters.stravatronCoordinateFromLatLng(streamLocation[0], streamLocation[1]);
         const distanceFromTarget = distanceBetweenPoints(
           stravatronLocation[0],
@@ -724,10 +725,18 @@ function getMinimumDistanceFromStream(streams, location) {
           location[0],
           location[1],
           "K");
+
         minDistanceFromTarget = Math.min(minDistanceFromTarget, distanceFromTarget);
-      });
+
+        if (minDistanceFromTarget < targetDistance || minDistanceFromTarget > maxDistance) {
+          break;
+        }
+      }
+      if (minDistanceFromTarget < targetDistance || minDistanceFromTarget > maxDistance) {
+        break;
+      }
     }
-  });
+  }
 
   return minDistanceFromTarget;
 }
