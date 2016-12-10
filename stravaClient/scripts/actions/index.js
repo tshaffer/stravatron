@@ -681,7 +681,7 @@ export function fetchActivitiesNearLocation(targetRegion) {
           }
         },
         (reason) => {
-          console.log("getMinimumDistanceToTargetLocation promise failed for reason: ", reason);
+          console.log("getMinimumDistanceToTargetLocation failed: ", reason);
         });
       }
     }
@@ -700,7 +700,7 @@ function getMinimumDistanceToTargetLocation(activity, location, distance, state)
         resolve(minDistanceFromTarget);
       },
       (reason) => {
-        reject("stream promise failed for reason: ", reason);
+        reject("getStream failed: " + activity.name + ", ", activity.id);
       });
     }
     else {
