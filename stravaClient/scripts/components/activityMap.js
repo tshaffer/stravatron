@@ -89,9 +89,6 @@ class ActivityMap extends Component {
       }
 
       self.activityMap.on('mousedown', (mouseEvent) => {
-        console.log("mousedown event occurred");
-        console.log(mouseEvent);
-        console.log(self.props.reportClickLocation);
         if (self.props.reportClickLocation) {
           const stravatronLocation = Converters.stravatronCoordinateFromLatLng(mouseEvent.lngLat.lat, mouseEvent.lngLat.lng);
           if (self.props.onMapClick) {
@@ -321,6 +318,10 @@ class ActivityMap extends Component {
     }
 
     const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);
+
+    if (this.activityMap) {
+      this.activityMap.getCanvas().style.cursor = this.props.reportClickLocation ? 'crosshair' : '';
+    }
 
     return (
       <div id="mapBoxMap"
