@@ -699,7 +699,7 @@ function getMinimumDistanceToTargetLocation(activity, location, distance, state)
         let minDistanceFromTarget = getMinimumDistanceFromStream(streams, location, distance);
         resolve(minDistanceFromTarget);
       },
-      (reason) => {
+      () => {
         reject("getStream failed: " + activity.name + ", ", activity.id);
       });
     }

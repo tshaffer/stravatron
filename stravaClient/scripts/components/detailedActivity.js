@@ -13,7 +13,8 @@ export default class DetailedActivity extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      reportClickLocation: false
+      reportClickLocation: false,
+      distance: 32
     };
   }
 
@@ -111,8 +112,11 @@ export default class DetailedActivity extends Component {
     hashHistory.push('/segmentsSummaryActivitiesContainer/' + segmentId);
   }
 
+  handleDistanceChange(_, __, distance) {
+    this.setState({distance});
+  }
+
   handleToggleShowNearby() {
-    console.log("handleShowNearby invoked");
     // this.props.onToggleReportClickLocation();
     this.setState({reportClickLocation: !this.state.reportClickLocation});
   }
@@ -368,10 +372,13 @@ export default class DetailedActivity extends Component {
           Show Nearby
         </button>
         Distance:
-        <input type="text" id="txtBoxDistance" className="distanceText" ref={(c) => {
-          self.txtBoxDistance = c;
-        }}/>
-
+        <input type="text" id="txtBoxDistance" className="distanceText"
+          value={this.state.distance}
+          onChange={this.handleDistanceChange.bind(this)}
+          ref={(c) => {
+            self.txtBoxDistance = c;
+          }}
+        />
         <ActivityMap
           activitiesData={activitiesData}
           totalActivities={1}
