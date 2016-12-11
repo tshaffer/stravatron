@@ -320,6 +320,7 @@ class ActivityMap extends Component {
     const mapLegendJSX = this.buildMapLegend(this.props.activitiesData);
 
     if (this.activityMap) {
+      // http://bl.ocks.org/danswick/4906b495e0b206758f71
       this.activityMap.getCanvas().style.cursor = this.props.reportClickLocation ? 'crosshair' : '';
     }
 
