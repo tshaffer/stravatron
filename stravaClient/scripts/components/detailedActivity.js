@@ -362,14 +362,20 @@ export default class DetailedActivity extends Component {
     const rideSummaryHeader = this.buildRideSummaryHeader(activity);
     const segmentEffortsTable = this.buildSegmentEffortsTable();
 
+    let lbl = "Show Nearby";
+    if (this.state.reportClickLocation) {
+      lbl = "Cancel";
+    }
     return (
       <div>
         <Link to="/allSummaryActivitiesContainer" id="backFromDetailedActivityButton">Back</Link>
         <br/>
         {rideSummaryHeader}
 
-        <button onClick={self.handleToggleShowNearby.bind(self)}>
-          Show Nearby
+        <button
+          onClick={self.handleToggleShowNearby.bind(self)}
+          className="showNearbyLabel">
+          {lbl}
         </button>
         Distance:
         <input type="text" id="txtBoxDistance" className="distanceText"
