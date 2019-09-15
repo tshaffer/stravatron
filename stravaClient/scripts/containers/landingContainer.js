@@ -27,11 +27,12 @@ class LandingContainer extends Component {
     const dbServices = new DBServices();
     this.dbServices = dbServices;
     const promise = dbServices.initialize();
-    promise.then( dbConnection => {
-      self.props.loadDBData(dbServices, dbConnection);
-    }, (err) => {
-      console.log("initialization failure:", err);
-    });
+    self.props.loadDBData(dbServices, null);
+    // promise.then( dbConnection => {
+    //   self.props.loadDBData(dbServices, dbConnection);
+    // }, (err) => {
+    //   console.log("initialization failure:", err);
+    // });
   }
 
   handleUpdateSelectedAthlete(selectedAthleteName) {

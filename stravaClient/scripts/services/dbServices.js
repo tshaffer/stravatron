@@ -11,30 +11,32 @@ export default class DBServices {
 
     var self = this;
 
-    return new Promise( (resolve, reject) => {
-      self.dbConnection = mysql.createConnection({
-        host: self.dbHostName,
-        user: 'ted',
-        password: 'hello69',
-        database: 'stravatron'
-      });
+    return Promise.resolve();
 
-      self.dbConnection.connect();
+    // return new Promise( (resolve, reject) => {
+    //   self.dbConnection = mysql.createConnection({
+    //     host: self.dbHostName,
+    //     user: 'ted',
+    //     password: 'hello69',
+    //     database: 'stravatron'
+    //   });
 
-      let promises = [];
-      promises.push(self.createAthletesTable());
-      promises.push(self.createActivitiesTable());
-      promises.push(self.createSelectedAthleteTable());
-      promises.push(self.createSegmentsTable());
-      promises.push(self.createSegmentEffortsTable());
-      promises.push(self.createStreamsTable());
-      promises.push(self.createMapsTable());
-      Promise.all(promises).then( () => {
-        resolve(self.dbConnection);
-      }, reason => {
-        reject(reason);
-      });
-    });
+    //   self.dbConnection.connect();
+
+    //   let promises = [];
+    //   promises.push(self.createAthletesTable());
+    //   promises.push(self.createActivitiesTable());
+    //   promises.push(self.createSelectedAthleteTable());
+    //   promises.push(self.createSegmentsTable());
+    //   promises.push(self.createSegmentEffortsTable());
+    //   promises.push(self.createStreamsTable());
+    //   promises.push(self.createMapsTable());
+    //   Promise.all(promises).then( () => {
+    //     resolve(self.dbConnection);
+    //   }, reason => {
+    //     reject(reason);
+    //   });
+    // });
   }
 
   createAthletesTable() {
