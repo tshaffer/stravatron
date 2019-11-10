@@ -29,7 +29,11 @@ class LandingContainer extends Component {
     const dbServices = new DBServices();
     this.dbServices = dbServices;
 
-    retrieveAccessToken();
+    retrieveAccessToken()
+      .then( (accessToken) => {
+        console.log('promise resolved from retrieveAccessToken');
+        console.log(accessToken);
+      });
 
     // const promise = dbServices.initialize();
     // self.props.loadDBData(dbServices, null);

@@ -157,7 +157,6 @@ function getAthleteData(state = null) {
 
 export function retrieveAccessToken() {
 
-
   const serverUrl = 'https://www.strava.com/';
   const apiPrefix = 'api/v3/';
   const endPoint = 'oauth/token';
@@ -178,10 +177,11 @@ export function retrieveAccessToken() {
   .then((response) => {
     console.log('response to axios post: ');
     console.log(response);
-    return Promise.resolve(response);
+    return Promise.resolve(response.data.access_token);
   }).catch((err) => {
     console.log('response to axios post: ');
     console.log('err: ', err);
+    return Promise.reject(err);
   });
 }
 

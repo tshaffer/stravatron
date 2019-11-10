@@ -1,8 +1,6 @@
 /**
  * Created by tedshaffer on 9/24/16.
  */
-import { retrieveAccessToken } from './index';
-
 export const SET_DB = 'SET_DB';
 export const SET_ATHLETES = 'SET_ATHLETES';
 export const LOAD_MAPS = 'LOAD_MAPS';
