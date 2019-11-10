@@ -1,7 +1,7 @@
 /**
  * Created by tedshaffer on 9/24/16.
  */
-import { setSelectedAthlete } from './index';
+import { retrieveAccessToken } from './index';
 
 export const SET_DB = 'SET_DB';
 export const SET_ATHLETES = 'SET_ATHLETES';
@@ -73,7 +73,8 @@ function loadSelectedAthlete(dbServices) {
       firstName: 'Ted',
       lastName: 'Shaffer',
       email: 'shaffer.family@gmail.com',
-      accessToken: 'fb8085cc4c7f3633533e875eae3dc1e04cef06e8',
+      // accessToken: 'fb8085cc4c7f3633533e875eae3dc1e04cef06e8',
+      accessToken: '2ae6c4040243728ff81f9f0dcccfb7580ce0de1d',
     };
     dispatch(setSelectedAthlete(selectedAthlete));
     // retrieve selectedAthlete from db

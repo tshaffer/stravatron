@@ -13,6 +13,8 @@ import { loadDBData, loadMaps } from '../actions/dbActions';
 
 import { objectPopulated, arrayPopulated } from '../utilities/utils';
 
+import { retrieveAccessToken } from '../actions/index';
+
 class LandingContainer extends Component {
 
   constructor(props) {
@@ -26,8 +28,13 @@ class LandingContainer extends Component {
     var self = this;
     const dbServices = new DBServices();
     this.dbServices = dbServices;
-    const promise = dbServices.initialize();
-    self.props.loadDBData(dbServices, null);
+
+    retrieveAccessToken();
+
+    // const promise = dbServices.initialize();
+    // self.props.loadDBData(dbServices, null);
+
+
     // promise.then( dbConnection => {
     //   self.props.loadDBData(dbServices, dbConnection);
     // }, (err) => {

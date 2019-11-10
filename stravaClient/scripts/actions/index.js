@@ -4,6 +4,8 @@
 const https = require('https');
 const fs = require('fs');
 
+const axios = require('axios');
+
 import * as Converters from '../utilities/converters';
 
 import Segment from '../entities/segment';
@@ -140,6 +142,7 @@ function getAthleteData(state = null) {
       athleteData.athlete.email = 'shaffer_family@yahoo.com';
       // 29ef6b106ea16378e27f6031c60a79a4d445d489
       athleteData.accessToken = 'fb8085cc4c7f3633533e875eae3dc1e04cef06e8';
+      athleteData.accessToken = '2ae6c4040243728ff81f9f0dcccfb7580ce0de1d';
       // athleteData.athlete.id = athlete.stravaAthleteId;
       // athleteData.athlete.firstname = athlete.firstname;
       // athleteData.athlete.lastname = athlete.lastname;
@@ -151,6 +154,37 @@ function getAthleteData(state = null) {
 
   return null;
 }
+
+export function retrieveAccessToken() {
+
+
+  const serverUrl = 'https://www.strava.com/';
+  const apiPrefix = 'api/v3/';
+  const endPoint = 'oauth/token';
+  const path = serverUrl + apiPrefix + endPoint;
+
+  // -d "client_id=2055" -d "client_secret=85f821429c9da1ef02b627058119a4253eafd16d" -d "grant_type=refresh_token" -d "refresh_token=ca65f7aff433b44f351ff04ce0b33085bb0a0ed6" 
+  
+  console.log('axios post');
+  console.log('path: ', path);
+
+  return axios.post(path, 
+    {
+      client_id: 2055,
+      client_secret: '85f821429c9da1ef02b627058119a4253eafd16d',
+      grant_type: 'refresh_token',
+      refresh_token: 'ca65f7aff433b44f351ff04ce0b33085bb0a0ed6',
+    })
+  .then((response) => {
+    console.log('response to axios post: ');
+    console.log(response);
+    return Promise.resolve(response);
+  }).catch((err) => {
+    console.log('response to axios post: ');
+    console.log('err: ', err);
+  });
+}
+
 
 function fetchStravaData(endPoint, state) {
 
