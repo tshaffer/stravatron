@@ -130,24 +130,18 @@ export function addSegmentEfforts(segmentEfforts) {
 
 function getAthleteData(state = null) {
 
+  debugger;
+  
   let athleteData = {};
 
   if (state) {
     const athlete = state.selectedAthlete;
     if (athlete) {
-      athleteData.athlete = {};
-      athleteData.athlete.id = '2843574';
-      athleteData.athlete.firstname = 'Ted';
-      athleteData.athlete.lastname = 'Shaffer';
-      athleteData.athlete.email = 'shaffer_family@yahoo.com';
-      // 29ef6b106ea16378e27f6031c60a79a4d445d489
-      athleteData.accessToken = 'fb8085cc4c7f3633533e875eae3dc1e04cef06e8';
-      athleteData.accessToken = '2ae6c4040243728ff81f9f0dcccfb7580ce0de1d';
-      // athleteData.athlete.id = athlete.stravaAthleteId;
-      // athleteData.athlete.firstname = athlete.firstname;
-      // athleteData.athlete.lastname = athlete.lastname;
-      // athleteData.athlete.email = athlete.email;
-      // athleteData.accessToken = athlete.accessToken;
+      athleteData.athlete.id = athlete.stravaAthleteId;
+      athleteData.athlete.firstname = athlete.firstname;
+      athleteData.athlete.lastname = athlete.lastname;
+      athleteData.athlete.email = athlete.email;
+      athleteData.accessToken = athlete.accessToken;
       return athleteData;
     }
   }
@@ -541,27 +535,24 @@ export function fetchAndUpdateSummaryActivities() {
 
   return function(dispatch, getState) {
 
-    const latestDate = new Date('January 1, 2018 00:00:00');
-    fetchStravaActivities(latestDate, null, dispatch, getState);
+    let state = getState();
+    const dbServices = state.db.dbServices;
 
-    // let state = getState();
-    // const dbServices = state.db.dbServices;
+    // get summaryActivities from db for current athlete
+    const athleteData = getAthleteData(state);
+    const athleteId = athleteData.athlete.id;
 
-    // // get summaryActivities from db for current athlete
-    // const athleteData = getAthleteData(state);
-    // const athleteId = athleteData.athlete.id;
+    dbServices.getActivities(athleteId).then( (dbActivities) => {
 
-    // dbServices.getActivities(athleteId).then( (dbActivities) => {
+      const activityData = parseDbSummaryActivities(dbActivities);
+      const activities = activityData.activities;
+      const latestDate = activityData.latestDate;
 
-    //   const activityData = parseDbSummaryActivities(dbActivities);
-    //   const activities = activityData.activities;
-    //   const latestDate = activityData.latestDate;
+      // initialize redux store with these activities
+      dispatch(addActivities(activities));
 
-    //   // initialize redux store with these activities
-    //   dispatch(addActivities(activities));
-
-    //   fetchStravaActivities(latestDate, dbServices, dispatch, getState);
-    // });
+      fetchStravaActivities(latestDate, dbServices, dispatch, getState);
+    });
   };
 }
 
@@ -591,7 +582,7 @@ function fetchStravaActivities(dateOfLastFetchedActivity, dbServices, dispatch, 
 
     activitiesFromStrava.forEach((stravaActivity) => {
       stravaActivities.push(stravaActivity);
-      // addActivitiesPromises.push(dbServices.addActivity(stravaActivity));
+      addActivitiesPromises.push(dbServices.addActivity(stravaActivity));
 
       const activityDate = new Date(stravaActivity.startDateLocal);
       if (activityDate.getTime() > latestDate.getTime()) {

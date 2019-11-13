@@ -25,25 +25,22 @@ class LandingContainer extends Component {
   }
 
   componentWillMount() {
+    
     var self = this;
-    const dbServices = new DBServices();
-    this.dbServices = dbServices;
 
     retrieveAccessToken()
       .then( (accessToken) => {
         console.log('promise resolved from retrieveAccessToken');
         console.log(accessToken);
+        const dbServices = new DBServices();
+        this.dbServices = dbServices;
+        const promise = dbServices.initialize();
+        promise.then( dbConnection => {
+          self.props.loadDBData(dbServices, dbConnection);
+        }, (err) => {
+          console.log("initialization failure:", err);
+        });
       });
-
-    // const promise = dbServices.initialize();
-    // self.props.loadDBData(dbServices, null);
-
-
-    // promise.then( dbConnection => {
-    //   self.props.loadDBData(dbServices, dbConnection);
-    // }, (err) => {
-    //   console.log("initialization failure:", err);
-    // });
   }
 
   handleUpdateSelectedAthlete(selectedAthleteName) {
