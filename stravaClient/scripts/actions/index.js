@@ -12,6 +12,8 @@ import Segment from '../entities/segment';
 import SegmentEffort from '../entities/segmentEffort';
 import Activity from '../entities/activity';
 
+let globalAccessToken = '';
+
 export const SET_SELECTED_ATHLETE = 'SET_SELECTED_ATHLETE';
 export const CLEAR_ACTIVITIES = 'CLEAR_ACTIVITIES';
 export const ADD_ACTIVITY = 'ADD_ACTIVITY';
@@ -129,14 +131,13 @@ export function addSegmentEfforts(segmentEfforts) {
 }
 
 function getAthleteData(state = null) {
-
-  debugger;
   
   let athleteData = {};
 
   if (state) {
     const athlete = state.selectedAthlete;
     if (athlete) {
+      athleteData.athlete = {};
       athleteData.athlete.id = athlete.stravaAthleteId;
       athleteData.athlete.firstname = athlete.firstname;
       athleteData.athlete.lastname = athlete.lastname;
@@ -171,6 +172,7 @@ export function retrieveAccessToken() {
   .then((response) => {
     console.log('response to axios post: ');
     console.log(response);
+    globalAccessToken = response.data.access_token;
     return Promise.resolve(response.data.access_token);
   }).catch((err) => {
     console.log('response to axios post: ');
@@ -191,7 +193,7 @@ function fetchStravaData(endPoint, state) {
       path: '/api/v3/' + endPoint,
       port: 443,
       headers: {
-        'Authorization': 'Bearer ' + athleteData.accessToken
+        'Authorization': 'Bearer ' + globalAccessToken
       }
     };
 
